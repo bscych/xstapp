@@ -25,10 +25,10 @@
                                          <input type="text" class="form-control hidden" name="course_id" value="{{$course->id }}" >   
                                     </div>
                                     <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} col-md-2">
-                                        <label class="control-label ">课程类别 ：{{$courseCategories->find($course->course_category_id)->constant_value}}</label>
+                                        <label class="control-label ">课程类别 ：{{$courseCategories->firstWhere('id',$course->course_category_id)->name}}</label>
                                     </div>
                                      <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} col-md-2">
-                                        <label class="control-label ">课程类别 ：{{$courseCategories->find($course->course_category_id)->constant_value}}</label>
+                                        <label class="control-label ">课程类别 ：{{$courseCategories->firstWhere('id',$course->course_category_id)->name}}</label>
                                     </div>
                                     
                                      <div class="form-group  col-md-2">

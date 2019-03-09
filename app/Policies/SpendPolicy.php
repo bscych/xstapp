@@ -22,7 +22,7 @@ class SpendPolicy
        if($user->id===1){
            return true;
        }
-       if($user->id===2){
+       if($user->id===3){
            return true;
        }else{
            return false;

@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
-use App\Model\ConstantValue;
+use App\Model\Constant;
 use App\Model\Course;
 use App\Model\ClassRoom;
+use App\Model\Student;
 use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller {
@@ -22,10 +23,11 @@ class CourseController extends Controller {
      */
     public function index() {
         $courses = DB::table('courses')
-                ->join('constant_values', 'courses.course_category_id', '=', 'constant_values.id')
+                ->join('constants', 'courses.course_category_id', '=', 'constants.id')
                 ->join('users', 'courses.teacher_id', '=', 'users.id')
                 ->join('class_rooms', 'courses.classroom_id', '=', 'class_rooms.id')
-                ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constant_values.constant_value as courseCategoryName', 'users.name as teacher', 'class_rooms.name as classroom')
+                ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constants.name as courseCategoryName', 'users.name as teacher', 'class_rooms.name as classroom')
+                ->where('courses.deleted_at',null)
                 ->get();
       
          
@@ -42,7 +44,7 @@ class CourseController extends Controller {
                 ->join('users', 'teachers.user_id', '=', 'users.id')
                 ->select('users.name as name', 'users.id as id')
                 ->get();
-        return View::make('backend.course.create')->with('courseCategories', ConstantValue::where('constant_name_id', 2)->orderBy('created_at', 'desc')->get())->with('teachers', $teachers)->with('classrooms', ClassRoom::all());
+        return View::make('backend.course.create')->with('courseCategories', Constant::where('parent_id', 2)->orderBy('created_at', 'desc')->get())->with('teachers', $teachers)->with('classrooms', ClassRoom::all());
     }
 
     /**
@@ -169,7 +171,16 @@ class CourseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        //
+        
+        $course = Course::find($id);
+        //delete the course
+        $course->delete();
+        //delete related classmodel
+        DB::table('classmodels')
+            ->where('course_id', $course->id)
+            ->update(['deleted_at' => date("Y-m-d", time())]);
+        
+      return Redirect::to('course')->with('success', 'the Course has been deleted Successfully');
     }
 
     public function getStudentList($course_id) {
@@ -177,6 +188,8 @@ class CourseController extends Controller {
                 ->join('students', 'students.id', 'course_student.student_id')
                 ->select('students.id', 'students.name', 'students.gender', 'students.grade', 'students.class_room','course_student.classmodel_id')
                 ->where('course_student.course_id', '=', $course_id)
+                ->where('students.deleted_at','=',null)
+                ->where('course_student.deleted_at','=',null)
                 ->get();
         
            $classes = DB::table('classmodels')
@@ -218,8 +231,30 @@ class CourseController extends Controller {
         return View::make('backend.course.signIn_meal');
     }
 
-    public function getScheduleByMonthInday($course_id, $month) {
-        return View::make('backend.course.dayList');
+    public function getEnrollCourse($student_id) {
+//       $course_ids = DB::table('course_student')
+//                ->select('course_id')
+//                ->where('student_id', $student_id)
+//                ->get();
+//        $ids = collect([]);
+//        foreach ($course_ids as $id) {
+//            $ids->push($id->course_id);
+//        }
+//get courses which the student has not enrolled
+        $courses = DB::table('courses')
+                ->join('constants', 'courses.course_category_id', 'constants.id')
+                ->join('users', 'users.id', 'courses.teacher_id')
+                ->select('courses.id as course_id', 'courses.name', 'constants.name as courseCategoryName', 'users.name as teacher', 'courses.duration', 'courses.unit_price')
+//                ->whereNotIn('courses.id', $ids)
+                ->get();
+        //get classes
+        $classes = DB::table('classmodels')
+                ->join('courses','courses.id','classmodels.course_id')
+                ->join('users','users.id','classmodels.teacher_id')
+                ->select('classmodels.name','classmodels.course_id','classmodels.id as classmodel_id','users.name as teacher_id')
+                ->get();
+        
+        return View::make('backend.student.enroll')->with('courses', $courses)->with('student', Student::find($student_id))->with('classes',$classes);
     }
 
 }

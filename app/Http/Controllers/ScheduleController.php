@@ -4,12 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Model\Constant;
 
 class ScheduleController extends Controller {
 
@@ -41,15 +37,13 @@ class ScheduleController extends Controller {
 //        }
         $class_id = $request->input('class_id');
         $class = \App\Model\Classmodel::find($class_id);
-        $constant_id = \App\Model\Course::find($class->course_id)->course_category_id;
+        $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
         //托管类
         $date = [];
         $time = time();
         $week = date('w', $time);
-        if ($constant_id == 16) {
-
+        if ($constant->name == '托管') {
             //获取当前周几
-
             for ($i = 1; $i <= 7; $i++) {
                 $date[$i] = date('Y-m-d', strtotime('+' . $i - $week . ' days', $time));
             }
@@ -59,9 +53,8 @@ class ScheduleController extends Controller {
                 $date = [date('Y-m-d', $time)];
             }
         }
-
-
-        return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id);
+        $holidays = \App\Model\Holiday::where('type', 0)->get();
+        return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays);
     }
 
     /**
@@ -72,46 +65,50 @@ class ScheduleController extends Controller {
     public function create(Request $request) {
         $class_id = $request->input('class_id');
         $date = $request->input('date');
-        //get tge schedule 
+        //get the schedule 
         $schedules = DB::table('schedules')->where([
                     ['classmodel_id', '=', $class_id],
                     ['date', '=', $date],
                 ])->get();
-       // $schedule_student = collect([]);
-       //init schedule id;
-        $schedule_id=-1;
+        // $schedule_student = collect([]);
+        //init schedule id;
+        $schedule_id = -1;
         if ($schedules->count() == 1) {
             $schedule_id = $schedules->first()->id;
-          //  $schedule_student = DB::table('schedule_student')->where('schedule_id', $schedule_id)->get();
-          // check if the student 
+            //$schedule_student = DB::table('schedule_student')->where('schedule_id', $schedule_id)->get();
+            // check if there is student join the class newly 
         }
         if ($schedules->count() == 0) {
-           //create a new schedule and fetch the ID
+            //create a new schedule and fetch the ID
             $schedule = new \App\Model\Schedule;
             $schedule->classmodel_id = $class_id;
             $schedule->date = $date;
             $schedule->save();
-            $schedule_id=$schedule->id;
+            $schedule_id = $schedule->id;
             //form schedule_student data
             $schedule_students = [];
             $students = DB::table('course_student')
-                ->join('students', 'students.id', 'course_student.student_id')
-                ->select('students.id', 'students.name')
-                ->where('course_student.classmodel_id', $class_id)
-                ->get();
-            for($i=0;$i<$students->count();$i++){
-                $schedule_students[$i] = ['schedule_id'=>$schedule_id,'student_id'=>$students[$i]->id];
+                    ->join('students', 'students.id', 'course_student.student_id')
+                    ->select('students.id', 'students.name')
+                    ->where('course_student.classmodel_id', $class_id)
+                    ->get();
+            for ($i = 0; $i < $students->count(); $i++) {
+                $schedule_students[$i] = ['schedule_id' => $schedule_id, 'student_id' => $students[$i]->id];
             }
             //save schedule_student relationship accordingly 
             DB::table('schedule_student')->insert($schedule_students);
         }
         $attendance = DB::table('schedule_student')
-                ->join('students','schedule_student.student_id','students.id')
-                ->select('schedule_student.id','schedule_student.student_id','students.name','schedule_student.attended','schedule_student.lunch','schedule_student.dinner')
-                ->where('schedule_student.schedule_id',$schedule_id)
+                ->join('students', 'schedule_student.student_id', 'students.id')
+                ->select('schedule_student.id', 'schedule_student.student_id', 'students.name', 'schedule_student.attended', 'schedule_student.lunch', 'schedule_student.dinner')
+                ->where('schedule_student.schedule_id', $schedule_id)
                 ->get();
-
-        return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id);
+        $currentDate = date('Y-m-d', time());
+        if ($date >= $currentDate) {
+            return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id);
+        } else {
+            return View::make('backend.schedule.detail')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id);
+        }
     }
 
     /**
@@ -123,11 +120,11 @@ class ScheduleController extends Controller {
     public function store(Request $request) {
         $schedule_student_id = $request->input('schedule_student_id');
         $field = $request->input('field');
-        $value = $request->input('value')=='true'?1:0;
-        
+        $value = $request->input('value') == 'true' ? 1 : 0;
+
         DB::table('schedule_student')
-                ->where('id',$schedule_student_id)
-                ->update([$field=>$value]);
+                ->where('id', $schedule_student_id)
+                ->update([$field => $value]);
     }
 
     /**

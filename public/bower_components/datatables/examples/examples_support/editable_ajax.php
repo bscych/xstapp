@@ -1,3 +1,3 @@
-<?php
-	echo $_POST['value'].' (server updated)';
+<?php
+	echo $_POST['value'].' (server updated)';
 ?>

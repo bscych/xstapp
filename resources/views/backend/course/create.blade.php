@@ -29,7 +29,7 @@
                                         <label class="control-label">课程类别 ： </label>
                                         <select class="form-control" name="courseCategory_id" id="courseCategory_id">
                                             @foreach($courseCategories as $courseCategory)
-                                            <option value="{{$courseCategory->id}}">{{$courseCategory->constant_value}}</option>
+                                            <option value="{{$courseCategory->id}}">{{$courseCategory->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -56,6 +56,11 @@
                                     <div class="form-group{{ $errors->has('unit_price') ? ' has-error' : ''}}  col-md-3">
                                         <label class="control-label">总价格 ： </label>
                                         <label id="total_price" class="control-label"></label>   
+
+                                    </div>
+                                     <div class="form-group{{ $errors->has('snack_fee') ? ' has-error' : ''}}  col-md-3">
+                                        <label class="control-label">间点费 ： </label>
+                                        <input type="text" id="unit_price" class="form-control" name="snack_fee" value="{{ old('snack_fee') }}" placeholder="0">   
 
                                     </div>
 

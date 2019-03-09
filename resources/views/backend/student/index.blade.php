@@ -9,7 +9,7 @@
                 <h2><i class="glyphicon glyphicon-book"></i> 学生管理</h2>
             </div>
             <div class="box-content">
-                <form role="form" method="GET" action="{{ url('/student') }}">
+                <form role="form" method="GET" action="{{route('student.index') }}">
 
                     @csrf
                     <div class="row">
@@ -26,9 +26,9 @@
                         </button>
                     </div>
                 </form>
-          
+
                 <div class="row">
-                    <a class="btn btn-primary btn-lg" href="{{ URL::to('/student/create') }}">新增学生</a>      
+                    <a class="btn btn-primary" href="{{ URL::to('/student/create') }}">新增学生</a>      
                 </div>
             </div>
 
@@ -49,34 +49,46 @@
                         @foreach ($students as $model)
                         <tr>
                             <td>{{$model->id}} </td>
-                            <td>{{ $model->name }}</td>
+                            <td><a  href="{{ URL::to('student/'. $model->id) }}">{{ $model->name }}</a></td>
                             <td>{{ $model->gender }}</td>
                             <td>{{ $model->birthday }}</td>
                             <td>{{ $model->school}}</td>
 
                             <td class="center">
-                                <!--a class="btn btn-info" href="{{ URL::to('student/' . $model->id . '/edit') }}">
+                                <a class="btn btn-info" href="{{ URL::to('student/' . $model->id . '/edit') }}">
                                     <i class="glyphicon glyphicon-edit icon-white"></i>
                                     编辑
-                                </a-->
-                                <a class="btn btn-info" href="{{ URL::to('student/'. $model->id) }}">
+                                </a>
+                                <a class="btn btn-primary" href="{{ URL::to('student/'. $model->id) }}">
                                     <i class="glyphicon glyphicon-edit icon-white"></i>
                                     详细信息
                                 </a>
-                                <a class="btn btn-info" href="{{ URL::to('income/create?student_id='. $model->id) }}">
+                                <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
                                     <i class="glyphicon glyphicon-edit icon-white"></i>
                                     交费
                                 </a>
+                               
+                                <a class="btn btn-primary" href="{{ URL::to('refund/'. $model->id) }}">
+                                    <i class="glyphicon glyphicon-edit icon-white"></i>
+                                    退费
+                                </a>
                                 @if ($model-> balance > 0)
-                                <a class="btn btn-info" href="{{ URL::to('getCourseList/'. $model->id) }}">
+                                  <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
+                                    <i class="glyphicon glyphicon-edit icon-white"></i>
+                                    扣费
+                                </a>
+                                <a class="btn btn-primary" href="{{ URL::to('getCourseList/'. $model->id) }}">
                                     <i class="glyphicon glyphicon-edit icon-white"></i>
                                     报名
                                 </a>
                                 @endif
-                                <!--a class="btn btn-danger" href="{{ URL::to('student/' . $model->id) }}">
-                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                    删除
-                                </a-->
+                                 @if ($model-> balance == 0)
+                                <form action="{{ route('student.destroy',$model->id)}}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger" type="submit">退学</button>
+                                </form>
+                               @endif
                             </td>
 
                         </tr>

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Model\ConstantValue;
+use App\Model\Constant;
 use App\Model\Student;
 use App\Model\Income;
 use App\Model\Course;
@@ -25,10 +25,9 @@ class IncomeController extends Controller {
      */
     public function index() {
         $incomes = DB::table('incomes')
-                ->join('constant_values', 'constant_values.id', '=', 'incomes.payment_method')
                 ->join('users', 'users.id', '=', 'incomes.operator')
                 ->join('students', 'students.id', '=', 'incomes.paid_by')
-                ->select('incomes.id', 'incomes.name', 'students.name as paid_by', 'incomes.amount', 'constant_values.constant_value as payment_method', 'incomes.created_at', 'incomes.comment', 'users.name as operator')
+                ->select('incomes.id', 'incomes.name', 'students.name as paid_by', 'incomes.amount', 'incomes.payment_method', 'incomes.created_at', 'incomes.comment', 'users.name as operator')
                 ->orderBy('incomes.created_at', 'desc')
                 ->paginate(10);
         
@@ -45,8 +44,9 @@ class IncomeController extends Controller {
 
         return View::make('backend.finance.income.create')
                 ->with('student', Student::find($student_id))
-                ->with('paymentMethods', ConstantValue::where('constant_name_id', 1)->get())
-                ->with('courses', DB::table('courses')->orderBy('courses.created_at', 'desc')->get());
+                ->with('paymentMethods', Constant::where('parent_id', 1)->get())
+                ->with('courses', DB::table('courses')->orderBy('courses.created_at', 'desc')->get())
+                ->with('incomesCategories',Constant::where('parent_id',4)->get());
     }
 
     /**
@@ -59,6 +59,7 @@ class IncomeController extends Controller {
         $student_id = Input::get('student_id');
         $course_id = Input::get('course_id');
         $student = Student::find($student_id);
+        $incomeCategory = Input::get('incomeCategory');
         $rules = array(
             'amount' => 'required',
             'payment_method' => 'required',
@@ -69,9 +70,10 @@ class IncomeController extends Controller {
             return Redirect::to('income/create?student_id=' . $student_id)
                             ->withErrors($validator);
         } else {
-            $income = new \App\Model\Income;
+            $income = new Income;
             $income->amount = Input::get('amount');
             $income->payment_method = Input::get('payment_method');
+            $income->name_of_account = $incomeCategory;
             $income->paid_by = $student_id;
             $income->comment = Input::get('comment');
             $income->name = date("Y-m-d", time()) . $student->name . "缴费" . $income->amount;
@@ -83,9 +85,10 @@ class IncomeController extends Controller {
             $student->balance = $student->balance + $income->amount;
             $student->save();
             //非预存操作，需要保存扣费记录
-            if ($course_id != 10000) {
-                $course = Course::find($course_id);
+            if ($incomeCategory != 31) {
                 $enroll = new Enroll;
+                $enroll->name =  $request->input('comment').' ';
+                $enroll->income_account =  $incomeCategory;
                 $enroll->course_id = $course_id;
                 $enroll->student_id = $student_id;
                 $enroll->paid = Input::get('amount');
@@ -96,7 +99,7 @@ class IncomeController extends Controller {
                 $student->save();
 
                 //预存和交学杂费不需要保存课程学生关系数据
-                if ($course_id != 10000&&$course_id!=20000) {
+                if ($incomeCategory==28) {
                     $coure_students = DB::table('course_student')
                                     ->where([
                                         ['course_id', '=', $course_id],

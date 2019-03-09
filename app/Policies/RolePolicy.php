@@ -25,6 +25,9 @@ class RolePolicy
        if($user->id===2){
            return true;
        }
+        if($user->id===3){
+           return true;
+       }
        else{
            return false;
        }

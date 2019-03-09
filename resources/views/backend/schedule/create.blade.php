@@ -29,10 +29,9 @@
                         <tr>
                             <td>{{$student->name}} </td>
                             <td>
-                                <label class="checkbox-inline"><input type="checkbox"  onChange="submit({{$student->id}},'attended',{{$student->student_id}}, '{{ url('/schedule') }}')"  id="{{'attended'.$student->student_id}}" {{$student->attended==1?'checked="checked"':''}} >{{$student->attended}}出勤</label>
-                                <label class="checkbox-inline"><input type="checkbox" onChange="submit({{$student->id}},'lunch',{{$student->student_id}}, '{{ url('/schedule') }}')" id="{{'lunch'.$student->student_id}}" {{$student->lunch==1?'checked="checked"':''}} >{{$student->lunch}}午餐</label>
-                                <label class="checkbox-inline"><input type="checkbox" onChange="submit({{$student->id}},'dinner',{{$student->student_id}}, '{{ url('/schedule') }}')" id="{{'dinner'.$student->student_id}}" {{$student->dinner==1?'checked="checked"':''}} >{{$student->dinner}}晚餐</label>
-
+                                <label class="checkbox-inline"><input type="checkbox"  onChange="submit({{$student->id}},'attended',{{$student->student_id}}, '{{ url('/schedule') }}')"  id="{{'attended'.$student->student_id}}" {{$student->attended==1?'checked="checked"':''}} >出勤</label>
+                                <label class="checkbox-inline"><input type="checkbox" onChange="submit({{$student->id}},'lunch',{{$student->student_id}}, '{{ url('/schedule') }}')" id="{{'lunch'.$student->student_id}}" {{$student->lunch==1?'checked="checked"':''}} >午餐</label>
+                                <label class="checkbox-inline"><input type="checkbox" onChange="submit({{$student->id}},'dinner',{{$student->student_id}}, '{{ url('/schedule') }}')" id="{{'dinner'.$student->student_id}}" {{$student->dinner==1?'checked="checked"':''}} >晚餐</label>
                             </td>
 
                         </tr>

@@ -61,6 +61,7 @@ class EnrollController extends Controller {
                 $enroll->course_id = $course_id;
                 $enroll->student_id = $student_id;
                 $enroll->paid = $course->unit_price * $course->duration;
+                $enroll->income_account = 28;
                 $enroll->operator = Auth::id();
                 $enroll->save();
 

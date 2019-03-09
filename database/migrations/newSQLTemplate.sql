@@ -128,3 +128,116 @@ ALTER TABLE `schedules` CHANGE `start_time` `start_time` TIME NULL COMMENT '开�
 ALTER TABLE `schedule_student` CHANGE `attended` `attended` CHAR(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0', 
 CHANGE `lunch` `lunch` CHAR(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0', 
 CHANGE `dinner` `dinner` CHAR(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0'; 
+
+UPDATE `spends` SET `name_of_account`=24 WHERE `name_of_account` = 14 
+UPDATE `spends` SET `name_of_account`=23 WHERE `name_of_account` = 8 
+UPDATE `spends` SET `name_of_account`=25 WHERE `name_of_account` = 15 
+UPDATE `spends` SET `name_of_account`=22 WHERE `name_of_account` = 7 
+UPDATE `spends` SET `name_of_account`=18 WHERE `name_of_account` = 5 
+UPDATE `spends` SET `name_of_account`=21 WHERE `name_of_account` = 6 
+
+/*2018年10月20日*/
+/*insert new data*/
+INSERT INTO `constants` (`id`, `parent_id`, `name`, `label_name`, `created_at`, `updated_at`) VALUES (6, NULL, '退费方式', '', '2018-10-20 00:00:00', NULL); 
+INSERT INTO `constants` (`id`, `parent_id`, `name`, `label_name`, `created_at`, `updated_at`) VALUES (34, 6, '返现', '', '2018-10-20 00:00:00', NULL) ;
+INSERT INTO `constants` (`id`, `parent_id`, `name`, `label_name`, `created_at`, `updated_at`) VALUES (35, 6, '返回到帐户', '', '2018-10-20 00:00:00', NULL); 
+INSERT INTO `constants` (`id`, `parent_id`, `name`, `label_name`, `created_at`, `updated_at`) VALUES (36, 4, '杂费', '', '2018-10-20 13:30:00', NULL) ;
+INSERT INTO `constants` (`id`, `parent_id`, `name`, `label_name`, `created_at`, `updated_at`) VALUES (37, 4, '车费', '', '2018-10-21 20:30:00', NULL) ;
+
+/*update course table*/
+UPDATE `courses` SET `course_category_id`=12 WHERE `course_category_id`=16 ;
+UPDATE `courses` SET `course_category_id`=13 WHERE `course_category_id`=18 ;
+UPDATE `courses` SET `course_category_id`=14 WHERE `course_category_id`=19 ;
+UPDATE `courses` SET `course_category_id`=14 WHERE `id`=20004;
+UPDATE `courses` SET `course_category_id`=15 WHERE `course_category_id`=20; 
+UPDATE `courses` SET `course_category_id`=16 WHERE `course_category_id`=21;
+
+/*update income table*/
+UPDATE `incomes` SET `name_of_account`=28 WHERE `amount`>699 
+UPDATE `incomes` SET `comment` = '幼小教材费' WHERE `incomes`.`id` = 58; 
+UPDATE `incomes` SET `comment` = '幼小教材费' WHERE `incomes`.`id` = 63; 
+UPDATE `incomes` SET `comment` = '幼小教材费' WHERE `incomes`.`id` = 65; 
+UPDATE `incomes` SET `comment` = '舞蹈服费用' WHERE `incomes`.`id` = 61;
+UPDATE `incomes` SET `name_of_account`=29 WHERE comment LIKE '%教材%' ;
+UPDATE `incomes` SET `comment` = '8月份幼儿园托管半价' WHERE `incomes`.`id` = 87; 
+UPDATE `incomes` SET `comment` = '9月份幼儿园托管半价' WHERE `incomes`.`id` = 88; 
+UPDATE `incomes` SET `name_of_account`=28 WHERE `comment` LIKE '%幼儿园托管半价%' ;
+UPDATE `incomes` SET `name_of_account`=36 WHERE `comment` LIKE '%舞蹈服费%' ;
+UPDATE `incomes` SET `name_of_account`=36 WHERE `comment` LIKE '%车费%' ;
+UPDATE `incomes` SET `name_of_account` = 29 WHERE `incomes`.`id` = 12;
+UPDATE `incomes` SET `name_of_account` = 29 WHERE `incomes`.`id` = 23;
+UPDATE `incomes` SET `name_of_account` = 29 WHERE `incomes`.`id` = 30;
+UPDATE `incomes` SET `name_of_account` = 29 WHERE `incomes`.`id` = 46;
+/* payment method*/
+UPDATE `incomes` SET `payment_method` = '银行转账' WHERE `incomes`.`id` = 3; 
+UPDATE `incomes` SET `payment_method`='支付宝' WHERE payment_method = 4; 
+UPDATE `incomes` SET `payment_method`='POS' WHERE payment_method = 1; 
+UPDATE `incomes` SET `payment_method`='现金' WHERE payment_method = 2 ;
+UPDATE `incomes` SET `payment_method`='微信' WHERE payment_method = 3 ;
+
+/*
+UPDATE `incomes` SET `payment_method` = 17 WHERE `incomes`.`id` = 3; 
+UPDATE `incomes` SET `payment_method`=10 WHERE payment_method = 4; 
+UPDATE `incomes` SET `payment_method`=8 WHERE payment_method = 1; 
+UPDATE `incomes` SET `payment_method`=11 WHERE payment_method = 2 ;
+UPDATE `incomes` SET `payment_method`=9 WHERE payment_method = 3 ;
+*/
+
+/*update spend table*/
+
+UPDATE `spends` SET `name_of_account`= 27 WHERE `name_of_account`= 24; 
+UPDATE `spends` SET `name_of_account`= 26 WHERE `name_of_account`= 25; 
+UPDATE `spends` SET `name_of_account`= 25 WHERE `name_of_account`= 15;
+UPDATE `spends` SET `name_of_account`= 24 WHERE `name_of_account`= 14;
+UPDATE `spends` SET `name_of_account`= 23 WHERE `name_of_account`= 8;
+UPDATE `spends` SET `name_of_account`= 22 WHERE `name_of_account`= 7;
+UPDATE `spends` SET `name_of_account`= 21 WHERE `name_of_account`= 6;
+UPDATE `spends` SET `name_of_account`= 18 WHERE `name_of_account`= 5;  
+
+/*update enrolls table*/
+UPDATE `enrolls` SET `income_account`=28 WHERE `course_id` <> 20000;
+UPDATE `enrolls` SET `name` = '2018年10月车费' WHERE `enrolls`.`id` = 154; 
+UPDATE `enrolls` SET `name` = '2018年9月车费' WHERE `enrolls`.`id` = 155; 
+UPDATE `enrolls` SET `name` = '2018年9月、10月车费' WHERE `enrolls`.`id` = 152; 
+UPDATE `enrolls` SET `name` = '2018年9月、10月车费' WHERE `enrolls`.`id` = 156; 
+UPDATE `enrolls` SET `income_account`=37 WHERE `name` LIKE '%车费%';
+
+UPDATE `enrolls` SET `name` = '舞蹈服费用' WHERE `enrolls`.`id` = 159;
+UPDATE `enrolls` SET `name` = '舞蹈服费用' WHERE `enrolls`.`id` = 163;
+UPDATE `enrolls` SET `name` = '舞蹈服费用' WHERE `enrolls`.`id` = 158;
+UPDATE `enrolls` SET `name` = '舞蹈服费用' WHERE `enrolls`.`id` = 105;
+UPDATE `enrolls` SET `income_account`=36 WHERE `name` LIKE '%舞蹈服%';
+
+UPDATE `enrolls` SET `name`='幼小教材费' WHERE `paid`=450;
+UPDATE `enrolls` SET `name` = '二年级英语教材费' WHERE `enrolls`.`id` = 100;
+UPDATE `enrolls` SET `name`='一年级英语教材费' WHERE `paid`=118 ;
+UPDATE `enrolls` SET `name`='二年级英语教材费' WHERE `paid`=124.4 ;
+UPDATE `enrolls` SET `name` = '教材费' WHERE `enrolls`.`id` = 67; 
+UPDATE `enrolls` SET `name` = '教材费' WHERE `enrolls`.`id` = 64; 
+UPDATE `enrolls` SET `income_account` = 29 WHERE `name` LIKE '%教材%';
+
+
+
+UPDATE `enrolls` SET `name` = '幼儿园托管半价' WHERE `enrolls`.`id` = 72; 
+UPDATE `enrolls` SET `name` = '幼儿园托管半价' WHERE `enrolls`.`id` = 77; 
+UPDATE `enrolls` SET `name` = '幼儿园托管半价' WHERE `enrolls`.`id` = 78; 
+UPDATE `enrolls` SET `name` = '幼儿园托管半价' WHERE `enrolls`.`id` = 96; 
+
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 131; 
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 146;
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 123;
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 124;
+
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 147;
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 150;
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 148;
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 121;
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 140;
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 132;
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 117; 
+UPDATE `enrolls` SET `name` = '2018年9月份餐费' WHERE `enrolls`.`id` = 145; 
+UPDATE `enrolls` SET `income_account`=30 ,`name`='2018年9月份餐费' WHERE `course_id`=20000 AND `income_account` =0;
+
+UPDATE `enrolls` SET `course_id` = '4' WHERE `enrolls`.`id` = 160;
+UPDATE `enrolls` SET `course_id` = '4' WHERE `enrolls`.`id` = 161;
+UPDATE `enrolls` SET `course_id` = '4' WHERE `enrolls`.`id` = 162;

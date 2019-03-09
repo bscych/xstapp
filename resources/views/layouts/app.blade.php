@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="keywords" content="高新园区,托管，课后托管，教育培训，艺术培训，钢琴，美术,小书童，全国连锁，大连小书童，课后辅导，一对一，培优，补课">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -32,7 +32,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="#">主页 <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{{ url('/') }}">主页 <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">关于我们</a>
@@ -45,8 +45,8 @@
             </li>
           </ul>
           <form class="form-inline  ml-auto">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <!--input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button-->
           </form>
               <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -84,10 +84,13 @@
 
        <main role="main">
             @yield('content')
-        <footer class="container">
-        <p class="float-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2017-2018 大连小书童教育中心, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-      </footer> 
+       <footer class="footer">
+        <div class="container">
+            <p class="text-muted">&copy; 2017-2018 大连小书童教育中心, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+        </div>
+    </footer>     
+            
+            
        </main>
     </div>
 </body>

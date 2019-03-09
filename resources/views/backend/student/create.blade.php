@@ -15,7 +15,7 @@
                     <div class="row">
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">姓名 ： </label>
-                            <input type="text" class="form-control" name="name" value="{{ old('name') }}">   
+                            <input type="text" class="form-control" name="name" value="{{ old('name') }}" placeholder="{{$errors->first('name')}}">   
 
                         </div>
                         <div class="form-group{{ $errors->has('gender') ? ' has-error' : '' }} col-md-3">

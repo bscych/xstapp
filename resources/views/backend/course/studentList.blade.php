@@ -37,7 +37,9 @@
                             @else
                             <td><h5 class="green">{{$classes->firstWhere('id',$model->classmodel_id)->name }} </h5></td>
                             @endif
-                            <td><a href="#" class="btn btn-info btn-setting" onclick="$('#student_id').val({{$model->id}})">分班</a></td>
+                            <td><a href="#" class="btn btn-primary btn-setting" onclick="$('#student_id').val({{$model->id}})">分班</a>
+                            <a href="{{URL::to('quitClass/'.$course_id.'/'.$model->id ) }}" class="btn btn-primary">退班</a></td>
+                           
                         </tr>
                         @endforeach
                     </tbody>
