@@ -49,7 +49,7 @@ Route::post('/divide', 'ClassController@divide')->middleware('auth');
 Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass')->middleware('auth');
 
 Route::resource('/schedule', 'ScheduleController')->middleware('auth');
-Route::resource('/classroom', 'ClassRoomController')->middleware('auth');
+//Route::resource('/classroom', 'ClassRoomController')->middleware('auth');
 Route::resource('/teacher', 'TeacherController')->middleware('auth');
 Route::resource('/enroll', 'EnrollController')->middleware('auth');
 
@@ -59,34 +59,12 @@ Route::get('/scheduleList/{course_id}', 'CourseController@getScheduleList')->mid
 Route::get('/scheduleByMonth/{course_id}/{month}', 'CourseController@getScheduleByMonth')->middleware('auth');
 Route::get('/scheduleByMonthIndDay/{course_id}/{month}', 'CourseController@getScheduleByMonthInday')->middleware('auth');
 
-Route::group(['middleware' => ['wechat.oauth:default,snsapi_userinfo']], function () {
-    Route::get('/classroom', function () {
-
-        $wechat_user = session('wechat.oauth_user.default');
-        if (!Auth::check()) {
-            $wechat_info = $wechat_user->original;
-            $user = User::where('openid', $wechat_info['openid'])->first();
-            if (is_null($user)) {
-                $wechat_info = $wechat_user->original;
-                $user = new User;
-                $user->openid = $wechat_info['opoenid'];
-                $user->nickname = $wechat_info['nickname'];
-                $user->sex = $wechat_info['sex'];
-                $user->city = $wechat_info['city'];
-                $user->province = $wechat_info['province'];
-                $user->country = $wechat_info['country'];
-                $user->avatar = $wechat_info['avatar'];
-                $user->password = bcrypt('123456');
-                $match = [];
-                $url = $request->url;
-                preg_match('/\w+([1-9]\d*)/', $url, $match);
-                $user->weixin_id = $match[1] ?? 0;
-                $user->recommend_id = 0;
-                $user->save();
-                Auth::login($user);
-            } else {
-                Auth::login($user);
-            }
-        }
-    });
+Route::group(['middleware' => ['web','wechat.oauth']], function () {
+    
+//    Route::get('/classroom', function () {
+//        $wechat_user = session('wechat.oauth_user');
+//        return view('home');
+//    });
+    Route::resource('/classroom', 'ClassRoomController');
+    
 });
