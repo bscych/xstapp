@@ -21,8 +21,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/constant', 'ConstantController')->middleware('auth');
-//Route::resource('/constantName', 'ConstantNameController')->middleware('auth');
-//Route::resource('/constantValue', 'ConstantValueController')->middleware('auth');
+
 Route::resource('/spend', 'SpendController')->middleware('auth');
 Route::get('/refund/{student_id}', 'SpendController@refund')->middleware('auth');
 Route::post('/returnFee', 'SpendController@returnFee')->middleware('auth');
@@ -58,13 +57,13 @@ Route::resource('/holiday', 'HolidayController')->middleware('auth');
 Route::get('/scheduleList/{course_id}', 'CourseController@getScheduleList')->middleware('auth');
 Route::get('/scheduleByMonth/{course_id}/{month}', 'CourseController@getScheduleByMonth')->middleware('auth');
 Route::get('/scheduleByMonthIndDay/{course_id}/{month}', 'CourseController@getScheduleByMonthInday')->middleware('auth');
-
-Route::group(['middleware' => ['web','wechat.oauth']], function () {
-    
-//    Route::get('/classroom', function () {
-//        $wechat_user = session('wechat.oauth_user');
-//        return view('home');
-//    });
-    Route::resource('/classroom', 'ClassRoomController');
-    
-});
+//
+//Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
+//
+////    Route::get('/classroom', function () {
+////        $wechat_user = session('wechat.oauth_user');
+////        return view('home');
+////    });
+//    Route::get('/login', 'WeChatSelfAuthController@autoLogin')->name('login');
+//    Route::get('/register', 'WeChatSelfAuthController@autoRegister')->name('register');
+//});

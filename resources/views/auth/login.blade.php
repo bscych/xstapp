@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header">{{ __('登陆') }}</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
@@ -60,9 +60,9 @@
                                     {{ __('登陆') }}
                                 </button>
 
-                                <h6 class="btn">
-                                    {{ __('忘记密码请联系管理员?') }}
-                                </h6>
+                                <button type="submit" class="btn btn-primary">
+                                    {{ __('新用户微信登陆') }}
+                                </button>
                             </div>
                         </div>
                     </form>
