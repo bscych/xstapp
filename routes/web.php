@@ -27,6 +27,9 @@ Route::get('/refund/{student_id}', 'SpendController@refund')->middleware('auth')
 Route::post('/returnFee', 'SpendController@returnFee')->middleware('auth');
 
 Route::resource('/student', 'StudentController')->middleware('auth');
+Route::get('/getMykids','StudentController@getKids')->middleware('auth');
+Route::get('/getKidsCourse/{student_id}','StudentController@getActiveCourses')->middleware('auth');
+
 Route::get('/studentJson', 'StudentController@indexJson')->middleware('auth');
 Route::resource('/coursePlan', 'CoursePlanController')->middleware('auth');
 Route::resource('/course', 'CourseController')->middleware('auth');

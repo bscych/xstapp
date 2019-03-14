@@ -72,10 +72,7 @@
                                     <i class="glyphicon glyphicon-edit icon-white"></i>
                                     退费
                                 </a>
-                                 <a class="btn btn-primary" href="{{ URL::to('getCourseList/'. $model->id) }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                    签到
-                                </a>
+                                
                                 @if ($model-> balance > 0)
                                   <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
                                     <i class="glyphicon glyphicon-edit icon-white"></i>
@@ -91,7 +88,7 @@
                                 <form action="{{ route('student.destroy',$model->id)}}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger" type="submit">退学</button>
+                                    <button class="btn btn-danger" type="submit">注销</button>
                                 </form>
                                @endif
                             </td>

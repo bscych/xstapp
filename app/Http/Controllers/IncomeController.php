@@ -30,7 +30,7 @@ class IncomeController extends Controller {
                 ->select('incomes.id', 'incomes.name', 'students.name as paid_by', 'incomes.amount', 'incomes.payment_method', 'incomes.created_at', 'incomes.comment', 'users.name as operator')
                 ->orderBy('incomes.created_at', 'desc')
                 ->paginate(10);
-        
+
         return View::make('backend.finance.income.index')->with('incomes', $incomes);
     }
 
@@ -43,10 +43,10 @@ class IncomeController extends Controller {
         $student_id = Input::get('student_id');
 
         return View::make('backend.finance.income.create')
-                ->with('student', Student::find($student_id))
-                ->with('paymentMethods', Constant::where('parent_id', 1)->get())
-                ->with('courses', DB::table('courses')->orderBy('courses.created_at', 'desc')->get())
-                ->with('incomesCategories',Constant::where('parent_id',4)->get());
+                        ->with('student', Student::find($student_id))
+                        ->with('paymentMethods', Constant::where('parent_id', 1)->get())
+                        ->with('courses', DB::table('courses')->orderBy('courses.created_at', 'desc')->get())
+                        ->with('incomesCategories', Constant::where('parent_id', 4)->get());
     }
 
     /**
@@ -77,7 +77,7 @@ class IncomeController extends Controller {
             $income->paid_by = $student_id;
             $income->comment = Input::get('comment');
             $income->name = date("Y-m-d", time()) . $student->name . "缴费" . $income->amount;
-            $income->finance_year = date("Y", time()); 
+            $income->finance_year = date("Y", time());
             $income->finance_month = date("m", time());
             $income->operator = Auth::id();
             $income->save();
@@ -87,8 +87,8 @@ class IncomeController extends Controller {
             //非预存操作，需要保存扣费记录
             if ($incomeCategory != 31) {
                 $enroll = new Enroll;
-                $enroll->name =  $request->input('comment').' ';
-                $enroll->income_account =  $incomeCategory;
+                $enroll->name = $request->input('comment') . ' ';
+                $enroll->income_account = $incomeCategory;
                 $enroll->course_id = $course_id;
                 $enroll->student_id = $student_id;
                 $enroll->paid = Input::get('amount');
@@ -99,7 +99,7 @@ class IncomeController extends Controller {
                 $student->save();
 
                 //预存和交学杂费不需要保存课程学生关系数据
-                if ($incomeCategory==28) {
+                if ($incomeCategory == 28) {
                     $coure_students = DB::table('course_student')
                                     ->where([
                                         ['course_id', '=', $course_id],
@@ -158,7 +158,5 @@ class IncomeController extends Controller {
     public function destroy($id) {
         //
     }
-    
-    
 
 }

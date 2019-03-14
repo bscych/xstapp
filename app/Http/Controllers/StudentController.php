@@ -30,8 +30,34 @@ class StudentController extends Controller {
         return View::make('backend.student.index')->with('students', Student::where('name', 'like', $name . '%')->paginate(15));
     }
 
-    function indexJson() {
-        return response()->json(DB::table('students')->paginate(15));
+    function getActiveCourseList($studentId) {
+        $courses = DB::table('courses')
+                ->join('course_student', 'course_student.course_id', 'courses.id')
+                ->select('courses.id', 'courses.name', 'courses.start_date')
+                ->where('student_id', '=', $studentId)
+                ->where('course_student.deleted_at', '=', null)
+                 ->where('courses.deleted_at', '=', null)
+                ->get();
+        return $courses;
+    }
+
+    function getStudentByWeChatOpenId($openId) {
+        $students = DB::table('students')
+                ->join('parent_student', 'parent_student.student_id', 'students.id')
+                ->join('users', 'users.id', 'parent_student.user_id')
+                ->select('students.name','students.id')
+                ->where('users.openid', '=', $openId)
+                ->get();
+        return $students;
+    }
+
+    public function getKids() {
+        return View::make('backend.student.kidList')->with('students', $this->getStudentByWeChatOpenId('o1t8s04Nx8AkS81YUNsySVKnVGvM'));
+    }
+
+    public function getActiveCourses($student_id) {
+        
+        return View::make('backend.student.courseList')->with('courses',$this->getActiveCourseList($student_id))->with('student', Student::find($student_id));
     }
 
     /**
@@ -62,7 +88,6 @@ class StudentController extends Controller {
             return Redirect::to('student/create')
                             ->withErrors($validator);
         } else {
-
             $student = new \App\Model\Student;
             $student->name = Input::get('name');
             $student->gender = Input::get('gender');
@@ -102,37 +127,34 @@ class StudentController extends Controller {
      */
     public function show($id) {
         $payments = DB::table('incomes')
-                ->join('constants as incomeCategory','incomeCategory.id','incomes.name_of_account')
-                ->select('incomes.name', 'incomes.amount','incomeCategory.name as income_name','incomes.payment_method', 'incomes.comment', 'incomes.created_at')
+                ->join('constants as incomeCategory', 'incomeCategory.id', 'incomes.name_of_account')
+                ->select('incomes.name', 'incomes.amount', 'incomeCategory.name as income_name', 'incomes.payment_method', 'incomes.comment', 'incomes.created_at')
                 ->where('incomes.paid_by', $id)
                 ->orderBy('created_at', 'desc')
                 ->get();
         $enroll = DB::table('enrolls')
                 ->join('courses', 'courses.id', 'enrolls.course_id')
-                ->join('constants','constants.id','enrolls.income_account')
-                ->select('enrolls.paid', 'constants.name as income_account','courses.name as course_name', 'enrolls.created_at')
+                ->join('constants', 'constants.id', 'enrolls.income_account')
+                ->select('enrolls.paid', 'constants.name as income_account', 'courses.name as course_name', 'enrolls.created_at')
                 ->where('student_id', '=', $id)
                 ->orderBy('created_at', 'desc')
                 ->get();
         $refunds = DB::table('refunds')
-                ->join('constants','constants.id','refunds.name_of_account')
-                ->join('courses','refunds.course_id','courses.id')
-                ->select('refunds.amount','courses.name as course_name','constants.name as refund_category','refunds.created_at','refunds.comment')
-                ->where('student_id','=',$id)
-                ->get();
-        $courses = DB::table('courses')
-                ->join('course_student', 'course_student.course_id', 'courses.id')
-                ->select('courses.id', 'courses.name', 'courses.start_date')
+                ->join('constants', 'constants.id', 'refunds.name_of_account')
+                ->join('courses', 'refunds.course_id', 'courses.id')
+                ->select('refunds.amount', 'courses.name as course_name', 'constants.name as refund_category', 'refunds.created_at', 'refunds.comment')
                 ->where('student_id', '=', $id)
-                ->where('course_student.deleted_at','=',null)
                 ->get();
+
+        $courses = $this->getActiveCourseList($id);
+
 //        $refunds = DB::table('refunds')
 //                ->join('constants');
         return View::make('backend.student.detail')
                         ->with('student', Student::find($id))
                         ->with('payments', $payments)
                         ->with('enrolls', $enroll)
-                        ->with('refunds',$refunds)
+                        ->with('refunds', $refunds)
                         ->with('balance', Student::find($id)->balance)
                         ->with('courses', $courses);
     }
@@ -144,7 +166,7 @@ class StudentController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-     return View::make('backend.student.edit')->with('student',Student::find($id));
+        return View::make('backend.student.edit')->with('student', Student::find($id));
     }
 
     /**
@@ -155,7 +177,7 @@ class StudentController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-          $rules = array(
+        $rules = array(
             'name' => 'required',
             'gender' => 'required',
             'birthday' => 'required',
@@ -164,10 +186,9 @@ class StudentController extends Controller {
 
         // process the login
         if ($validator->fails()) {
-            return Redirect::to('student/'.$id.'/edit')
+            return Redirect::to('student/' . $id . '/edit')
                             ->withErrors($validator);
         } else {
-
             $student = Student::find($id);
             $student->name = Input::get('name');
             $student->gender = Input::get('gender');
@@ -195,7 +216,7 @@ class StudentController extends Controller {
             $student->save();
 
             Session::flash('message', 'Successfully created nerd!');
-            return Redirect::to('student/'.$id);
+            return Redirect::to('student/' . $id);
         }
     }
 
@@ -206,10 +227,9 @@ class StudentController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-      $student = Student::find($id);
-      $student->delete();
-      return Redirect::to('student')->with('success', 'Student has been deleted Successfully');
-
+        $student = Student::find($id);
+        $student->delete();
+        return Redirect::to('student')->with('success', 'Student has been deleted Successfully');
     }
 
     public function getCourseList($student_id) {
@@ -230,12 +250,12 @@ class StudentController extends Controller {
                 ->get();
         //get classes
         $classes = DB::table('classmodels')
-                ->join('courses','courses.id','classmodels.course_id')
-                ->join('users','users.id','classmodels.teacher_id')
-                ->select('classmodels.name','classmodels.course_id','classmodels.id as classmodel_id','users.name as teacher_id')
+                ->join('courses', 'courses.id', 'classmodels.course_id')
+                ->join('users', 'users.id', 'classmodels.teacher_id')
+                ->select('classmodels.name', 'classmodels.course_id', 'classmodels.id as classmodel_id', 'users.name as teacher_id')
                 ->get();
-        
-        return View::make('backend.student.enroll')->with('courses', $courses)->with('student', Student::find($student_id))->with('classes',$classes);
+
+        return View::make('backend.student.enroll')->with('courses', $courses)->with('student', Student::find($student_id))->with('classes', $classes);
     }
 
 }
