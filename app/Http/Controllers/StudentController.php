@@ -33,7 +33,7 @@ class StudentController extends Controller {
     function getActiveCourseList($studentId) {
         $courses = DB::table('courses')
                 ->join('course_student', 'course_student.course_id', 'courses.id')
-                ->select('courses.id', 'courses.name', 'courses.start_date')
+                ->select('courses.id', 'courses.name', 'courses.start_date','courses.course_category_id')
                 ->where('student_id', '=', $studentId)
                 ->where('course_student.deleted_at', '=', null)
                  ->where('courses.deleted_at', '=', null)

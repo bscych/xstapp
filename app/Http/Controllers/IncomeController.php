@@ -77,8 +77,8 @@ class IncomeController extends Controller {
             $income->paid_by = $student_id;
             $income->comment = Input::get('comment');
             $income->name = date("Y-m-d", time()) . $student->name . "缴费" . $income->amount;
-            $income->finance_year = date("Y", time());
-            $income->finance_month = date("m", time());
+            $income->finance_year = Input::get('finance_year');
+            $income->finance_month = Input::get('finance_month');
             $income->operator = Auth::id();
             $income->save();
 

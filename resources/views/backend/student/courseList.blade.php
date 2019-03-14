@@ -2,28 +2,45 @@
 
 @section('content')
 
+
 <div class="row">
     <div class="box col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-th"></i>{{$student->name}}</h2>
-                <div class="box-icon">
-                </div>
+                <h2><i class="glyphicon glyphicon-book"></i> {{$student->name.'的课程列表'}}</h2>
             </div>
+   
             <div class="box-content">
-                <div class="row">
-                    @foreach($courses as $course)
+                <table class="table table-striped table-bordered bootstrap-datatable responsive">
+                    <thead>
+                        <tr>
+                            <th>课程名称</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($courses as $course)
+                        <tr>
+                            <td>{{$course->name}} </td>
 
-                    <div class="col-md-3">
+                            <td class="center">
+                                @if($course->course_category_id==12)
+                                <a class="btn btn-primary" href="{{ URL::to('getKidsCourse/'.$student->id) }}">
+                                    <i class="fa fa-btn fa-user"></i>考勤管理
+                                </a>
+                                @endif
+                            </td>
 
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-btn fa-user"></i>{{$course->name}}
-                        </button>
-                    </div>
-                    @endforeach
-                </div>    
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
             </div>
         </div>
     </div>
-</div>
+    <!--/span-->
+
+</div><!--/row-->
+
 @endsection
