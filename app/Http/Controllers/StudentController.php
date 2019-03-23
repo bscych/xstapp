@@ -33,10 +33,10 @@ class StudentController extends Controller {
     function getActiveCourseList($studentId) {
         $courses = DB::table('courses')
                 ->join('course_student', 'course_student.course_id', 'courses.id')
-                ->select('courses.id', 'courses.name', 'courses.start_date','courses.course_category_id')
+                ->select('courses.id', 'courses.name', 'courses.start_date', 'courses.course_category_id')
                 ->where('student_id', '=', $studentId)
                 ->where('course_student.deleted_at', '=', null)
-                 ->where('courses.deleted_at', '=', null)
+                ->where('courses.deleted_at', '=', null)
                 ->get();
         return $courses;
     }
@@ -45,7 +45,7 @@ class StudentController extends Controller {
         $students = DB::table('students')
                 ->join('parent_student', 'parent_student.student_id', 'students.id')
                 ->join('users', 'users.id', 'parent_student.user_id')
-                ->select('students.name','students.id')
+                ->select('students.name', 'students.id')
                 ->where('users.openid', '=', $openId)
                 ->get();
         return $students;
@@ -56,8 +56,8 @@ class StudentController extends Controller {
     }
 
     public function getActiveCourses($student_id) {
-        
-        return View::make('backend.student.courseList')->with('courses',$this->getActiveCourseList($student_id))->with('student', Student::find($student_id));
+
+        return View::make('backend.student.courseList')->with('courses', $this->getActiveCourseList($student_id))->with('student', Student::find($student_id));
     }
 
     /**
@@ -88,30 +88,8 @@ class StudentController extends Controller {
             return Redirect::to('student/create')
                             ->withErrors($validator);
         } else {
-            $student = new \App\Model\Student;
-            $student->name = Input::get('name');
-            $student->gender = Input::get('gender');
-            $student->birthday = Input::get('birthday');
-            $student->nation = Input::get('nation');
-            $student->health = Input::get('health');
-            $student->interest = Input::get('interest');
-            $student->home_address = Input::get('home_address');
-            $student->parents_info = Input::get('parents_info');
-            $student->school = Input::get('school');
-            $student->grade = Input::get('grade');
-            $student->class_room = Input::get('class_room');
-            $student->class_supervisor_name = Input::get('class_supervisor_name');
-            $student->class_supervisor_phone = Input::get('class_supervisor_phone');
-            $student->chinese = Input::get('chinese');
-            $student->math = Input::get('math');
-            $student->english = Input::get('english');
-            $student->study_brief = Input::get('study_brief');
-            $student->live_brief = Input::get('live_brief');
-            $student->character_brief = Input::get('character_brief');
-            $student->expectation = Input::get('expectation');
-            $student->expect_courses = Input::get('expect_courses');
+            $student = $this->formStudent(null);
 
-            $student->operator = Auth::id();
             $student->save();
 
             Session::flash('message', 'Successfully created nerd!');
@@ -189,35 +167,44 @@ class StudentController extends Controller {
             return Redirect::to('student/' . $id . '/edit')
                             ->withErrors($validator);
         } else {
-            $student = Student::find($id);
-            $student->name = Input::get('name');
-            $student->gender = Input::get('gender');
-            $student->birthday = Input::get('birthday');
-            $student->nation = Input::get('nation');
-            $student->health = Input::get('health');
-            $student->interest = Input::get('interest');
-            $student->home_address = Input::get('home_address');
-            $student->parents_info = Input::get('parents_info');
-            $student->school = Input::get('school');
-            $student->grade = Input::get('grade');
-            $student->class_room = Input::get('class_room');
-            $student->class_supervisor_name = Input::get('class_supervisor_name');
-            $student->class_supervisor_phone = Input::get('class_supervisor_phone');
-            $student->chinese = Input::get('chinese');
-            $student->math = Input::get('math');
-            $student->english = Input::get('english');
-            $student->study_brief = Input::get('study_brief');
-            $student->live_brief = Input::get('live_brief');
-            $student->character_brief = Input::get('character_brief');
-            $student->expectation = Input::get('expectation');
-            $student->expect_courses = Input::get('expect_courses');
-
-            $student->operator = Auth::id();
+            //
+            $student = $this->formStudent($id);
+            $student->id = $id;
             $student->save();
 
             Session::flash('message', 'Successfully created nerd!');
             return Redirect::to('student/' . $id);
         }
+    }
+
+    function formStudent($id) {
+        $student = new \App\Model\Student;
+        if ($id != null) {
+            $student = Student::find($id);
+        }
+        $student->name = Input::get('name');
+        $student->gender = Input::get('gender');
+        $student->birthday = Input::get('birthday');
+        $student->nation = Input::get('nation');
+        $student->health = Input::get('health');
+        $student->interest = Input::get('interest');
+        $student->home_address = Input::get('home_address');
+        $student->parents_info = Input::get('parents_info');
+        $student->school = Input::get('school');
+        $student->grade = Input::get('grade');
+        $student->class_room = Input::get('class_room');
+        $student->class_supervisor_name = Input::get('class_supervisor_name');
+        $student->class_supervisor_phone = Input::get('class_supervisor_phone');
+        $student->chinese = Input::get('chinese');
+        $student->math = Input::get('math');
+        $student->english = Input::get('english');
+        $student->study_brief = Input::get('study_brief');
+        $student->live_brief = Input::get('live_brief');
+        $student->character_brief = Input::get('character_brief');
+        $student->expectation = Input::get('expectation');
+        $student->expect_courses = Input::get('expect_courses');
+        $student->operator = Auth::id();
+        return $student;
     }
 
     /**

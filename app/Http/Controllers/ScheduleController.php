@@ -65,49 +65,66 @@ class ScheduleController extends Controller {
     public function create(Request $request) {
         $class_id = $request->input('class_id');
         $date = $request->input('date');
-        //get the schedule 
+        // get the schedule 
         $schedules = DB::table('schedules')->where([
                     ['classmodel_id', '=', $class_id],
                     ['date', '=', $date],
                 ])->get();
         // $schedule_student = collect([]);
-        //init schedule id;
-        $schedule_id = -1;
+        $schedule_id = -1;  // init schedule id;
         if ($schedules->count() == 1) {
             $schedule_id = $schedules->first()->id;
-            //$schedule_student = DB::table('schedule_student')->where('schedule_id', $schedule_id)->get();
             // check if there is student join the class newly 
         }
+        // there is no existing schedule, create a new schedule
         if ($schedules->count() == 0) {
-            //create a new schedule and fetch the ID
-            $schedule = new \App\Model\Schedule;
-            $schedule->classmodel_id = $class_id;
-            $schedule->date = $date;
-            $schedule->save();
-            $schedule_id = $schedule->id;
-            //form schedule_student data
-            $schedule_students = [];
-            $students = DB::table('course_student')
-                    ->join('students', 'students.id', 'course_student.student_id')
-                    ->select('students.id', 'students.name')
-                    ->where('course_student.classmodel_id', $class_id)
-                    ->get();
-            for ($i = 0; $i < $students->count(); $i++) {
-                $schedule_students[$i] = ['schedule_id' => $schedule_id, 'student_id' => $students[$i]->id];
-            }
-            //save schedule_student relationship accordingly 
-            DB::table('schedule_student')->insert($schedule_students);
+            $this->createNewSchedule($class_id, $date);
         }
-        $attendance = DB::table('schedule_student')
-                ->join('students', 'schedule_student.student_id', 'students.id')
-                ->select('schedule_student.id', 'schedule_student.student_id', 'students.name', 'schedule_student.attended', 'schedule_student.lunch', 'schedule_student.dinner')
-                ->where('schedule_student.schedule_id', $schedule_id)
-                ->get();
+        $student_id = $request->input('student_id');
+        $attendance = $this->getAttendanceData($schedule_id, $student_id);
         $currentDate = date('Y-m-d', time());
         if ($date >= $currentDate) {
             return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id);
         } else {
             return View::make('backend.schedule.detail')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id);
+        }
+    }
+
+    function createNewSchedule($class_id, $date) {
+        // create a new schedule and fetch the ID
+        $schedule = new \App\Model\Schedule;
+        $schedule->classmodel_id = $class_id;
+        $schedule->date = $date;
+        $schedule->save();
+        $schedule_id = $schedule->id;
+        // form schedule_student data
+        $schedule_students = [];
+        $students = DB::table('course_student')
+                ->join('students', 'students.id', 'course_student.student_id')
+                ->select('students.id', 'students.name')
+                ->where('course_student.classmodel_id', $class_id)
+                ->get();
+        for ($i = 0; $i < $students->count(); $i++) {
+            $schedule_students[$i] = ['schedule_id' => $schedule_id, 'student_id' => $students[$i]->id];
+        }
+        //save schedule_student relationship accordingly 
+        DB::table('schedule_student')->insert($schedule_students);
+    }
+
+    function getAttendanceData($schedule_id, $student_id) {
+        if ($student_id == null) {
+            return DB::table('schedule_student')
+                            ->join('students', 'schedule_student.student_id', 'students.id')
+                            ->select('schedule_student.id', 'schedule_student.student_id', 'students.name', 'schedule_student.attended', 'schedule_student.lunch', 'schedule_student.dinner')
+                            ->where('schedule_student.schedule_id', $schedule_id)
+                            ->get();
+        } else {
+            return DB::table('schedule_student')
+                            ->join('students', 'schedule_student.student_id', 'students.id')
+                            ->select('schedule_student.id', 'schedule_student.student_id', 'students.name', 'schedule_student.attended', 'schedule_student.lunch', 'schedule_student.dinner')
+                            ->where('schedule_student.schedule_id', $schedule_id)
+                            ->where('schedule_student.student_id', $student_id)
+                            ->get();
         }
     }
 

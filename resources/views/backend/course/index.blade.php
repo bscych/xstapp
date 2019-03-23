@@ -61,7 +61,7 @@
                                     </button>
                                     </div>
                                 </form>
-                                  <form action="{{ route('home',$model->id)}}" method="post">
+                                  <form action="{{ route('course.destroy',$model->id)}}" method="post">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger" type="submit">结课</button>

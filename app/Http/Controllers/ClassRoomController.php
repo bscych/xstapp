@@ -11,16 +11,15 @@ use Illuminate\Support\Facades\Session;
 use App\Model\ClassRoom;
 use Illuminate\Support\Facades\DB;
 
-class ClassRoomController extends Controller
-{
+class ClassRoomController extends Controller {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-       return View::make('backend.classroom.index')->with('classrooms',DB::table('class_rooms')->get());
+    public function index() {
+        return View::make('backend.classroom.index')->with('classrooms', DB::table('class_rooms')->get());
     }
 
     /**
@@ -28,9 +27,8 @@ class ClassRoomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-         return View::make('backend.classroom.create');
+    public function create() {
+        return View::make('backend.classroom.create');
     }
 
     /**
@@ -39,8 +37,7 @@ class ClassRoomController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $rules = array(
             'name' => 'required'
         );
@@ -50,13 +47,12 @@ class ClassRoomController extends Controller
         if ($validator->fails()) {
             return Redirect::to('classroom/create')
                             ->withErrors($validator);
-            
         } else {
-         
+
             $classRoom = new ClassRoom;
             $classRoom->name = Input::get('name');
             $classRoom->code = Input::get('code');
-         
+
             $classRoom->save();
 
             Session::flash('message', 'Successfully created nerd!');
@@ -70,8 +66,7 @@ class ClassRoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -81,8 +76,7 @@ class ClassRoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         //
     }
 
@@ -93,8 +87,7 @@ class ClassRoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         //
     }
 
@@ -104,8 +97,8 @@ class ClassRoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         //
     }
+
 }

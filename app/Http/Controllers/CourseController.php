@@ -27,10 +27,10 @@ class CourseController extends Controller {
                 ->join('users', 'courses.teacher_id', '=', 'users.id')
                 ->join('class_rooms', 'courses.classroom_id', '=', 'class_rooms.id')
                 ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constants.name as courseCategoryName', 'users.name as teacher', 'class_rooms.name as classroom')
-                ->where('courses.deleted_at',null)
+                ->where('courses.deleted_at', null)
                 ->get();
-      
-         
+
+
         return View::make('backend.course.index')->with('courses', $courses);
     }
 
@@ -106,7 +106,7 @@ class CourseController extends Controller {
             $claz->block2_start_time = $course->block2_start_time;
             $claz->block2_end_time = $course->block2_end_time;
             $claz->save();
-            
+
             $dates = collect([]);
             //to create schedule
             if ($course->course_category_id == 16) {
@@ -171,42 +171,42 @@ class CourseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        
+
         $course = Course::find($id);
         //delete the course
         $course->delete();
         //delete related classmodel
         DB::table('classmodels')
-            ->where('course_id', $course->id)
-            ->update(['deleted_at' => date("Y-m-d", time())]);
-        
-      return Redirect::to('course')->with('success', 'the Course has been deleted Successfully');
+                ->where('course_id', $course->id)
+                ->update(['deleted_at' => date("Y-m-d", time())]);
+
+        return Redirect::to('course')->with('success', 'the Course has been deleted Successfully');
     }
 
     public function getStudentList($course_id) {
         $students = DB::table('course_student')
                 ->join('students', 'students.id', 'course_student.student_id')
-                ->select('students.id', 'students.name', 'students.gender', 'students.grade', 'students.class_room','course_student.classmodel_id')
+                ->select('students.id', 'students.name', 'students.gender', 'students.grade', 'students.class_room', 'course_student.classmodel_id')
                 ->where('course_student.course_id', '=', $course_id)
-                ->where('students.deleted_at','=',null)
-                ->where('course_student.deleted_at','=',null)
+                ->where('students.deleted_at', '=', null)
+                ->where('course_student.deleted_at', '=', null)
                 ->get();
-        
-           $classes = DB::table('classmodels')
+
+        $classes = DB::table('classmodels')
                 ->join('courses', 'classmodels.course_id', 'courses.id')
                 ->join('class_rooms', 'classmodels.classroom_id', 'class_rooms.id')
                 ->join('users', 'classmodels.teacher_id', 'users.id')
                 ->select('classmodels.id', 'classmodels.name', 'class_rooms.name as classroom_name', 'courses.name as course_name', 'users.name as teacher_name')
                 ->where('course_id', $course_id)
                 ->get();
-        return View::make('backend.course.studentList')->with('students', $students)->with('course_id',$course_id)->with('classes',$classes);
+        return View::make('backend.course.studentList')->with('students', $students)->with('course_id', $course_id)->with('classes', $classes);
     }
 
     public function getClassList($param) {
         $classes = DB::table('');
         return View::make('');
     }
-    
+
     public function getScheduleList($course_id) {
         $dates = collect([]);
         ////means it is a 托管类,will happen every working day
@@ -249,12 +249,12 @@ class CourseController extends Controller {
                 ->get();
         //get classes
         $classes = DB::table('classmodels')
-                ->join('courses','courses.id','classmodels.course_id')
-                ->join('users','users.id','classmodels.teacher_id')
-                ->select('classmodels.name','classmodels.course_id','classmodels.id as classmodel_id','users.name as teacher_id')
+                ->join('courses', 'courses.id', 'classmodels.course_id')
+                ->join('users', 'users.id', 'classmodels.teacher_id')
+                ->select('classmodels.name', 'classmodels.course_id', 'classmodels.id as classmodel_id', 'users.name as teacher_id')
                 ->get();
-        
-        return View::make('backend.student.enroll')->with('courses', $courses)->with('student', Student::find($student_id))->with('classes',$classes);
+
+        return View::make('backend.student.enroll')->with('courses', $courses)->with('student', Student::find($student_id))->with('classes', $classes);
     }
 
 }

@@ -20,46 +20,50 @@ Route::any('/wechat', 'WeChatController@serve');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::resource('/constant', 'ConstantController')->middleware('auth');
 
-Route::resource('/spend', 'SpendController')->middleware('auth');
-Route::get('/refund/{student_id}', 'SpendController@refund')->middleware('auth');
-Route::post('/returnFee', 'SpendController@returnFee')->middleware('auth');
+Route::middleware(['auth'])->group(function () {
 
-Route::resource('/student', 'StudentController')->middleware('auth');
-Route::get('/getMykids','StudentController@getKids')->middleware('auth');
-Route::get('/getKidsCourse/{student_id}','StudentController@getActiveCourses')->middleware('auth');
+    Route::resource('/constant', 'ConstantController');
 
-Route::get('/studentJson', 'StudentController@indexJson')->middleware('auth');
-Route::resource('/coursePlan', 'CoursePlanController')->middleware('auth');
-Route::resource('/course', 'CourseController')->middleware('auth');
-Route::get('/getStudentList/{course_id}', 'CourseController@getStudentList')->middleware('auth');
+    Route::resource('/spend', 'SpendController');
+    Route::get('/refund/{student_id}', 'SpendController@refund');
+    Route::post('/returnFee', 'SpendController@returnFee');
+
+    Route::resource('/student', 'StudentController');
+    Route::get('/getMykids', 'StudentController@getKids');
+    Route::get('/getKidsCourse/{student_id}', 'StudentController@getActiveCourses');
+
+    Route::get('/studentJson', 'StudentController@indexJson');
+    Route::resource('/coursePlan', 'CoursePlanController');
+    Route::resource('/course', 'CourseController');
+    Route::get('/getStudentList/{course_id}', 'CourseController@getStudentList');
 
 
-Route::get('/getCourseList/{student_id}', 'StudentController@getCourseList')->middleware('auth');
-Route::resource('/income', 'IncomeController')->middleware('auth');
-Route::resource('/statistics', 'StatisticsController')->middleware('auth');
-Route::get('/monthList', 'StatisticsController@getMonthList')->middleware('auth');
-Route::get('/detail/{year}/{month}', 'StatisticsController@detail')->middleware('auth');
-Route::get('/detail/{year}/{month}/{table_name}/{category_id}', 'StatisticsController@getDetailByCategory')->middleware('auth');
+    Route::get('/getCourseList/{student_id}', 'StudentController@getCourseList');
+    Route::resource('/income', 'IncomeController');
+    Route::resource('/statistics', 'StatisticsController');
+    Route::get('/monthList', 'StatisticsController@getMonthList');
+    Route::get('/detail/{year}/{month}', 'StatisticsController@detail');
+    Route::get('/detail/{year}/{month}/{table_name}/{category_id}', 'StatisticsController@getDetailByCategory');
 
-Route::get('/getScheduleByMonthClass/{month}/{course_id}', 'StatisticsController@getScheduleByMonthClass')->middleware('auth');
-Route::get('/getScheduleByMonthClass_detail/{month}/{course_id}', 'StatisticsController@getScheduleByMonthClass_detail')->middleware('auth');
+    Route::get('/getScheduleByMonthClass/{month}/{course_id}', 'StatisticsController@getScheduleByMonthClass');
+    Route::get('/getScheduleByMonthClass_detail/{month}/{course_id}', 'StatisticsController@getScheduleByMonthClass_detail');
 
-Route::resource('/class', 'ClassController')->middleware('auth');
-Route::post('/divide', 'ClassController@divide')->middleware('auth');
-Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass')->middleware('auth');
+    Route::resource('/class', 'ClassController');
+    Route::post('/divide', 'ClassController@divide');
+    Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass');
 
-Route::resource('/schedule', 'ScheduleController')->middleware('auth');
-//Route::resource('/classroom', 'ClassRoomController')->middleware('auth');
-Route::resource('/teacher', 'TeacherController')->middleware('auth');
-Route::resource('/enroll', 'EnrollController')->middleware('auth');
+    Route::resource('/schedule', 'ScheduleController');
+    Route::resource('/classroom', 'ClassRoomController');
+    Route::resource('/teacher', 'TeacherController');
+    Route::resource('/enroll', 'EnrollController');
 
-Route::resource('/holiday', 'HolidayController')->middleware('auth');
+    Route::resource('/holiday', 'HolidayController');
 
-Route::get('/scheduleList/{course_id}', 'CourseController@getScheduleList')->middleware('auth');
-Route::get('/scheduleByMonth/{course_id}/{month}', 'CourseController@getScheduleByMonth')->middleware('auth');
-Route::get('/scheduleByMonthIndDay/{course_id}/{month}', 'CourseController@getScheduleByMonthInday')->middleware('auth');
+    Route::get('/scheduleList/{course_id}', 'CourseController@getScheduleList');
+    Route::get('/scheduleByMonth/{course_id}/{month}', 'CourseController@getScheduleByMonth');
+    Route::get('/scheduleByMonthIndDay/{course_id}/{month}', 'CourseController@getScheduleByMonthInday');
+});
 //
 //Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
 //
