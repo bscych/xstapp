@@ -29,6 +29,7 @@
         <link href="{{ asset('css/jquery.iphone.toggle.css')}}" rel='stylesheet'>
         <link href="{{ asset('css/uploadify.css')}}" rel='stylesheet'>
         <link href="{{ asset('css/animate.min.css')}}" rel='stylesheet'>
+
         <!--link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet"-->
         <link rel="stylesheet" type="text/css" media="screen"
               href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
@@ -69,7 +70,7 @@
                         <li class="divider"></li-->
                         <li>  <a href="{{ route('logout') }}"
                                  onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
+                                         document.getElementById('logout-form').submit();">
                                 Logout
                             </a>
 
@@ -105,14 +106,16 @@
                                 <li><a class="ajax-link" href="{{ url('/constant') }}"><i class="glyphicon glyphicon-plus"></i><span> 数据字典</span></a>
                                 </li>
                                 <li><a class="ajax-link" href="{{ url('/student') }}"><i class="glyphicon glyphicon-list-alt"></i><span> 学生管理</span></a>
-                                @endcan
-                                @can('view',App\Model\Course::class)
+                                    @endcan
+                                    @can('view',App\Model\Course::class)
                                 <li><a class="ajax-link" href="{{ url('/course') }}"><i class="glyphicon glyphicon-edit"></i><span> 课程管理</span></a></li>
                                 @endcan
                                 <li><a class="ajax-link" href="{{ url('/class') }}"><i class="glyphicon glyphicon-edit"></i><span> 班级管理</span></a></li>
-                                
-                                
+
+
                                 @can('view',App\Model\Role::class)
+                                <li><a class="ajax-link" href="{{ url('/menuItem') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜品管理</span></a></li>
+                                <li><a class="ajax-link" href="{{ url('/menu') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜单管理</span></a></li>
                                 <li><a class="ajax-link" href="{{ url('/classroom') }}"><i class="glyphicon glyphicon-eye-open"></i><span>教室管理</span></a></li>
 
                                 <li><a class="ajax-link" href="{{ url('/teacher') }}"><i class="glyphicon glyphicon-font"></i><span>教师管理</span></a>
@@ -125,9 +128,9 @@
                                     <ul class="nav nav-pills nav-stacked">
                                         <li><a href="{{ url('/spend') }}">支出管理</a></li>
                                         <li><a href="{{ url('/income') }}">收入管理</a></li>
-                                         @can('view',App\Model\Spend::class)
+                                        @can('view',App\Model\Spend::class)
                                         <li><a href="{{ url('/monthList') }}">报表</a></li>
-                                         @endcan
+                                        @endcan
                                     </ul>
                                 </li>
                                 <li><a class="ajax-link" href="{{ url('/holiday') }}"><i class="glyphicon glyphicon-align-justify"></i><span> 假期管理</span></a></li>
@@ -228,6 +231,8 @@
 
         <script src="{{ asset('js/course.js') }}"></script>
 
+
+
         <script type="text/javascript"
                 src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
         </script>
@@ -244,6 +249,8 @@
                 language: 'CH',
                 pickTime: false
             });
+
+          
         </script>
     </body>
 </html>

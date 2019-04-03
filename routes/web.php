@@ -49,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/getScheduleByMonthClass/{month}/{course_id}', 'StatisticsController@getScheduleByMonthClass');
     Route::get('/getScheduleByMonthClass_detail/{month}/{course_id}', 'StatisticsController@getScheduleByMonthClass_detail');
 
+
+
     Route::resource('/class', 'ClassController');
     Route::post('/divide', 'ClassController@divide');
     Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass');
@@ -59,11 +61,16 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/enroll', 'EnrollController');
 
     Route::resource('/holiday', 'HolidayController');
+    Route::resource('/menuItem', 'MenuItemController'); 
+    Route::resource('/menu', 'MenuController');
+    
 
     Route::get('/scheduleList/{course_id}', 'CourseController@getScheduleList');
     Route::get('/scheduleByMonth/{course_id}/{month}', 'CourseController@getScheduleByMonth');
     Route::get('/scheduleByMonthIndDay/{course_id}/{month}', 'CourseController@getScheduleByMonthInday');
 });
+Route::get('/getClassId', 'ScheduleController@getClassId')->name('studentScheduleList_API');
+Route::get('/getMenu/{date}', 'MenuController@getMenuByDate')->name('getMenu_API');
 //
 //Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
 //

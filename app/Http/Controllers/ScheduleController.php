@@ -15,26 +15,6 @@ class ScheduleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-
-
-//        $dates = collect([]);
-//
-//        $holidays = collect(['2018-3-1', '2018-3-1', '2018-3-1']);
-//
-//
-//        ////means it is a 托管类,will happen every working day
-//        // get start date and the end date
-//        $startdate = date_create('2018-3-1');
-//        $enddate = date_create('2018-3-1');
-//        date_add($enddate, date_interval_create_from_date_string("365 days"));
-//
-//        while ($startdate < $enddate) {
-//            $nextday = date_add($startdate, date_interval_create_from_date_string("1 day"));
-//            $ss = date('w', strtotime($nextday->format('Y-m-d')));
-//            if (($ss != 6) && ($ss != 0)) {
-//                $dates->push(date_create($nextday->format('Y-m-d')));
-//            }
-//        }
         $class_id = $request->input('class_id');
         $class = \App\Model\Classmodel::find($class_id);
         $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
@@ -78,11 +58,18 @@ class ScheduleController extends Controller {
         }
         // there is no existing schedule, create a new schedule
         if ($schedules->count() == 0) {
-            $this->createNewSchedule($class_id, $date);
+           $schedule_id = $this->createNewSchedule($class_id, $date);
         }
         $student_id = $request->input('student_id');
         $attendance = $this->getAttendanceData($schedule_id, $student_id);
+        
         $currentDate = date('Y-m-d', time());
+        
+        if($request->input('agent')=="WX"){
+            //return response()->json($attendance)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+            return $attendance;
+        }
+        
         if ($date >= $currentDate) {
             return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id);
         } else {
@@ -109,6 +96,7 @@ class ScheduleController extends Controller {
         }
         //save schedule_student relationship accordingly 
         DB::table('schedule_student')->insert($schedule_students);
+        return $schedule_id;
     }
 
     function getAttendanceData($schedule_id, $student_id) {
@@ -183,6 +171,16 @@ class ScheduleController extends Controller {
      */
     public function destroy($id) {
         //
+    }
+
+    public function getClassId(Request $request) {
+        $classIds = DB::table('course_student')
+                ->select('classmodel_id')
+                ->where([
+                    ['course_id', '=', $request->input('course_id')],
+                    ['student_id', '=', $request->input('student_id')],])
+                ->get();
+        return response()->json($classIds);
     }
 
 }
