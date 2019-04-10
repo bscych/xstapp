@@ -64,7 +64,11 @@
                             <label class="control-label">财务年份 ： </label>
                             <select class="form-control" name="finance_year"> 
                                @for($i=2018;$i<=date_format(date_create(),"Y");$i++)
+                                @if($i==date_format(date_create(),"Y"))
+                                <option value="{{$i}}" selected ="selected">{{$i}}年</option>
+                                @else
                                 <option value="{{$i}}">{{$i}}年</option>
+                                @endif
                                 @endfor
                             </select>
                            
