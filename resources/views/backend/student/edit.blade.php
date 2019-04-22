@@ -58,7 +58,7 @@
 
                         <div class="form-group{{ $errors->has('parents_info') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">父母信息 ： </label>
-                            <input type="text" class="form-control" name="parents_info" value="{{ $student->parents_info }}">
+                            <input type="text" class="form-control" name="parents_info" value="{{$student->parents_info }}">
                         </div>
 
                     </div>

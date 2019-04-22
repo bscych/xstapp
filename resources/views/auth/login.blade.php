@@ -59,10 +59,6 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('登陆') }}
                                 </button>
-
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('新用户微信登陆') }}
-                                </button>
                             </div>
                         </div>
                     </form>

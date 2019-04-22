@@ -24,9 +24,9 @@ class CourseController extends Controller {
     public function index() {
         $courses = DB::table('courses')
                 ->join('constants', 'courses.course_category_id', '=', 'constants.id')
-                ->join('users', 'courses.teacher_id', '=', 'users.id')
+              //  ->join('users', 'courses.teacher_id', '=', 'users.id')
                 ->join('class_rooms', 'courses.classroom_id', '=', 'class_rooms.id')
-                ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constants.name as courseCategoryName', 'users.name as teacher', 'class_rooms.name as classroom')
+                ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constants.name as courseCategoryName', 'class_rooms.name as classroom')
                 ->where('courses.deleted_at', null)
                 ->get();
 
@@ -161,7 +161,7 @@ class CourseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        //
+       
     }
 
     /**

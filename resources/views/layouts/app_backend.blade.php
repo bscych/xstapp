@@ -37,6 +37,7 @@
               href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css">
         <link rel="stylesheet" type="text/css" media="screen"
               href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css">
+        <link rel="icon" href="{{asset('/img/logo20.png')}}"  mce_href="{{asset('/img/logo20.png')}}" type="image/x-icon">
 
     </head>
     <body>
@@ -111,7 +112,7 @@
                                 <li><a class="ajax-link" href="{{ url('/course') }}"><i class="glyphicon glyphicon-edit"></i><span> 课程管理</span></a></li>
                                 @endcan
                                 <li><a class="ajax-link" href="{{ url('/class') }}"><i class="glyphicon glyphicon-edit"></i><span> 班级管理</span></a></li>
-
+                                <li><a class="ajax-link" href="{{ route('code.index') }}"><i class="glyphicon glyphicon-edit"></i><span> 查询注册码</span></a></li>
 
                                 @can('view',App\Model\Role::class)
                                 <li><a class="ajax-link" href="{{ url('/menuItem') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜品管理</span></a></li>
@@ -174,7 +175,7 @@
             </div>
             <hr>
             <footer class="row">
-                <p class="col-md-9 col-sm-9 col-xs-12 copyright">&copy; <a href="#" target="_blank">普瑞教育</a>2018</p>
+                <p class="col-md-9 col-sm-9 col-xs-12 copyright">&copy; <a href="#" target="_blank">普瑞教育</a>{{date('Y')}}</p>
 
                 <p class="col-md-3 col-sm-3 col-xs-12 powered-by">Powered by: <a
                         href="#">普瑞教育</a></p>
@@ -250,7 +251,7 @@
                 pickTime: false
             });
 
-          
+
         </script>
     </body>
 </html>

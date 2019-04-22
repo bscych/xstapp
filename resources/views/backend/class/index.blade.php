@@ -30,7 +30,6 @@
                         <th>编号</th>
                         <th>课程名称</th>
                         <th>班级名称</th>
-                       
                         <th>责任教师</th>
                         <th>学生人数</th>
                          <th>统计报表</th>
@@ -63,7 +62,7 @@
                         <td>{{ $students->where('classmodel_id',$model->id)->count()}}</td>
                         <td> 
                             @if($students->where('classmodel_id',$model->id)->count()>0)
-                            <a class="btn btn-primary" href="{{ URL::to('getScheduleByMonthClass/' .date('m').'/'. $model->id ) }}">
+                            <a class="btn btn-primary" href="{{ URL::to('getScheduleStatistics/' .date('m').'/'. $model->id ) }}">
                                 <i class="glyphicon glyphicon-edit icon-white"></i>
                                 考勤报表
                             </a>

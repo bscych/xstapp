@@ -30,7 +30,7 @@ class StatisticsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        //
+        return View::make('backend.statistics.create')->with('courses', DB::table('courses')->where([['course_category_id', '=', 12], ['deleted_at', '=', null]])->get());
     }
 
     /**
@@ -40,7 +40,13 @@ class StatisticsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //
+        $id = $request->input('course_id');
+        if ($id != null) {
+            $course = Course::find($id);
+            $in_count = $request->input('in_count');
+            $course->in_count = $request->input('in_count') == "true" ? 1 : 0;
+            $course->save();
+        }
     }
 
     /**
@@ -149,7 +155,7 @@ class StatisticsController extends Controller {
         }
     }
 
-    public function getScheduleByMonthClass($month, $class_id) {
+    function getScheduleByMonthClass($month, $class_id) {
         $dateString = date('Y') . '-' . $month . '-';
         if ($month == 0) {
             $dateString = (date('Y') - 1) . '-12';
@@ -165,10 +171,49 @@ class StatisticsController extends Controller {
                 ->join('schedules', 'schedules.id', 'schedule_student.schedule_id')
                 ->where([['classmodel_id', '=', $class_id], ['date', 'like', $dateString . '%']])
                 ->get();
-        return View::make('backend.schedule.scheduleMonthList')->with('dates', $dates)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month);
+        return collect(['dates'=>$dates,'schedule_students'=>$schedule_students]);
+    }
+
+    public function getScheduleStatistics($month, $class_id) {
+        $courseCategory = DB::table('classmodels')
+                ->join('courses', 'classmodels.course_id', 'courses.id')
+                ->where('classmodels.id', $class_id)
+                ->select('courses.course_category_id')
+                ->first()->course_category_id;
+
+        //if the class belongs to a 托管 course, then call getScheduleByMonthClass function
+        if($courseCategory==12){
+           $data =  $this->getScheduleByMonthClass($month, $class_id);
+            return View::make('backend.schedule.scheduleMonthList')->with('dates',$data->pull('dates') )->with('schedule_students', $data->pull('schedule_students'))->with('class_id', $class_id)->with('month', $month);
+        }else{
+        //if the class belongs to a non 托管 course, then call getScheduleByWholePeriod function
+            $data = $this->getScheduleByWholePeriod($class_id);
+          return View::make('backend.schedule.nonTGScheduleList')->with('students',$data['students'])->with('student_schedules',$data['student_schedules'])->with('course',$data['course']);  
+        }
     }
     
-     public function getScheduleByMonthClass_detail($month, $class_id) {
+    function getScheduleByWholePeriod($class_id) {
+        $students = DB::table('course_student')
+                ->join('students','students.id','course_student.student_id')
+                ->where('course_student.classmodel_id',$class_id)
+                ->select('students.id','students.name')
+                ->get();
+        $student_schedules = DB::table('schedule_student')
+                ->join('schedules','schedules.id','schedule_student.schedule_id')
+                ->where('schedules.classmodel_id',$class_id)
+                ->select('schedule_student.student_id','schedule_student.attended','schedules.date')
+                ->get();
+        
+        $course = DB::table('courses')
+                ->join('classmodels','classmodels.course_id','courses.id')
+                ->where('classmodels.id',$class_id)
+                ->select('courses.name','courses.duration')
+                ->first();
+        
+        return ['students'=>$students,'student_schedules'=>$student_schedules,'course'=>$course];
+    }
+
+    public function getScheduleByMonthClass_detail($month, $class_id) {
         $dateString = date('Y') . '-' . $month . '-';
         if ($month == 0) {
             $dateString = (date('Y') - 1) . '-12';
@@ -194,6 +239,10 @@ class StatisticsController extends Controller {
                         ->get()->unique();
 
         return View::make('backend.schedule.scheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee);
+    }
+
+    public static function getMealStatistics() {
+        
     }
 
 }

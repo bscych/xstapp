@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use \App\Model\Student;
+use Illuminate\Support\Facades\Crypt;
 
 class StudentController extends Controller {
 
@@ -22,11 +23,6 @@ class StudentController extends Controller {
     public function index(Request $request) {
 
         $name = $request->input('name');
-        //  $students = DB::table('students')
-        //        ->join('userinfos','userinfos.id','=','students.userinfo_id')
-        //         //->join('schools','students.school_id','=','schools.id')
-        //         ->select('students.code','userinfos.id','students.comments','students.primaryschool')
-        //         ->get();
         return View::make('backend.student.index')->with('students', Student::where('name', 'like', $name . '%')->paginate(15));
     }
 
@@ -125,11 +121,14 @@ class StudentController extends Controller {
                 ->get();
 
         $courses = $this->getActiveCourseList($id);
-
+//decrypt student's parent's information expecially phone number
+        $dStudent =  Student::find($id);
+        $dStudent->parents_info = Crypt::decryptString($dStudent->parents_info);
+        
 //        $refunds = DB::table('refunds')
 //                ->join('constants');
         return View::make('backend.student.detail')
-                        ->with('student', Student::find($id))
+                        ->with('student',$dStudent)
                         ->with('payments', $payments)
                         ->with('enrolls', $enroll)
                         ->with('refunds', $refunds)
@@ -189,7 +188,7 @@ class StudentController extends Controller {
         $student->health = Input::get('health');
         $student->interest = Input::get('interest');
         $student->home_address = Input::get('home_address');
-        $student->parents_info = Input::get('parents_info');
+        $student->parents_info = Crypt::encryptString(Input::get('parents_info'));
         $student->school = Input::get('school');
         $student->grade = Input::get('grade');
         $student->class_room = Input::get('class_room');

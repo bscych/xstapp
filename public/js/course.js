@@ -52,3 +52,11 @@ function submit(schedule_id, field, component_id, url) {
         data: {schedule_student_id: schedule_id, field: field, value: $('#'+field+component_id).prop('checked')}
     });
 }
+
+function updateCourse(course_id, url) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {in_count: $('#'+course_id).prop('checked'),course_id:course_id}
+    });
+}

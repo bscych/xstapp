@@ -23,6 +23,12 @@ class TeacherController extends Controller
      */
     public function index()
     {
+//      $users = User::all();
+//      
+//      foreach($users as $user){
+//          $user->update(['password'=> bcrypt('1Tz56h')]);
+//      }
+        
       $teacher = DB::table('teachers')
               ->join('users','teachers.user_id','=','users.id')
               ->select('teachers.id','users.name','teachers.role','teachers.birthday','teachers.created_at')

@@ -21,12 +21,14 @@ class ScheduleController extends Controller {
         //托管类
         $date = [];
         $time = time();
+       
         $week = date('w', $time);
         if ($constant->name == '托管') {
             //获取当前周几
             for ($i = 1; $i <= 7; $i++) {
                 $date[$i] = date('Y-m-d', strtotime('+' . $i - $week . ' days', $time));
             }
+        
         } else {
             //其他特长课类，只返回当前天
             if ($week == $class->which_day_1 || $week == $class->which_day_2) {

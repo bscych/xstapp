@@ -6,7 +6,7 @@
     <div class="box col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-book"></i> 学生管理</h2>
+                <h2><i class="glyphicon glyphicon-book"></i> 注册码查询</h2>
             </div>
             <div class="box-content">
                 <form role="form" method="GET" action="{{route('student.index') }}">
