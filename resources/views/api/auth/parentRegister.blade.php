@@ -12,10 +12,8 @@
                 <div class="card-header">{{ __('注册') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('apiAuthRegister') }}">
+                    <form method="POST" action="{{ route('registerParent') }}">
                         @csrf
-                        <input type="hidden" name ="whichForm" value="parent">
-                       
                         <div class="form-group row" >
                             <label for="relationship" class="col-md-4 col-form-label text-md-right">{{ __('与孩子的关系') }}</label>
 
@@ -33,10 +31,15 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="code" class="col-md-4 col-form-label text-md-right">{{ __('验证码（请找前台老师索取）') }}</label>
+                            <label for="code" class="col-md-4 col-form-label text-md-right">{{ __('验证码（请找班任老师索取）') }}</label>
 
                             <div class="col-md-6">
                                 <input id="code" type="text" class="form-control" name="code" required>
+                                  @if ($errors->has('code'))
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $errors->first('code') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
 

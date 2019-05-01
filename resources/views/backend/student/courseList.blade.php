@@ -1,7 +1,6 @@
-@extends('layouts.app_backend')
+@extends('layouts.wechat')
 
 @section('content')
-
 
 <div class="row">
     <div class="box col-md-12">
@@ -9,9 +8,9 @@
             <div class="box-header well" data-original-title="">
                 <h2><i class="glyphicon glyphicon-book"></i> {{$student->name.'的课程列表'}}</h2>
             </div>
-   
+
             <div class="box-content">
-                <table class="table table-striped table-bordered bootstrap-datatable responsive">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>课程名称</th>
@@ -24,11 +23,9 @@
                             <td>{{$course->name}} </td>
 
                             <td class="center">
-                                @if($course->course_category_id==12)
-                                <a class="btn btn-primary" href="{{ URL::to('getKidsCourse/'.$student->id) }}">
-                                    <i class="fa fa-btn fa-user"></i>考勤管理
+                                <a class="btn btn-primary" href="{{ route('schedule.index',['class_id'=>$course->classmodel_id,'student_id'=>$student->id,'AGENT'=>'WECHAT'])}}">
+                                    <i class="fa fa-btn fa-user"></i>订餐
                                 </a>
-                                @endif
                             </td>
 
                         </tr>
@@ -42,5 +39,6 @@
     <!--/span-->
 
 </div><!--/row-->
+
 
 @endsection

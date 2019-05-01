@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
 use App\Model\Constant;
+use Illuminate\Support\Facades\App;
 
 class ScheduleController extends Controller {
 
@@ -16,19 +17,20 @@ class ScheduleController extends Controller {
      */
     public function index(Request $request) {
         $class_id = $request->input('class_id');
+        $student_id = $request->input('student_id');
+        $agent = $request->input('AGENT');
         $class = \App\Model\Classmodel::find($class_id);
         $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
         //托管类
         $date = [];
         $time = time();
-       
+
         $week = date('w', $time);
         if ($constant->name == '托管') {
             //获取当前周几
-            for ($i = 1; $i <= 7; $i++) {
+            for ($i = 0; $i <= 7; $i++) {
                 $date[$i] = date('Y-m-d', strtotime('+' . $i - $week . ' days', $time));
             }
-        
         } else {
             //其他特长课类，只返回当前天
             if ($week == $class->which_day_1 || $week == $class->which_day_2) {
@@ -36,7 +38,11 @@ class ScheduleController extends Controller {
             }
         }
         $holidays = \App\Model\Holiday::where('type', 0)->get();
-        return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays);
+        if ($agent == 'WECHAT') {
+            return View::make('backend.schedule.wechatIndex')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('student_id', $student_id);
+        } else {
+            return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays);
+        }
     }
 
     /**
@@ -46,6 +52,7 @@ class ScheduleController extends Controller {
      */
     public function create(Request $request) {
         $class_id = $request->input('class_id');
+        $student_id = $request->input('student_id');
         $date = $request->input('date');
         // get the schedule 
         $schedules = DB::table('schedules')->where([
@@ -60,22 +67,26 @@ class ScheduleController extends Controller {
         }
         // there is no existing schedule, create a new schedule
         if ($schedules->count() == 0) {
-           $schedule_id = $this->createNewSchedule($class_id, $date);
+            $schedule_id = $this->createNewSchedule($class_id, $date);
         }
-        $student_id = $request->input('student_id');
         $attendance = $this->getAttendanceData($schedule_id, $student_id);
-        
+
         $currentDate = date('Y-m-d', time());
-        
-        if($request->input('agent')=="WX"){
-            //return response()->json($attendance)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
-            return $attendance;
-        }
-        
+
         if ($date >= $currentDate) {
-            return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id);
+            if ($request->input('AGENT') == 'WECHAT') {
+                $menu = App::call('App\Http\Controllers\MenuController@getMenuByDate', [$date]);
+                return View::make('backend.schedule.wechatCreate')->with('student', $attendance)->with('date', $date)->with('class_id', $class_id)->with('menu', $menu)->with('meal_flags',$this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
+            } else {
+               return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags',$this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
+            }
         } else {
-            return View::make('backend.schedule.detail')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id);
+            if ($request->input('AGENT') == 'WECHAT') {
+                $menu = App::call('App\Http\Controllers\MenuController@getMenuByDate', [$date]);
+                return View::make('backend.schedule.wechatDetail')->with('student', $attendance)->with('date', $date)->with('class_id', $class_id)->with('menu', $menu)->with('meal_flags',$this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
+            } else {
+                return View::make('backend.schedule.detail')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags',$this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
+            }
         }
     }
 
@@ -114,8 +125,28 @@ class ScheduleController extends Controller {
                             ->select('schedule_student.id', 'schedule_student.student_id', 'students.name', 'schedule_student.attended', 'schedule_student.lunch', 'schedule_student.dinner')
                             ->where('schedule_student.schedule_id', $schedule_id)
                             ->where('schedule_student.student_id', $student_id)
-                            ->get();
+                            ->first();
         }
+    }
+
+    function getMealFlags($class_id) {
+        return DB::table('courses')
+                        ->join('classmodels', 'classmodels.course_id', 'courses.id')
+                        ->where('classmodels.id', $class_id)
+                        ->select('courses.has_dinner', 'courses.has_lunch')
+                        ->first();
+    }
+    /*
+     * 目前幼小衔接班里有报幼儿园托管的同学，所i有幼儿园托管需要订晚餐，凡是在幼儿园托管在籍的在此列
+     */
+    
+    
+    function getDinnerExceptions() {
+        return DB::table('course_student')
+                ->join('courses','courses.id','course_student.course_id')
+                ->where([['courses.course_category_id',12],['courses.deleted_at',null],['course_student.classmodel_id','<>',null],['courses.name','like','%幼儿园托管%'],['classmodel_id','<>',null]])
+                ->select('course_student.student_id')
+                ->get();
     }
 
     /**

@@ -30,10 +30,13 @@
                             <td>{{$student->name}} </td>
                             <td>
                                 <label class="checkbox-inline"><input type="checkbox" disabled=""  {{$student->attended==1?'checked="checked"':''}} >出勤</label>
+                                @if($meal_flags->has_lunch==1)
                                 <label class="checkbox-inline"><input type="checkbox" disabled=""  {{$student->lunch==1?'checked="checked"':''}} >午餐</label>
+                                @endif
+                                @if( $exception->contains('student_id',$student->student_id) or $meal_flags->has_dinner==1)
                                 <label class="checkbox-inline"><input type="checkbox" disabled="" {{$student->dinner==1?'checked="checked"':''}} >晚餐</label>
+                                @endif
                             </td>
-
                         </tr>
                         @endforeach
                     </tbody>
@@ -42,8 +45,8 @@
         </div>
     </div>
     <script>
-  
-</script>
+
+    </script>
     <!--/span-->
 
 </div><!--/row-->

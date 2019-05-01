@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Model\Teacher;
+
 use App\User;
-class TeacherController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -29,11 +29,12 @@ class TeacherController extends Controller
 //          $user->update(['password'=> bcrypt('1Tz56h')]);
 //      }
         
-      $teacher = DB::table('teachers')
-              ->join('users','teachers.user_id','=','users.id')
-              ->select('teachers.id','users.name','teachers.role','teachers.birthday','teachers.created_at')
-              ->orderBy('teachers.created_at', 'desc')->paginate(10);
-        return View::make('backend.teacher.index')->with('teachers',$teacher);
+      $users = DB::table('users')
+              ->leftJoin('model_has_roles','model_has_roles.model_id','users.id')
+              ->leftJoin('roles','roles.id','model_has_roles.role_id')
+              ->select('users.id','users.name','roles.name as role')
+              ->orderBy('users.created_at', 'desc')->paginate(10);
+        return View::make('backend.user.index')->with('users',$users);
     }
 
     /**
@@ -43,7 +44,7 @@ class TeacherController extends Controller
      */
     public function create()
     {
-        return View::make('backend.teacher.create');
+        return View::make('backend.user.create')->with('roles', \Spatie\Permission\Models\Role::all());
     }
 
     /**
@@ -63,7 +64,7 @@ class TeacherController extends Controller
 
         // process the login
         if ($validator->fails()) {
-            return Redirect::to('teacher/create')
+            return Redirect::to('user/create')
                             ->withErrors($validator);
             
         } else {
@@ -73,15 +74,10 @@ class TeacherController extends Controller
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
         ]);
-           $teacher = new Teacher;
-              $teacher->user_id = $user->id;
-              $teacher->birthday = $request->input('birthday');
-              $teacher->role = $request->input('role');
-              $teacher->operator = Auth::id();
-              $teacher->save();
+            $user->assignRole($request->input('role'));
 
             Session::flash('message', 'Successfully created nerd!');
-            return Redirect::to('teacher');
+            return Redirect::to('user');
         }
     }
 
@@ -104,7 +100,13 @@ class TeacherController extends Controller
      */
     public function edit($id)
     {
-        //
+      $user = DB::table('users')
+              ->leftJoin('model_has_roles','model_has_roles.model_id','users.id')
+              ->leftJoin('roles','roles.id','model_has_roles.role_id')
+              ->where('users.id',$id)
+              ->select('users.id','users.name','roles.name as role','roles.id as role_id' )
+              ->get()->first();
+      return view('backend.user.edit')->with('user',$user)->with('roles', \Spatie\Permission\Models\Role::all());
     }
 
     /**
@@ -116,7 +118,15 @@ class TeacherController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+        $user->name = $request->input('name');
+        $roles = $user->getRoleNames();
+        foreach($roles as $role){
+            $user->removeRole($role);
+        }
+         $user->assignRole($request->input('role'));
+         
+         return $this->index();
     }
 
     /**

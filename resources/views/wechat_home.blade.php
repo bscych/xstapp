@@ -2,23 +2,16 @@
 
 @section('content')
 <div class=" row">
+@foreach($students as $student)
     <div class="col-md-3 col-sm-3 col-xs-6">
-        <a data-toggle="tooltip" title="6 new members." class="well top-block" href="#">
-            <i class="glyphicon glyphicon-user blue"></i>
-
-            <div>班级管理</div>
-        </a>
-    </div>
-
-    <div class="col-md-3 col-sm-3 col-xs-6">
-        <a data-toggle="tooltip" title="4 new pro members." class="well top-block" href="#">
+        <a class="well top-block" href="{{route('wechat.kidsClass',['student_id'=>$student->id])}}">
             <i class="glyphicon glyphicon-star green"></i>
 
-            <div>我的孩子</div>
+            <div>{{$student->name}}</div>
            
         </a>
     </div>
-
+@endforeach
 </div>
 
 

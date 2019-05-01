@@ -27,28 +27,26 @@ class StudentController extends Controller {
     }
 
     function getActiveCourseList($studentId) {
-        $courses = DB::table('courses')
-                ->join('course_student', 'course_student.course_id', 'courses.id')
-                ->select('courses.id', 'courses.name', 'courses.start_date', 'courses.course_category_id')
-                ->where('student_id', '=', $studentId)
-                ->where('course_student.deleted_at', '=', null)
-                ->where('courses.deleted_at', '=', null)
+        $claz = DB::table('course_student')
+                ->join('courses','course_student.course_id', 'courses.id')
+                ->where([['courses.id','<>',20003],['courses.course_category_id',12],['course_student.student_id', '=', $studentId],['course_student.deleted_at', '=', null],['courses.deleted_at', '=', null],['course_student.classmodel_id', '<>', null]])
+                ->select('course_student.classmodel_id','courses.id', 'courses.name', 'courses.start_date', 'courses.course_category_id')
                 ->get();
-        return $courses;
+        return $claz;
     }
 
-    function getStudentByWeChatOpenId($openId) {
+    function getStudentByUserId($user_id) {
         $students = DB::table('students')
                 ->join('parent_student', 'parent_student.student_id', 'students.id')
                 ->join('users', 'users.id', 'parent_student.user_id')
                 ->select('students.name', 'students.id')
-                ->where('users.openid', '=', $openId)
+                ->where([['users.id', $user_id],['students.deleted_at',null]])
                 ->get();
         return $students;
     }
 
     public function getKids() {
-        return View::make('backend.student.kidList')->with('students', $this->getStudentByWeChatOpenId('o1t8s04Nx8AkS81YUNsySVKnVGvM'));
+        return View::make('backend.student.kidList')->with('students', $this->getStudentByUserId(Auth::user()->id));
     }
 
     public function getActiveCourses($student_id) {
@@ -122,13 +120,13 @@ class StudentController extends Controller {
 
         $courses = $this->getActiveCourseList($id);
 //decrypt student's parent's information expecially phone number
-        $dStudent =  Student::find($id);
+        $dStudent = Student::find($id);
         $dStudent->parents_info = Crypt::decryptString($dStudent->parents_info);
-        
+
 //        $refunds = DB::table('refunds')
 //                ->join('constants');
         return View::make('backend.student.detail')
-                        ->with('student',$dStudent)
+                        ->with('student', $dStudent)
                         ->with('payments', $payments)
                         ->with('enrolls', $enroll)
                         ->with('refunds', $refunds)

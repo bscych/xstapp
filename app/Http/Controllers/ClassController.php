@@ -64,7 +64,14 @@ class ClassController extends Controller {
         }
         $course_students = DB::table('course_student')->get();
 
-        return View::make('backend.class.index')->with('classes', $classes)->with('students', $course_students)->with('course_id', $request->input('course_id'));
+       if ($request->input('AGENT')=='WECHAT'){
+           return View::make('backend.class.wechatIndex')->with('classes', $classes)->with('students', $course_students)->with('course_id', $request->input('course_id'));
+       }
+       else{
+            return View::make('backend.class.index')->with('classes', $classes)->with('students', $course_students)->with('course_id', $request->input('course_id'));
+       }
+        
+       
     }
 
     /**
@@ -74,9 +81,10 @@ class ClassController extends Controller {
      */
     public function create(Request $request) {
         $course = Course::find($request->input('course_id'));
-        $teachers = DB::table('teachers')
-                ->join('users', 'teachers.user_id', '=', 'users.id')
-                ->select('users.name as name', 'users.id as id')
+        $teachers = DB::table('users')
+                ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+                ->where('model_has_roles.role_id',2)
+                ->select('users.name', 'users.id')
                 ->get();
         return View::make('backend.class.create')
                         ->with('course', $course)
@@ -209,7 +217,7 @@ class ClassController extends Controller {
         DB::table('course_student')
                 ->where([['course_id', '=', $course_id], ['student_id', '=', $student_id]])
                 // ->update(['classmodel_id' => 0 , 'deleted_at' =>date('Y-m-d h:i:s', time())]);
-                ->update(['classmodel_id' => 0]);
+                ->update(['classmodel_id' => null]);
 
         return Redirect::to('getStudentList/' . $course_id);
     }

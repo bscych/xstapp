@@ -12,9 +12,8 @@
                 <div class="card-header">{{ __('请使用您的账号登陆') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('apiAuthRegister') }}">
+                    <form method="POST" action="{{ route('registerTeacher') }}">
                         @csrf
-                        <input type="hidden"  name ="whichForm" value="teacher">
                             <div class="form-group row">
                                 <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('登陆电子邮箱') }}</label>
 

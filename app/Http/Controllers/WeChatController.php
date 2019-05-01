@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class WeChatController extends Controller {
 
@@ -26,8 +28,8 @@ class WeChatController extends Controller {
         $app->server->push(function($message) {
             Log::info('---get in event--');
             Log::info($message);
-            
-            
+
+
             if ($message['MsgType'] == 'text') {
                 Log::info('detect event');
                 $user_openid = $message['FromUserName'];
@@ -49,7 +51,12 @@ class WeChatController extends Controller {
      * @return wechat homepage
      */
     public function index() {
-        return View::make("wechat_home");
+        $user = Auth::user();
+        if ($user->hasRole('parent')) {
+          return redirect()->route('getMyKids');
+        } else {
+            return redirect()->route('home');
+        }
     }
 
     /**

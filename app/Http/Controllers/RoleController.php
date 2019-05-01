@@ -2,27 +2,23 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
-use App\Model\Constant;
-use App\Model\ConstantValue;
+use Illuminate\Support\Facades\Redirect;
 
-class ConstantController extends Controller
-{
+class RoleController extends Controller {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    
-    public function index(Request $request)
-    {
-        return View::make('backend.constant.index')->with('constants',Constant::where('parent_id','=',$request->input('id'))->get())->with('id',$request->input('id'));
+    public function index() {
+        return View::make('backend.role.index')->with('roles', Role::all());
     }
 
     /**
@@ -30,9 +26,8 @@ class ConstantController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
-    {
-        return View::make('backend.constant.create')->with('id',$request->input('id'));
+    public function create() {
+        return view('backend.role.create');
     }
 
     /**
@@ -41,28 +36,20 @@ class ConstantController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-         $rules = array(
-            'name' => 'required|string|max:255'
+    public function store(Request $request) {
+        $rules = array(
+            'name' => 'required|string|unique:roles'
         );
         $validator = Validator::make(Input::all(), $rules);
 
         // process the login
         if ($validator->fails()) {
-            return Redirect::to('constant/create?id='.$request->input('id'))
+            return Redirect::to('role/create')
                             ->withErrors($validator);
-            
         } else {
-         
-            $constant = new Constant;
-            $constant->name = Input::get('name');
-            $constant->parent_id = Input::get('parent_id');
-            $constant->label_name = ' ';
-            $constant->save();
-
+            Role::create(['name' => $request->input('name')]);
             Session::flash('message', 'Successfully created nerd!');
-            return Redirect::to('constant?id='.$request->input('parent_id'));
+            return Redirect::to('role');
         }
     }
 
@@ -72,9 +59,23 @@ class ConstantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show($id) {
+        $role = Role::findById($id);
+       
+        return view('backend.role.detail')->with('permissions', \Spatie\Permission\Models\Permission::all())->with('role_id',$id)->with('role',$role);
+    }
+
+    public function updateRolePermission(Request $request) {
+        $role = Role::findById($request->input('role_id'));
+        $permission = \Spatie\Permission\Models\Permission::findById($request->input('permission_id'));
+        if($request->input('selected')=='true'){
+            //assign the permission to role 
+            $role->givePermissionTo($permission);
+        }else{
+            //remove the permission from the role 
+            $role->revokePermissionTo($permission);
+        }
+        
     }
 
     /**
@@ -83,8 +84,7 @@ class ConstantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         //
     }
 
@@ -95,8 +95,7 @@ class ConstantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         //
     }
 
@@ -106,8 +105,8 @@ class ConstantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         //
     }
+
 }

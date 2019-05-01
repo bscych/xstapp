@@ -6,10 +6,10 @@
     <div class="box col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class=""></i> 新增老师</h2>
+                <h2><i class=""></i> 新增用户</h2>
             </div>
             <div class="box-content">
-                <form role="form" method="POST" action="{{ url('/teacher') }}">
+                <form role="form" method="POST" action="{{ url('/user') }}">
 
                     @csrf
 
@@ -27,16 +27,6 @@
                         </div>
                     </div>
                     
-                    <div id="datetimepicker" class="input-append date form-group row {{ $errors->has('birthday') ? ' has-error' : '' }}">
-                        <label class="col-md-4 control-label">{{ __('生日') }}</label>
-                        <div class ='col-md-6' >
-                        <input type="text" class="form-control " name="birthday" value="{{ old('birthday') }}"></input>
-                        <span class="add-on">
-                            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                        </span>
-                        </div>
-                    </div>
-
                     <div class="form-group row">
                         <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('电子邮箱') }}</label>
 
@@ -79,10 +69,9 @@
                         <div class="col-md-6">
                             
                             <select id="role" class="form-control" name="role" required>
-                                <option value="teacher">老师</option>
-                                <option value="sales">销售</option>
-                                <option value="account">会计</option>
-                                <option value="supervisor">主管</option>
+                               @foreach($roles as $role)
+                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

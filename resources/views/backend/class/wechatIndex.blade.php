@@ -1,4 +1,4 @@
-@extends('layouts.app_backend')
+@extends('layouts.wechat')
 
 @section('content')
 
@@ -16,21 +16,18 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="fa fa-btn fa-user"></i>创建新班级
                     </button>
-                </form>
             </div>
-
+            </form>
             @endif
         </div>
+
+
         <div class="box-content">
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered bootstrap-datatable responsive">
                 <thead>
                     <tr>
                         <th>操作</th>
-                        <th class="hidden-sm hidden-xs">编号</th>
-                        <th>课程名称</th>
-                        <th class="hidden-sm hidden-xs">班级名称</th>
-                        <th class="hidden-sm hidden-xs">责任教师</th>
-                        <th class="hidden-sm hidden-xs">学生人数</th>
+                        <th>班级名称</th>
                         <th>统计报表</th>
                     </tr>
                 </thead>
@@ -42,21 +39,18 @@
                                 @csrf
                                 @if($students->where('classmodel_id',$model->id)->count()>0)
                                 <input type="text" class="form-control hidden" name="class_id" value="{{$model->id}}">  
+                                <input type="text" class="form-control hidden" name="AGENT" value="WECHAT">  
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-btn fa-user"></i>考勤管理
                                 </button>
                                 @endif
                             </form>
-                        </td>
-                        <td class="hidden-sm hidden-xs">{{$model->id}} </td>
-                        <td >{{ $model->course_name }}</td>
-                        <td class="hidden-sm hidden-xs">{{ $model->name }}</td>
 
-                        <td class="hidden-sm hidden-xs">{{ $model->teacher_name }}</td>
-                        <td class="hidden-sm hidden-xs">{{ $students->where('classmodel_id',$model->id)->count()}}</td>
+                        </td>
+                        <td>{{  $model->course_name."-".$model->name }}</td>
                         <td> 
                             @if($students->where('classmodel_id',$model->id)->count()>0)
-                            <a class="btn btn-primary" href="{{ route('getScheduleStatistics',['month'=>date('m'),'class_id'=>$model->id])}}">
+                            <a class="btn btn-primary" href="{{ route('getScheduleStatistics',['month'=>date('m'),'class_id'=>$model->id,'AGENT'=>'WECHAT']) }}">
                                 <i class="glyphicon glyphicon-edit icon-white"></i>
                                 考勤报表
                             </a>

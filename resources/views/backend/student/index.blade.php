@@ -52,7 +52,7 @@
                             <td><a  href="{{ URL::to('student/'. $model->id) }}">{{ $model->name }}</a></td>
                             <td>{{ $model->gender }}</td>
                             <td>{{ $model->birthday }}</td>
-                            <td>{{ $model->school}}</td>
+                            <td class="hidden-sm">{{ $model->school}}</td>
 
                             <td class="center">
                                 <a class="btn btn-info" href="{{ URL::to('student/' . $model->id . '/edit') }}">

@@ -101,56 +101,43 @@
                             <ul class="nav nav-pills nav-stacked main-menu">
                                 <li class="nav-header">菜单</li>
 
-                                @can('view',App\Model\Role::class)
+                                @hasanyrole('admin|superAdmin')
                                 <!--li><a class="ajax-link" href="{{ url('/constantName') }}"><i class="glyphicon glyphicon-plus"></i><span> 数据字典管理</span></a>
                                 </li-->
                                 <li><a class="ajax-link" href="{{ url('/constant') }}"><i class="glyphicon glyphicon-plus"></i><span> 数据字典</span></a>
                                 </li>
                                 <li><a class="ajax-link" href="{{ url('/student') }}"><i class="glyphicon glyphicon-list-alt"></i><span> 学生管理</span></a>
-                                    @endcan
-                                    @can('view',App\Model\Course::class)
-                                <li><a class="ajax-link" href="{{ url('/course') }}"><i class="glyphicon glyphicon-edit"></i><span> 课程管理</span></a></li>
-                                @endcan
-                                <li><a class="ajax-link" href="{{ url('/class') }}"><i class="glyphicon glyphicon-edit"></i><span> 班级管理</span></a></li>
-                                <li><a class="ajax-link" href="{{ route('code.index') }}"><i class="glyphicon glyphicon-edit"></i><span> 查询注册码</span></a></li>
-
-                                @can('view',App\Model\Role::class)
                                 <li><a class="ajax-link" href="{{ url('/menuItem') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜品管理</span></a></li>
                                 <li><a class="ajax-link" href="{{ url('/menu') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜单管理</span></a></li>
                                 <li><a class="ajax-link" href="{{ url('/classroom') }}"><i class="glyphicon glyphicon-eye-open"></i><span>教室管理</span></a></li>
 
-                                <li><a class="ajax-link" href="{{ url('/teacher') }}"><i class="glyphicon glyphicon-font"></i><span>教师管理</span></a>
+                                <li><a class="ajax-link" href="{{ url('/user') }}"><i class="glyphicon glyphicon-font"></i><span>用户管理</span></a>
                                 </li>
-                                <!--li><a class="ajax-link" href="{{ url('/user') }}"><i class="glyphicon glyphicon-picture"></i><span>用户管理</span></a>
-                                </li-->
-
+                                <li><a class="ajax-link" href="{{ url('/role') }}"><i class="glyphicon glyphicon-picture"></i><span>角色管理</span></a>
+                                </li>
                                 <li class="accordion">
                                     <a href="#"><i class="glyphicon glyphicon-plus"></i><span> 财务管理</span></a>
                                     <ul class="nav nav-pills nav-stacked">
                                         <li><a href="{{ url('/spend') }}">支出管理</a></li>
                                         <li><a href="{{ url('/income') }}">收入管理</a></li>
-                                        @can('view',App\Model\Spend::class)
+                                        @role('superAdmin')
                                         <li><a href="{{ url('/monthList') }}">报表</a></li>
-                                        @endcan
+                                        @endrole 
                                     </ul>
                                 </li>
                                 <li><a class="ajax-link" href="{{ url('/holiday') }}"><i class="glyphicon glyphicon-align-justify"></i><span> 假期管理</span></a></li>
-                                @endcan
+                                @endhasanyrole
 
+                                 @hasanyrole('admin|superAdmin|supervisor')
+                                 <li><a class="ajax-link" href="{{ url('/course') }}"><i class="glyphicon glyphicon-edit"></i><span> 课程管理</span></a></li>
+                                 @endhasanyrole
+                                 
+                                @hasanyrole('admin|teacher|supervisor')
+                               
+                                <li><a class="ajax-link" href="{{ url('/class') }}"><i class="glyphicon glyphicon-edit"></i><span> 班级管理</span></a></li>
+                                <li><a class="ajax-link" href="{{ route('code.index') }}"><i class="glyphicon glyphicon-edit"></i><span> 查询注册码</span></a></li>
+                                @endhasanyrole
 
-                                <!--li class="nav-header hidden-md">Sample Section</li>
-                                
-                                <li><a class="ajax-link" href="calendar.html"><i class="glyphicon glyphicon-calendar"></i><span> Calendar</span></a>
-                                </li>
-                                <li><a class="ajax-link" href="grid.html"><i
-                                            class="glyphicon glyphicon-th"></i><span> Grid</span></a></li>
-                                <li><a href="tour.html"><i class="glyphicon glyphicon-globe"></i><span> Tour</span></a></li>
-                                <li><a class="ajax-link" href="icon.html"><i
-                                            class="glyphicon glyphicon-star"></i><span> Icons</span></a></li>
-                                <li><a href="error.html"><i class="glyphicon glyphicon-ban-circle"></i><span> Error Page</span></a>
-                                </li>
-                                <li><a href="login.html"><i class="glyphicon glyphicon-lock"></i><span> Login Page</span></a>
-                                </li-->
                             </ul>
 
                         </div>

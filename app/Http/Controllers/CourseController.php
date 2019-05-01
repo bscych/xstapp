@@ -40,9 +40,10 @@ class CourseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        $teachers = DB::table('teachers')
-                ->join('users', 'teachers.user_id', '=', 'users.id')
-                ->select('users.name as name', 'users.id as id')
+        $teachers = DB::table('users')
+                ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+                ->where('model_has_roles.role_id',2)
+                ->select('users.name', 'users.id')
                 ->get();
         return View::make('backend.course.create')->with('courseCategories', Constant::where('parent_id', 2)->orderBy('created_at', 'desc')->get())->with('teachers', $teachers)->with('classrooms', ClassRoom::all());
     }

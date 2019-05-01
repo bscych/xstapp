@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Session;
 use App\Model\Course;
 use App\Model\Classmodel;
 use Illuminate\Support\Facades\DB;
@@ -96,7 +92,7 @@ class StatisticsController extends Controller {
                         ->with('totalSpend', DB::table('spends')->get()->sum('amount'));
     }
 
-    public function detail($year, $month) {
+    public function detail($year,$month) {
         $spends = DB::table('spends')
                 ->join('constants', 'constants.id', 'spends.name_of_account')
                 ->select('constants.name as name_of_account', 'spends.amount', 'spends.which_day')->where('spends.finance_year', $year)->where('spends.finance_month', $month)->orderBy('spends.which_day', 'desc')
@@ -174,7 +170,9 @@ class StatisticsController extends Controller {
         return collect(['dates'=>$dates,'schedule_students'=>$schedule_students]);
     }
 
-    public function getScheduleStatistics($month, $class_id) {
+    public function getScheduleStatistics(Request $request) {
+        $month = $request->input('month');
+        $class_id =  $request->input('class_id');
         $courseCategory = DB::table('classmodels')
                 ->join('courses', 'classmodels.course_id', 'courses.id')
                 ->where('classmodels.id', $class_id)
@@ -203,7 +201,6 @@ class StatisticsController extends Controller {
                 ->where('schedules.classmodel_id',$class_id)
                 ->select('schedule_student.student_id','schedule_student.attended','schedules.date')
                 ->get();
-        
         $course = DB::table('courses')
                 ->join('classmodels','classmodels.course_id','courses.id')
                 ->where('classmodels.id',$class_id)
