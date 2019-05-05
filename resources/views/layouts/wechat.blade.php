@@ -110,6 +110,7 @@
                                 <li><a class="ajax-link" href="{{ route('showParentRegisterForm') }}"><i class="glyphicon glyphicon-edit"></i><span>添加孩子</span></a></li>
                                 <li><a class="ajax-link" href="{{ route('wechat.home') }}"><i class="glyphicon glyphicon-edit"></i><span>订餐</span></a></li>
                                 <li><a class="ajax-link" href="{{ route('menu.thisweek') }}"><i class="glyphicon glyphicon-edit"></i><span>本周餐谱</span></a></li>
+                                 <li><a class="ajax-link" href="{{ route('menu.thisweek') }}"><i class="glyphicon glyphicon-edit"></i><span>本月餐谱</span></a></li>
                                 @endhasrole
 
                             </ul>

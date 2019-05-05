@@ -13,11 +13,35 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/brandStory', function () {
-    return view('frontend.dashboard.index');
-});
+    return view('frontend.brandStory')->with('text','网站在建，敬请期待！');
+})->name('brandStory');
+Route::get('/concept', function () {
+    return view('frontend.concept')->with('text','网站在建，敬请期待！');
+})->name('concept');
+
+Route::get('/show', function () {
+    return view('frontend.show')->with('text','网站在建，敬请期待！');
+})->name('show');
+Route::get('/trust', function () {
+    return view('frontend.trust')->with('text','网站在建，敬请期待！');
+})->name('trust');
+Route::get('/connect', function () {
+    return view('frontend.connect')->with('text','网站在建，敬请期待！');
+})->name('connect');
+Route::get('/training', function () {
+    return view('frontend.training')->with('text','网站在建，敬请期待！');
+})->name('training');
+
+Route::get('/contact', function () {
+    return view('frontend.contact')->with('text','网站在建，敬请期待！');
+})->name('contact');
+
+Route::get('/how/to/find/myKids', function () {
+    return view('frontend.helpers.howto');
+})->name('howto');
 
 //微信路由
 Route::any('/wechat', 'WeChatController@serve');
@@ -54,8 +78,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/getScheduleStatistics', 'StatisticsController@getScheduleStatistics')->name('getScheduleStatistics');
     Route::get('/getScheduleByMonthClass_detail/{month}/{course_id}', 'StatisticsController@getScheduleByMonthClass_detail');
 
-
-
     Route::resource('/class', 'ClassController');
     Route::post('/divide', 'ClassController@divide');
     Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass');
@@ -77,6 +99,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/getClassId', 'ScheduleController@getClassId')->name('studentScheduleList_API');
     Route::get('/getMenu/{date}', 'MenuController@getMenuByDate')->name('getMenu_API');
     Route::get('/get/thisweek/menu', 'MenuController@getThisweekMenu')->name('menu.thisweek');
+
+    Route::get('/wechat/pay', 'WeChatController@pay')->name('wechat.pay');
+   // Route::get('/delete', 'WeChatController@menu_destroy');
+   // Route::get('/add', 'WeChatController@menu_add');
+    //Route::get('/current', 'WeChatController@menu_current');
 });
 
 
@@ -92,6 +119,7 @@ Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
 
     Route::get('api/auth/login', 'WeChatSelfAuthController@autoLogin')->name('apiAuthLogin');
 
+    Route::any('wechat_payment_notify', 'WeChatController@notify');
 });
 
 

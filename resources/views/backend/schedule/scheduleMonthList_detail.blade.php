@@ -6,7 +6,7 @@
     <div class="box col-md-12">
    
             
-                <h3><a href="{{ URL::to('getScheduleByMonthClass/' .($month-1).'/'. $class_id ) }}"><<上月({{$month-1==0?12:$month-1}}月）考勤    </a></h3>
+                <h3><a href="{{ URL::to('getScheduleByMonthClass_detail/' .($month-1).'/'. $class_id ) }}"><<上月({{$month-1==0?12:$month-1}}月）考勤    </a></h3>
                 <h3><i class="glyphicon glyphicon-th"></i>{{$month.'月'}}考勤</h3>
               
           

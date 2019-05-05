@@ -146,27 +146,25 @@ class MenuController extends Controller {
             $menu->afternoon_snack = json_decode($menu->afternoon_snack, JSON_UNESCAPED_UNICODE);
             $menu->lunch = json_decode($menu->lunch, JSON_UNESCAPED_UNICODE);
             $menu->dinner = json_decode($menu->dinner, JSON_UNESCAPED_UNICODE);
+            return $menu;
         }
         // return response()->json($menu)->setEncodingOptions(JSON_UNESCAPED_UNICODE);
-        return $menu;
+        return null;
     }
 
     public function getThisweekMenu() {
         $today = Carbon::now();
-
         $day = $today->dayOfWeekIso;
-        $weekDays = collect();
-        for ($i = 1; $i < 8; $i++) {
+        $menus = collect();
+        for ($i = 1; $i <= 8; $i++) {
             $today = Carbon::now();
             if ($i - $day == 0) {
-                $weekDays->push($today->toDateString());
+                $menus->push( $this->getMenuByDate($today->toDateString()));
             } else {
-                 ;
-                 $weekDays->push($today->addDay($i - $day)->toDateString());
+                $menus->push($this->getMenuByDate($today->addDay($i - $day)->toDateString()));
             }
-           
         }
-        return view('backend.menu.wechatIndex')->with('menus', Menu::all()->sortByDesc("which_day"))->with('days', $weekDays);
+        return view('backend.menu.wechatIndex')->with('menus', $menus);
     }
 
 }

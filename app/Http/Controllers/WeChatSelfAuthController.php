@@ -105,7 +105,8 @@ class WeChatSelfAuthController extends Controller {
         } else {
             //create a new user or find existing user
             $user = $this->getUserByOpenid();
-            $user->assignRole('parent');
+           
+            $user->hasRole('parent')?:$user->assignRole('parent');
             //log in the new user
             Auth::loginUsingId($user->id);
             //update parent_student table, setup user and student relationship

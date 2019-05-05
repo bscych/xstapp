@@ -7,51 +7,53 @@
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
                 <h2><i class="glyphicon glyphicon-book"></i> 本周菜谱</h2>
-                @foreach($days as $day)
-                {{$day}}<br>
-                @endforeach
+              
             </div>
-          
-
-
+         
             <div class="box-content">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>日期</th>
 
-                            <th>上午间点</th>
+                            <!--th>上午间点</th-->
                             <th>午餐</th>
-                            <th>下午间点</th>
+                            <!--th>下午间点</th-->
                             <th>晚餐</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($menus as $menu)
+                       @if($menu!=null)
                         <tr>
                             <td>{{ $menu->which_day}}</td>
+                            @if(false)
                             <td>
-                                @foreach(collect(json_decode($menu->morning_snack,JSON_UNESCAPED_UNICODE)) as $meal)
+                                @foreach($menu->morning_snack as $meal)
                                 {{$meal}}<br>
                                 @endforeach
                             </td>
+                            @endif
                             <td>
-                                @foreach(collect(json_decode($menu->lunch,JSON_UNESCAPED_UNICODE)) as $meal)
+                                @foreach($menu->lunch as $meal)
                                 {{$meal}}<br>
                                 @endforeach
                             </td>
+                            @if(false)
                             <td>
-                                @foreach(collect(json_decode($menu->afternoon_snack,JSON_UNESCAPED_UNICODE)) as $meal)
+                                @foreach($menu->afternoon_snack as $meal)
                                 {{ $meal}}<br>
                                 @endforeach
                             </td>
+                            @endif
                             <td>
-                                @foreach(collect(json_decode($menu->dinner,JSON_UNESCAPED_UNICODE)) as $meal)
+                                @foreach($menu->dinner as $meal)
                                 {{ $meal}}<br>
                                 @endforeach
                             </td>
                           
                         </tr>
+                        @endif
                         @endforeach
                     </tbody>
                 </table>
