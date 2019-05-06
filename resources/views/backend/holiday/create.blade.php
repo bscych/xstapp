@@ -6,24 +6,24 @@
     <div class="box col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class=""></i> 创建新假期</h2>
+                <h2><i class=""></i> 创建新特殊日期</h2>
             </div>
             <div class="box-content">
                 <form role="form" method="POST" action="{{ url('/holiday') }}">
 
                     {!! csrf_field() !!}
                     <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                        <label class="control-label">假期名称 ： </label>
+                        <label class="control-label">日期名称 ： </label>
                         <input type="text" class="form-control" name="name" value="{{ old('name') }}">   
 
                     </div>
 
                     <div class="form-group{{ $errors->has('type') ? ' has-error' : '' }}">
-                        <label class="control-label">假期类型 ： </label>
+                        <label class="control-label">日期类型 ： </label>
                         
                          <select class="form-control" name="type" >
-                                <option value="0">公休假日</option>
-                                <option value="1">周末串休</option>
+                                <option value="0">假期</option>
+                                <option value="1">工作日</option>
                             </select>
 
                     </div>

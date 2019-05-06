@@ -30,7 +30,7 @@
                         @foreach ($holidays as $model)
                         <tr>
                             <td>{{$model->id}} </td>
-                            <td>{{ $model->type==0?'公休假日':'周末串休' }}</td>
+                            <td>{{ $model->type==0?'假日':'工作日' }}</td>
                             <td>{{ $model->name }}</td>
                             <td>{{ $model->which_day }}</td>
                             <!--td class="center">

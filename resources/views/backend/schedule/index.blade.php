@@ -22,16 +22,24 @@
                         <input type="text" class="form-control hidden" name="date" value="{{$date}}">  
                         <div class="col-md-3">
                             <h5 class="">周{{date_format(date_create($date),'w')==0?'日':date_format(date_create($date),'w')}}</h5>
-                          
-                            @if($holidays->where('which_day',$date)->count()==1)
+
+                            @if($holidays->where('which_day',$date)->count()==1 or date_format(date_create($date),'w')==0 or date_format(date_create($date),'w')==6)
+
+                            @if($workingdays->where('which_day',$date)->count()==1)
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
+                            </button>
+                            @else
                             <a class="btn btn-primary disabled">
                                 <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
                             </a>
+                            @endif
+
                             @else
                             <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
+                                <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
                             </button>
-                          @endif
+                            @endif
                     </form>
                 </div>
                 @endforeach

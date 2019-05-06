@@ -27,6 +27,12 @@
                                     <i class="fa fa-btn fa-user"></i>订餐
                                 </a>
                             </td>
+                            
+                            <td class="center">
+                                <a class="btn btn-primary" href="{{ route('schedule.index',['class_id'=>$course->classmodel_id,'student_id'=>$student->id,'AGENT'=>'WECHAT'])}}">
+                                    <i class="fa fa-btn fa-user"></i>订餐记录
+                                </a>
+                            </td>
 
                         </tr>
                         @endforeach

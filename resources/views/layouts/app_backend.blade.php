@@ -125,7 +125,8 @@
                                         @endrole 
                                     </ul>
                                 </li>
-                                <li><a class="ajax-link" href="{{ url('/holiday') }}"><i class="glyphicon glyphicon-align-justify"></i><span> 假期管理</span></a></li>
+                                <li><a class="ajax-link" href="{{ url('/holiday') }}"><i class="glyphicon glyphicon-align-justify"></i><span> 特殊日期管理</span></a></li>
+                               
                                 @endhasanyrole
 
                                  @hasanyrole('admin|superAdmin|supervisor')
