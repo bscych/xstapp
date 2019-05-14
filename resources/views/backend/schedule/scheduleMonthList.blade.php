@@ -1,4 +1,4 @@
-@extends('layouts.app_backend')
+@extends('layouts.wechat')
 
 @section('content')
 
@@ -39,7 +39,7 @@
 
                     </tbody>
                 </table>
-                <p><a href="{{URL::to('getScheduleByMonthClass_detail/' .$month.'/'. $class_id )}}">本月明细</a></p>
+                <p><a href="{{route('get_schedule_detail_by_month',['month'=>$month,'class_id'=>$class_id ])}}">本月明细</a></p>
             </div>      
        
     </div>

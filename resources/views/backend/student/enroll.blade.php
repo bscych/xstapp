@@ -1,4 +1,4 @@
-@extends('layouts.app_backend')
+@extends('layouts.wechat')
 
 @section('content')
 

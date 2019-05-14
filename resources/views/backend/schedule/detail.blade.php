@@ -1,4 +1,4 @@
-@extends('layouts.app_backend')
+@extends('layouts.wechat')
 
 @section('content')
 
@@ -16,7 +16,7 @@
 
 
             <div class="box-content">
-                <table class="table table-striped table-bordered bootstrap-datatable responsive">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>姓名</th>

@@ -49,9 +49,9 @@
                     <span>{{ config('app.name', 'Laravel') }}</span></a>
 
                 <!-- user dropdown starts -->
-                
-                    <p class="pull-right navbar-brand">{{Auth::user()==null?'':Auth::user()->name.'您好！' }}</p>
-                
+
+                <p class="pull-right navbar-brand">{{Auth::user()==null?'':Auth::user()->name.'您好！' }}</p>
+
 
             </div>
         </div>
@@ -94,23 +94,23 @@
                                         @endrole 
                                     </ul>
                                 </li>
-                                <li><a class="ajax-link" href="{{ url('/holiday') }}"><i class="glyphicon glyphicon-align-justify"></i><span> 假期管理</span></a></li>
+                                <li><a class="ajax-link" href="{{ url('/holiday') }}"><i class="glyphicon glyphicon-align-justify"></i><span> 特殊日期管理</span></a></li>
                                 @endhasanyrole
 
-                                 @hasanyrole('admin|superAdmin|supervisor')
-                                 <li><a class="ajax-link" href="{{ url('/course') }}"><i class="glyphicon glyphicon-edit"></i><span> 课程管理</span></a></li>
-                                 @endhasanyrole
-                                 
                                 @hasanyrole('admin|teacher|supervisor')
-                               
                                 <li><a class="ajax-link" href="{{ url('/class') }}"><i class="glyphicon glyphicon-edit"></i><span> 班级管理</span></a></li>
                                 <li><a class="ajax-link" href="{{ route('code.index') }}"><i class="glyphicon glyphicon-edit"></i><span> 查询注册码</span></a></li>
                                 @endhasanyrole
+
+                                @hasanyrole('admin|superAdmin|supervisor')
+                                <li><a class="ajax-link" href="{{ url('/course') }}"><i class="glyphicon glyphicon-edit"></i><span> 课程管理</span></a></li>
+                                @endhasanyrole
+
+                                <li><a class="ajax-link" href="{{ route('menu.thisweek') }}"><i class="glyphicon glyphicon-edit"></i><span>本周餐谱</span></a></li>
+                             
                                 @hasrole('parent')
                                 <li><a class="ajax-link" href="{{ route('showParentRegisterForm') }}"><i class="glyphicon glyphicon-edit"></i><span>添加孩子</span></a></li>
                                 <li><a class="ajax-link" href="{{ route('wechat.home') }}"><i class="glyphicon glyphicon-edit"></i><span>订餐</span></a></li>
-                                <li><a class="ajax-link" href="{{ route('menu.thisweek') }}"><i class="glyphicon glyphicon-edit"></i><span>本周餐谱</span></a></li>
-                                 <li><a class="ajax-link" href="{{ route('menu.thisweek') }}"><i class="glyphicon glyphicon-edit"></i><span>本月餐谱</span></a></li>
                                 @endhasrole
 
                             </ul>
@@ -126,11 +126,14 @@
                 </div>
             </div>
             <hr>
-            <footer class="row">
-                <p class="col-md-9 col-sm-9 col-xs-12 copyright">&copy; <a href="#" target="_blank">普瑞教育</a>{{date('Y')}}</p>
+            <footer class="footer mt-auto py-3">
+                <div class="container">
+                    <p class="col-md-9 col-sm-9 col-xs-12 copyright">&copy; <a href="#" target="_blank">普瑞教育</a>{{date('Y')}}</p>
 
-                <p class="col-md-3 col-sm-3 col-xs-12 powered-by">Powered by: <a
-                        href="#">普瑞教育</a></p>
+                    <p class="col-md-3 col-sm-3 col-xs-12 powered-by">Powered by: <a
+                            href="#">普瑞教育</a></p>
+                </div>
+
             </footer>
         </div>
         <!-- Scripts -->

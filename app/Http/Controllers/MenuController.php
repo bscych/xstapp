@@ -156,12 +156,16 @@ class MenuController extends Controller {
         $today = Carbon::now();
         $day = $today->dayOfWeekIso;
         $menus = collect();
-        for ($i = 1; $i <= 8; $i++) {
+        for ($i = 1; $i <= 7; $i++) {
             $today = Carbon::now();
             if ($i - $day == 0) {
-                $menus->push( $this->getMenuByDate($today->toDateString()));
+                $menus->push($this->getMenuByDate($today->toDateString()));
             } else {
-                $menus->push($this->getMenuByDate($today->addDay($i - $day)->toDateString()));
+                if ($day == 7) {
+                    $menus->push($this->getMenuByDate($today->addDay($i - $day + 7)->toDateString()));
+                } else {
+                    $menus->push($this->getMenuByDate($today->addDay($i - $day)->toDateString()));
+                }
             }
         }
         return view('backend.menu.wechatIndex')->with('menus', $menus);

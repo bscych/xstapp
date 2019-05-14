@@ -34,14 +34,14 @@
                         <tr>
                             @if($meal_flags->has_lunch==1)
                             <td>
-                                @foreach($menu->dinner as $menu_item)
+                                @foreach($menu->lunch as $menu_item)
                                 <span>{{$menu_item}} </span><br>
                                 @endforeach
                             </td>
                             @endif
                             @if( $exception->contains('student_id',$student->student_id) or $meal_flags->has_dinner==1)
                             <td>
-                                @foreach($menu->lunch as $menu_item)
+                                @foreach($menu->dinner as $menu_item)
                                 <span>{{$menu_item}}</span><br>
                                 @endforeach
                             </td>

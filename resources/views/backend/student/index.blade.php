@@ -1,4 +1,4 @@
-@extends('layouts.app_backend')
+@extends('layouts.wechat')
 
 @section('content')
 
@@ -6,7 +6,7 @@
     <div class="box col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-book"></i> 注册码查询</h2>
+                <h2><i class="glyphicon glyphicon-book"></i> 查询学生</h2>
             </div>
             <div class="box-content">
                 <form role="form" method="GET" action="{{route('student.index') }}">
@@ -37,22 +37,22 @@
                 <table class="table table-striped table-bordered bootstrap-datatable responsive">
                     <thead>
                         <tr>
-                            <th>学号</th>
+                            <th class="hidden-sm hidden-xs">学号</th>
                             <th>姓名</th>
-                            <th>性别</th>
-                            <th>生日</th>
-                            <th>就读学校</th>
+                            <th class="hidden-sm hidden-xs">性别</th>
+                            <th class="hidden-sm hidden-xs">生日</th>
+                            <th class="hidden-sm hidden-xs">就读学校</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($students as $model)
                         <tr>
-                            <td>{{$model->id}} </td>
+                            <td class="hidden-sm hidden-xs">{{$model->id}} </td>
                             <td><a  href="{{ URL::to('student/'. $model->id) }}">{{ $model->name }}</a></td>
-                            <td>{{ $model->gender }}</td>
-                            <td>{{ $model->birthday }}</td>
-                            <td class="hidden-sm">{{ $model->school}}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->gender }}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->birthday }}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->school}}</td>
 
                             <td class="center">
                                 <a class="btn btn-info" href="{{ URL::to('student/' . $model->id . '/edit') }}">

@@ -1,4 +1,4 @@
-@extends('layouts.app_backend')
+@extends('layouts.wechat')
 
 @section('content')
 
@@ -19,11 +19,11 @@
                 <table class="table table-striped table-bordered bootstrap-datatable responsive">
                     <thead>
                         <tr>
-                            <th>编号</th>
+                            <th class="hidden-sm hidden-xs">编号</th>
                             <th>课程名称</th>
-                            <th>课程类别</th>
+                            <th class="hidden-sm hidden-xs">课程类别</th>
                           
-                            <th>课程总时长</th>
+                            <th class="hidden-sm hidden-xs">课程总时长</th>
                            
                             <th>操作</th>
                         </tr>
@@ -31,11 +31,11 @@
                     <tbody>
                         @foreach ($courses as $model)
                         <tr>
-                            <td>{{$model->id}} </td>
+                            <td class="hidden-sm hidden-xs">{{$model->id}} </td>
                             <td>{{ $model->name }}</td>
-                            <td>{{ $model->courseCategoryName }}</td>
+                            <td class="hidden-sm hidden-xs"> {{ $model->courseCategoryName }}</td>
                           
-                            <td>{{ $model->duration }}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->duration }}</td>
                            
 
                             <td class="center">

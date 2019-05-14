@@ -1,4 +1,4 @@
-@extends('layouts.app_backend')
+@extends('layouts.wechat')
 
 @section('content')
 
@@ -19,28 +19,28 @@
                 <table class="table table-striped table-bordered bootstrap-datatable responsive">
                     <thead>
                         <tr>
-                            <th>编号</th>
+                            <th class="hidden-sm hidden-xs">编号</th>
                             <th>收入名称</th>
-                            <th>缴费人</th>
-                            <th>收入金额</th>
-                            <th>收入方式</th>
-                            <th>发生时间</th>
+                            <th class="hidden-sm hidden-xs">缴费人</th>
+                            <th class="hidden-sm hidden-xs">收入金额</th>
+                            <th class="hidden-sm hidden-xs">收入方式</th>
+                            <th class="hidden-sm hidden-xs">发生时间</th>
                             <th>备注</th>
-                            <th>录入人</th>
+                            <th class="hidden-sm hidden-xs">录入人</th>
                             <!--th>操作</th-->
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($incomes as $model)
                         <tr>
-                            <td>{{$model->id}} </td>
+                            <td class="hidden-sm hidden-xs">{{$model->id}} </td>
                             <td>{{ $model->name }}</td>
-                            <td>{{ $model->paid_by }}</td>
-                            <td>{{ $model->amount}}</td>
-                            <td>{{ $model->payment_method}}</td>
-                            <td>{{ $model->created_at}}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->paid_by }}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->amount}}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->payment_method}}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->created_at}}</td>
                              <td>{{ $model->comment}}</td>
-                            <td>{{ $model->operator}}</td>
+                            <td class="hidden-sm hidden-xs">{{ $model->operator}}</td>
                            
                             <!--td class="center">
                                 <a class="btn btn-info" href="{{ URL::to('spend/' . $model->id . '/edit') }}">

@@ -68,6 +68,8 @@ class ScheduleController extends Controller {
         // there is no existing schedule, create a new schedule
         if ($schedules->count() == 0) {
             $schedule_id = $this->createNewSchedule($class_id, $date);
+            //为每天都吃饭的学生报餐
+            $this->autoBookMeal($schedule_id, $class_id);
         }
         $attendance = $this->getAttendanceData($schedule_id, $student_id);
 
@@ -230,6 +232,20 @@ class ScheduleController extends Controller {
                     ['student_id', '=', $request->input('student_id')],])
                 ->get();
         return response()->json($classIds);
+    }
+
+    function autoBookMeal($schedule_id, $class_id) {
+        $students = DB::table('auto_book_meal_students')
+                ->where('class_id', $class_id)
+                ->get();
+        if ($students->count() > 0) {
+            foreach ($students as $student) {
+                DB::table('schedule_student')
+                        ->where('schedule_id', $schedule_id)
+                        ->where('student_id', $student->student_id)
+                        ->update(['attended' => $student->attended, 'lunch' => $student->lunch, 'dinner' => $student->dinner]);
+            }
+        }
     }
 
 }

@@ -10,7 +10,7 @@
             </div>
 
             <div class="box-content">
-                <table class="table table-striped table-bordered bootstrap-datatable responsive">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>班级名称</th>

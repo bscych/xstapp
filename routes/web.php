@@ -76,7 +76,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/detail/{year}/{month}/{table_name}/{category_id}', 'StatisticsController@getDetailByCategory');
 
     Route::get('/getScheduleStatistics', 'StatisticsController@getScheduleStatistics')->name('getScheduleStatistics');
-    Route::get('/getScheduleByMonthClass_detail/{month}/{course_id}', 'StatisticsController@getScheduleByMonthClass_detail');
+    Route::get('/getScheduleByMonthClass_detail', 'StatisticsController@getScheduleByMonthClass_detail')->name('get_schedule_detail_by_month');
 
     Route::resource('/class', 'ClassController');
     Route::post('/divide', 'ClassController@divide');

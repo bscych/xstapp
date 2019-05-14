@@ -4,10 +4,7 @@
 
 <div class="row">
     <div class="box col-md-12">
-   
-            
-                <h3><a href="{{ URL::to('getScheduleByMonthClass_detail/' .($month-1).'/'. $class_id ) }}"><<上月({{$month-1==0?12:$month-1}}月）考勤    </a></h3>
-                <h3><i class="glyphicon glyphicon-th"></i>{{$month.'月'}}考勤</h3>
+                <h3><i class="glyphicon glyphicon-th"></i>{{$month.'月'}}订餐详情</h3>
               
           
             <div class="box-content">
@@ -17,13 +14,13 @@
                         <tr>
                             <th rowspan="2"class="text-center"><small>日期</small></th>
                             @foreach($students as $student)
-                            <th colspan="3" class="text-center"><small>{{$student->name}}</small></th>
+                            <th colspan="2" class="text-center"><small>{{$student->name}}</small></th>
                             @endforeach
 
                         </tr>
                         <tr>
                             @foreach($students as $student)
-                            <th class="text-center"><small>出勤</small></th>
+                            <!--th class="text-center"><small>出勤</small></th-->
                             <th class="text-center"><small>午餐</small></th>
                             <th class="text-center"><small>晚餐</small></th>
                             @endforeach
@@ -37,9 +34,9 @@
                             @foreach($students as $student)
 
                             @if ($schedule_students->where('student_id','=',$student->id)->where('schedule_id','=',$whichday->id)->first()!=null)
-                            <td class="text-center">
+                            <!--td class="text-center">
                                 {{$schedule_students->where('student_id','=',$student->id)->where('schedule_id','=',$whichday->id)->first()->attended==0?'':$schedule_students->where('student_id','=',$student->id)->where('schedule_id','=',$whichday->id)->first()->attended}}
-                            </td>
+                            </td-->
                             <td class="text-center">
                                 {{$schedule_students->where('student_id','=',$student->id)->where('schedule_id','=',$whichday->id)->first()->lunch==0?'':$schedule_students->where('student_id','=',$student->id)->where('schedule_id','=',$whichday->id)->first()->lunch}}
                             </td>

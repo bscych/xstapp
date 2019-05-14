@@ -46,12 +46,12 @@ class StudentController extends Controller {
     }
 
     public function getKids() {
-        return View::make('backend.student.kidList')->with('students', $this->getStudentByUserId(Auth::user()->id));
+        return View::make('backend.student.wechatKidList')->with('students', $this->getStudentByUserId(Auth::user()->id));
     }
 
     public function getActiveCourses($student_id) {
 
-        return View::make('backend.student.courseList')->with('courses', $this->getActiveCourseList($student_id))->with('student', Student::find($student_id));
+        return View::make('backend.student.wechatCourseList')->with('courses', $this->getActiveCourseList($student_id))->with('student', Student::find($student_id));
     }
 
     /**
