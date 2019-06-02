@@ -4,9 +4,11 @@
 
 <div class="row">
     <div class="box col-md-12">
-                <h3><i class="glyphicon glyphicon-th"></i>{{$month.'月'}}订餐详情</h3>
-              
-          
+    <h5 class="text-center">
+        @if($lastMonth != $month)
+        <small class="pull-left"> <a class="text-left" href="{{route('get_schedule_detail_by_month',['month'=>$lastMonth,'class_id'=>$class_id,'student_id'=>$student_id,'AGENT'=>'WECHAT'])}}">上月订餐详情</a> </small>  
+        @endif
+        {{$month.'月'}}订餐详情</h5>
             <div class="box-content">
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -57,7 +59,7 @@
                         <tr>
                             <td class="text-center"><small>合计</small></td>
                             @foreach($students as $student)
-                            <td class="text-center">{{$schedule_students->where('student_id','=',$student->id)->where('attended','=',1)->count()}}<small>天</small></td>
+                            <!--td class="text-center">{{$schedule_students->where('student_id','=',$student->id)->where('attended','=',1)->count()}}<small>天</small></td-->
                             <td colspan="2" class="text-center">{{$schedule_students->where('student_id','=',$student->id)->where('lunch','=',1)->count()+$schedule_students->where('student_id','=',$student->id)->where('dinner','=',1)->count()}}<small> 餐</small></td>
                             @endforeach
 
@@ -75,7 +77,7 @@
 
             </div>      
      
-    </div>
+
 </div>
 </div>
 @endsection

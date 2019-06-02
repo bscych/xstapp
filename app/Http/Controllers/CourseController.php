@@ -175,7 +175,7 @@ class CourseController extends Controller {
 
         $course = Course::find($id);
         //delete the course
-        $course->delete();
+       $course->delete();
         //delete related classmodel
         DB::table('classmodels')
                 ->where('course_id', $course->id)

@@ -25,28 +25,25 @@
 
                             @if($holidays->where('which_day',$date)->count()==1 or date_format(date_create($date),'w')==0 or date_format(date_create($date),'w')==6)
 
-                            @if($workingdays->where('which_day',$date)->count()==1)
+                            @if($workingdays->where('which_day',$date)->count()==1 or !$isTG)
                             <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
+                                {{date_format(date_create($date),'Y-m-d')}}
                             </button>
                             @else
                             <a class="btn btn-primary disabled">
-                                <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
+                                {{date_format(date_create($date),'Y-m-d')}}
                             </a>
                             @endif
 
                             @else
                             <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
+                                {{date_format(date_create($date),'Y-m-d')}}
                             </button>
                             @endif
                     </form>
                 </div>
                 @endforeach
             </div>         
-
-
-
         </div>
     </div>
 </div>

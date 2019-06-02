@@ -213,6 +213,9 @@ class StatisticsController extends Controller {
     public function getScheduleByMonthClass_detail(Request $request) {
         $class_id = $request->input('class_id');
         $month = $request->input('month');
+        if(count(str_split($month))<2){
+            $month = '0'.$month;
+        }
         $student_id = $request->input('student_id');
         $dateString = date('Y') . '-' . $month . '-';
         if ($month == 0) {
@@ -225,13 +228,9 @@ class StatisticsController extends Controller {
         foreach ($dates as $schedule) {
             $schedules->push($schedule->id);
         }
-
         $snack_fee = Course::find(Classmodel::find($class_id)->course_id)->snack_fee;
-
         $students = null;
-
         $schedule_students = null;
-
         if ($student_id != null and $request->input('AGENT') == 'WECHAT') {
             $students = DB::table('schedule_student')
                             ->join('students', 'students.id', 'schedule_student.student_id')
@@ -239,19 +238,21 @@ class StatisticsController extends Controller {
                             ->whereIn('schedule_student.schedule_id', $schedules)
                             ->where('schedule_student.student_id', $student_id)
                             ->get()->unique();
-
             $schedule_students = DB::table('schedule_student')
                     ->join('schedules', 'schedules.id', 'schedule_student.schedule_id')
                     ->where([['schedule_student.student_id', '=', $student_id], ['schedules.classmodel_id', '=', $class_id], ['schedules.date', 'like', $dateString . '%']])
                     ->get();
-            return View::make('backend.schedule.wechatStudentScheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee);
+            $lastMonth = \Illuminate\Support\Carbon::now()->subMonth()->month;
+            if($lastMonth-10>=0){
+                $lastMonth = '0'.$lastMonth;
+            }
+            return View::make('backend.schedule.wechatStudentScheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee)->with('lastMonth',$lastMonth)->with('student_id',$student_id);
         } else {
             $students = DB::table('schedule_student')
                             ->join('students', 'students.id', 'schedule_student.student_id')
                             ->select('students.id', 'students.name')
                             ->whereIn('schedule_id', $schedules)
                             ->get()->unique();
-
             $schedule_students = DB::table('schedule_student')
                     ->join('schedules', 'schedules.id', 'schedule_student.schedule_id')
                     ->where([['schedules.classmodel_id', '=', $class_id], ['schedules.date', 'like', $dateString . '%']])

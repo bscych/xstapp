@@ -40,7 +40,7 @@ class StudentController extends Controller {
                 ->join('parent_student', 'parent_student.student_id', 'students.id')
                 ->join('users', 'users.id', 'parent_student.user_id')
                 ->select('students.name', 'students.id')
-                ->where([['users.id', $user_id],['students.deleted_at',null]])
+                ->where([['users.id', $user_id],['students.deleted_at',null],['parent_student.deleted_at',null]])
                 ->get();
         return $students;
     }

@@ -21,7 +21,7 @@ class MenuController extends Controller {
      */
     public function index() {
 
-        return View::make('backend.menu.index')->with('menus', Menu::all()->sortByDesc("which_day"));
+        return View::make('backend.menu.index')->with('menus', Menu::orderBy('created_at', 'desc')->take(7)->get());
     }
 
     function getMenuByDateMeal($which_day, $meal_id) {
@@ -153,7 +153,7 @@ class MenuController extends Controller {
     }
 
     public function getThisweekMenu() {
-        $today = Carbon::now();
+         $today = Carbon::now();
         $day = $today->dayOfWeekIso;
         $menus = collect();
         for ($i = 1; $i <= 7; $i++) {
@@ -168,7 +168,7 @@ class MenuController extends Controller {
                 }
             }
         }
-        return view('backend.menu.wechatIndex')->with('menus', $menus);
+        return view('backend.menu.wechatIndex')->with('menus', $menu);
     }
 
 }
