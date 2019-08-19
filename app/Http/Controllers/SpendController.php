@@ -42,7 +42,9 @@ class SpendController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        return View::make('backend.finance.spend.create')->with('paymentMethods', Constant::where('parent_id', 1)->get())->with('name_of_accounts', Constant::where('parent_id', 3)->get());
+        return View::make('backend.finance.spend.create')
+               // ->with('paymentMethods', Constant::where('parent_id', 1)->get())
+                ->with('name_of_accounts', Constant::where('parent_id', 3)->get());
     }
 
     /**
@@ -56,7 +58,7 @@ class SpendController extends Controller {
             'name' => 'required',
             'name_of_account' => 'required',
             'amount' => 'required',
-            'payment_method' => 'required',
+           // 'payment_method' => 'required',
             'finance_year' => 'required',
             'finance_month' => 'required'
         );
@@ -72,7 +74,7 @@ class SpendController extends Controller {
             $spend->name = Input::get('name');
             $spend->name_of_account = Input::get('name_of_account');
             $spend->amount = Input::get('amount');
-            $spend->payment_method = Input::get('payment_method');
+            $spend->payment_method = Input::get('payment_method')==null?'微信':Input::get('payment_method');
             $spend->which_day = Input::get('which_day')==null?date("Y-m-d", time()):Input::get('which_day');
             $spend->finance_year = Input::get('finance_year');
             $spend->finance_month = Input::get('finance_month');
@@ -165,7 +167,7 @@ class SpendController extends Controller {
     public function refund( $student_id) {
         $student = Student::find($student_id);
         $course_students = DB::table('course_student')
-                ->where('student_id',$student_id)
+                ->where([['student_id',$student_id],['deleted_at',null]])
                 ->get();
         return View::make('backend.finance.refund.create')
                 ->with('student',$student)

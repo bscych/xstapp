@@ -29,8 +29,6 @@ class CourseController extends Controller {
                 ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constants.name as courseCategoryName', 'class_rooms.name as classroom')
                 ->where('courses.deleted_at', null)
                 ->get();
-
-
         return View::make('backend.course.index')->with('courses', $courses);
     }
 
@@ -96,6 +94,7 @@ class CourseController extends Controller {
 
             $claz = new \App\Model\Classmodel;
             $claz->course_id = $course->id;
+            $claz->name = $course->name.'一班';
             $claz->teacher_id = $course->teacher_id;
             $claz->classroom_id = $course->classroom_id;
             $claz->start_date = $course->start_date;
@@ -149,8 +148,7 @@ class CourseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        $model = Course::find($id);
-
+        //$model = Course::find($id);
         //return view('course.edit',['model'=>$model,'courseCategories'=>CourseCategory::all()]);
     }
 
@@ -204,8 +202,8 @@ class CourseController extends Controller {
     }
 
     public function getClassList($param) {
-        $classes = DB::table('');
-        return View::make('');
+      //  $classes = DB::table('');
+     //   return View::make('');
     }
 
     public function getScheduleList($course_id) {

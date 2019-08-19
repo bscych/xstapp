@@ -34,14 +34,7 @@
 
                         </div>
 
-                        <div class="form-group{{ $errors->has('payment_method') ? ' has-error' : '' }} col-md-3">
-                            <label class="control-label">支付方式 ： </label>
-                            <select class="form-control" name="payment_method" >
-                                @foreach($paymentMethods as $paymentMethod)
-                                <option value="{{$paymentMethod->name}}">{{$paymentMethod->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                      
                         <div id="datetimepicker" class="input-append date form-group{{ $errors->has('which_day') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">发生日期 ： </label>
                             <input type="date" class="form-control" name="which_day" value="{{ old('which_day') }}"></input>

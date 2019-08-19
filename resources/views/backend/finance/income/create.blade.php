@@ -16,10 +16,10 @@
                     <div class="form-group col-md-3">
                         <label class="control-label">学生名字： </label>
                         <label class="control-label">{{ $student->name}} </label><br>
-                        <label class="control-label">所在学校： </label>
+                        <!--label class="control-label">所在学校： </label>
                         <label class="control-label">{{ $student->school}} </label><br>
                         <label class="control-label">父母信息： </label>
-                        <label class="control-label">{{ $student->parents_info}} </label>
+                        <label class="control-label">{{ $student->parents_info}} </label-->
                     </div>
                     </div>
                     <!--div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
@@ -51,14 +51,14 @@
                         </div>
                        
 
-                        <div class="form-group{{ $errors->has('payment_method') ? ' has-error' : '' }} col-md-3">
+                        <!--div class="form-group{{ $errors->has('payment_method') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">支付方式 ： </label>
                             <select class="form-control" name="payment_method" >
                                 @foreach($paymentMethods as $paymentMethod)
                                 <option value="{{$paymentMethod->name}}">{{$paymentMethod->name}}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div-->
                         
                          <div id="datetimepicker" class="input-append date form-group{{ $errors->has('finance_year') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">财务年份 ： </label>

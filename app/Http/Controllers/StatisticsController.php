@@ -228,7 +228,9 @@ class StatisticsController extends Controller {
         foreach ($dates as $schedule) {
             $schedules->push($schedule->id);
         }
-        $snack_fee = Course::find(Classmodel::find($class_id)->course_id)->snack_fee;
+        $course = Course::find(Classmodel::find($class_id)->course_id);
+        $snack_fee = $course->snack_fee;
+      //  $snack_fee = Course::find(Classmodel::find($class_id)->course_id)->snack_fee;
         $students = null;
         $schedule_students = null;
         if ($student_id != null and $request->input('AGENT') == 'WECHAT') {

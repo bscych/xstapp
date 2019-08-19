@@ -28,9 +28,10 @@ class StudentController extends Controller {
 
     function getActiveCourseList($studentId) {
         $claz = DB::table('course_student')
-                ->join('courses','course_student.course_id', 'courses.id')
-                ->where([['courses.id','<>',20003],['courses.course_category_id',12],['course_student.student_id', '=', $studentId],['course_student.deleted_at', '=', null],['courses.deleted_at', '=', null],['course_student.classmodel_id', '<>', null]])
-                ->select('course_student.classmodel_id','courses.id', 'courses.name', 'courses.start_date', 'courses.course_category_id')
+                ->join('courses', 'course_student.course_id', 'courses.id')
+                ->where([['courses.id', '<>', 20003], ['courses.course_category_id', 12], ['course_student.student_id', '=', $studentId], ['course_student.deleted_at', '=', null], ['courses.deleted_at', '=', null], ['course_student.classmodel_id', '<>', null], ['courses.start_date', '<=', \Illuminate\Support\Carbon::now()]])
+                //the last condition is to find the course started earlier than today 
+                ->select('course_student.classmodel_id', 'courses.id', 'courses.name', 'courses.start_date', 'courses.course_category_id')
                 ->get();
         return $claz;
     }
@@ -40,7 +41,7 @@ class StudentController extends Controller {
                 ->join('parent_student', 'parent_student.student_id', 'students.id')
                 ->join('users', 'users.id', 'parent_student.user_id')
                 ->select('students.name', 'students.id')
-                ->where([['users.id', $user_id],['students.deleted_at',null],['parent_student.deleted_at',null]])
+                ->where([['users.id', $user_id], ['students.deleted_at', null], ['parent_student.deleted_at', null]])
                 ->get();
         return $students;
     }
@@ -121,7 +122,10 @@ class StudentController extends Controller {
         $courses = $this->getActiveCourseList($id);
 //decrypt student's parent's information expecially phone number
         $dStudent = Student::find($id);
-        $dStudent->parents_info = Crypt::decryptString($dStudent->parents_info);
+        if($dStudent->parents_info!=null){
+             $dStudent->parents_info = Crypt::decryptString($dStudent->parents_info);
+        }
+       
 
 //        $refunds = DB::table('refunds')
 //                ->join('constants');
@@ -141,7 +145,12 @@ class StudentController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        return View::make('backend.student.edit')->with('student', Student::find($id));
+        $student = Student::find($id);
+        if($student->parents_info!=null){
+             $student->parents_info = Crypt::decryptString($student->parents_info);
+        }
+       
+        return View::make('backend.student.edit')->with('student', $student);
     }
 
     /**
@@ -240,6 +249,29 @@ class StudentController extends Controller {
                 ->get();
 
         return View::make('backend.student.enroll')->with('courses', $courses)->with('student', Student::find($student_id))->with('classes', $classes);
+    }
+
+    public function getStudentRegisterCode($student_id) {
+        $student = Student::find($student_id);
+        $registerCodes = DB::table('register_codes')->where('student_id', $student_id)->get();
+        return view('backend.student.register_code')->with('student', $student)->with('registerCodes', $registerCodes);
+    }
+
+    public function createStudentRegisterCode($student_id) {
+        $code = $this->generateCode();
+        $isThere = DB::table('register_codes')->where('code',$code)->get();
+        
+        while ($isThere->isNotEmpty()) {
+            $code = $this->generateCode();
+            $isThere = DB::table('register_codes')->where('code',$code)->get();
+        }
+        
+        DB::table('register_codes')->insert(['student_id'=>$student_id,'code'=>$code,'created_at'=> \Illuminate\Support\Carbon::now(),'updated_at'=> \Illuminate\Support\Carbon::now()]);
+        return $this->getStudentRegisterCode($student_id);
+    }
+
+    function generateCode() {
+        return str_pad(mt_rand(0, 999999), 6, "0", STR_PAD_BOTH);
     }
 
 }

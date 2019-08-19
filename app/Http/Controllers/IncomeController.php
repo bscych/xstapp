@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 use App\Model\Constant;
 use App\Model\Student;
 use App\Model\Income;
-use App\Model\Course;
 use App\Model\Enroll;
 
 class IncomeController extends Controller {
@@ -45,7 +44,7 @@ class IncomeController extends Controller {
         return View::make('backend.finance.income.create')
                         ->with('student', Student::find($student_id))
                         ->with('paymentMethods', Constant::where('parent_id', 1)->get())
-                        ->with('courses', DB::table('courses')->orderBy('courses.created_at', 'desc')->get())
+                        ->with('courses', DB::table('courses')->where('courses.deleted_at',null)->orderBy('courses.created_at', 'desc')->get())
                         ->with('incomesCategories', Constant::where('parent_id', 4)->get());
     }
 
@@ -62,7 +61,6 @@ class IncomeController extends Controller {
         $incomeCategory = Input::get('incomeCategory');
         $rules = array(
             'amount' => 'required',
-            'payment_method' => 'required',
         );
         $validator = Validator::make(Input::all(), $rules);
 

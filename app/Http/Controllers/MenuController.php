@@ -168,7 +168,7 @@ class MenuController extends Controller {
                 }
             }
         }
-        return view('backend.menu.wechatIndex')->with('menus', $menu);
+        return view('backend.menu.wechatIndex')->with('menus', $menus);
     }
 
 }

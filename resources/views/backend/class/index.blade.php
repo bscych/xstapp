@@ -50,7 +50,7 @@
                         </td>
                         <td class="hidden-sm hidden-xs">{{$model->id}} </td>
                         <td class="hidden-sm hidden-xs">{{ $model->course_name }}</td>
-                        <td >{{ $model->name }}</td>
+                        <td >{{ $model->course_name.$model->name }}</td>
 
                         <td class="hidden-sm hidden-xs">{{ $model->teacher_name }}</td>
                         <td class="hidden-sm hidden-xs">{{ $students->where('classmodel_id',$model->id)->count()}}</td>

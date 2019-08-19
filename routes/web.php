@@ -69,6 +69,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/getCourseList/{student_id}', 'StudentController@getCourseList');
+    Route::get('/registerCode/{student_id}','StudentController@getStudentRegisterCode')->name('registerCodeList');
+     Route::get('/newRegisterCode/{student_id}','StudentController@createStudentRegisterCode')->name('newRegisterCode');
     Route::resource('/income', 'IncomeController');
     Route::resource('/statistics', 'StatisticsController');
     Route::get('/monthList', 'StatisticsController@getMonthList');

@@ -56,41 +56,38 @@
 
                             <td class="center">
                                 <a class="btn btn-info" href="{{ URL::to('student/' . $model->id . '/edit') }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
                                     编辑
                                 </a>
                                 <a class="btn btn-primary" href="{{ URL::to('student/'. $model->id) }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
                                     详细信息
                                 </a>
                                 <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
                                     交费
                                 </a>
-                               
+
                                 <a class="btn btn-primary" href="{{ URL::to('refund/'. $model->id) }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
                                     退费
                                 </a>
-                                
+                                <a class="btn btn-primary" href="{{ route('registerCodeList',['student_id'=>$model->id]) }}">
+                                    注册码管理
+                                </a>
                                 @if ($model-> balance > 0)
-                                  <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
+                                <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
                                     扣费
                                 </a>
                                 <a class="btn btn-primary" href="{{ URL::to('getCourseList/'. $model->id) }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
                                     报名
                                 </a>
-                                
+
                                 @endif
-                                 @if ($model-> balance == 0)
+                                @if ($model-> balance == 0)
                                 <form action="{{ route('student.destroy',$model->id)}}" method="post">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger" type="submit">注销</button>
                                 </form>
-                               @endif
+                                @endif
+
                             </td>
 
                         </tr>

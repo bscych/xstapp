@@ -16,7 +16,7 @@
 
 
             <div class="box-content">
-                <table class="table table-striped table-bordered bootstrap-datatable responsive">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th class="hidden-sm hidden-xs">编号</th>
@@ -61,11 +61,13 @@
                                     </button>
                                     </div>
                                 </form>
-                                  <form action="{{ route('course.destroy',$model->id)}}" method="post">
+                                 @hasanyrole('admin|superAdmin')
+                                <form action="{{ route('course.destroy',$model->id)}}" method="post">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger" type="submit">结课</button>
                                 </form>
+                                @endhasanyrole
                             </td>
 
                         </tr>

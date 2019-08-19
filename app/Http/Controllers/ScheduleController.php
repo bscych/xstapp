@@ -22,6 +22,7 @@ class ScheduleController extends Controller {
         $class = \App\Model\Classmodel::find($class_id);
         $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
         //托管类
+        $isTG = true;//添加托管标签
         $date = [];
         $time = time();
         $week = date('w', $time);
@@ -32,16 +33,26 @@ class ScheduleController extends Controller {
             }
         } else {
             //其他特长课类，只返回当前天
-            if ($week == $class->which_day_1 || $week == $class->which_day_2) {
-                $date = [date('Y-m-d', $time)];
+//            if ($week == $class->which_day_1 || $week == $class->which_day_2) {
+//                $date = [date('Y-m-d', $time)];
+//            }
+             $isTG = false;
+            $now = \Illuminate\Support\Carbon::now();
+            $startFrom  = \Illuminate\Support\Carbon::create(2018, 9,16);
+            $i=0;
+            while($startFrom->lessThanOrEqualTo($now)){
+                $date[$i] = $startFrom->toDateString();
+                $startFrom->addDay();
+                $i++;
             }
+            
         }
         $holidays = \App\Model\Holiday::where('type', 0)->get();
         $workingdays = \App\Model\Holiday::where('type', 1)->get();
         if ($agent == 'WECHAT') {
-            return View::make('backend.schedule.wechatIndex')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('student_id', $student_id);
+            return View::make('backend.schedule.wechatIndex')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('student_id', $student_id)->with('isTG',$isTG);
         } else {
-            return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays);
+            return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('isTG',$isTG);
         }
     }
 
@@ -162,7 +173,7 @@ class ScheduleController extends Controller {
     function getDinnerExceptions() {
         return DB::table('course_student')
                         ->join('courses', 'courses.id', 'course_student.course_id')
-                        ->where([['courses.course_category_id', 12], ['courses.deleted_at', null], ['course_student.classmodel_id', '<>', null], ['courses.name', 'like', '%幼儿园托管%'], ['classmodel_id', '<>', null]])
+                        ->where([['courses.course_category_id', 12], ['courses.deleted_at', null], ['course_student.classmodel_id', '<>', null], ['courses.name', 'like', '%幼儿园托管%'], ['course_student.classmodel_id', '<>', null]])
                         ->select('course_student.student_id')
                         ->get();
     }
