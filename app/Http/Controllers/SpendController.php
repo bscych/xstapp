@@ -173,7 +173,7 @@ class SpendController extends Controller {
                 ->with('student',$student)
                 ->with('paymentMethods',Constant::where('parent_id', 1)->get())
                 ->with('course_students',$course_students)
-                ->with('courses',Course::all())
+                ->with('courses',Course::where('deleted_at',null)->get())
                 ->with('refundCategories',Constant::where('parent_id',6)->get());
     }
 

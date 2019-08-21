@@ -39,16 +39,18 @@
                            
 
                             <td class="center">
-                                <!--a class="btn btn-info" href="{{ URL::to('course/' . $model->id . '/edit') }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                    编辑
-                                </a>
-                                <a class="btn btn-danger" href="{{ URL::to('course/' . $model->id) }}">
+                               
+                                <!--a class="btn btn-danger" href="{{ URL::to('course/' . $model->id) }}">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     删除
                                 </a-->
                                
                                 <form role="form" method="GET" action="{{ url('/class')}}">
+                                    
+                                     <a class="btn btn-primary" href="{{route('course.edit',['id'=>$model->id]) }}">
+                                    <i class="glyphicon glyphicon-edit icon-white"></i>
+                                    编辑
+                                </a>
                                     @csrf
                                      <a class="btn btn-primary" href="{{ URL::to('getStudentList/' . $model->id ) }}">
                                     <i class="glyphicon glyphicon-edit icon-white"></i>

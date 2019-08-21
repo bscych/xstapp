@@ -41,9 +41,11 @@
                         <div class="form-group{{ $errors->has('course_id') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">退费课程 ： </label>
                             <select class="form-control" name="course_id" >
-                                @foreach($course_students as $course)
-                                <option value="{{$course->course_id}}">{{$courses->where('id',$course->course_id)->first()->name}}</option>
-                                @endforeach
+                                @foreach($courses as $course)
+                                 @if($course_students->where('course_id',$course->id)->first()!=null)
+                                    <option value="{{$course->id}}">{{$course->name}}</option>
+                                 @endif   
+                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group{{ $errors->has('amount') ? ' has-error' : '' }} col-md-3">
