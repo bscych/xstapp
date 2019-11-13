@@ -18,7 +18,7 @@
             <div class="box-content">
                 <table class="table table-striped table-bordered bootstrap-datatable responsive">
                     <thead>
-                        <tr>
+                        <tr> <th>序号</th>
                             <th>编号</th>
                             <th>名称</th>
                             <th>科目</th>
@@ -30,6 +30,7 @@
                     <tbody>
                         @foreach ($spends as $model)
                         <tr>
+                            <td>{{$loop->index+1}} </td>
                             <td>{{$model->id}} </td>
                             <td>{{ $model->name }}</td>
                             <td>{{ $model->name_of_account }}</td>

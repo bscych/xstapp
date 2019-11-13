@@ -29,7 +29,7 @@
                                 {{$student_schedules->where('student_id','=',$student->id)->sum('attended')}}
                             </td>
                             <td class="text-center">
-                                {{($course->duration) - ($student_schedules->where('student_id','=',$student->id)->sum('attended'))}}
+                                {{$student->how_many_left}}
                             </td>
                             <td class="text-center">
                               @if( ($course->duration) - ($student_schedules->where('student_id','=',$student->id)->sum('attended')) <= 2 )

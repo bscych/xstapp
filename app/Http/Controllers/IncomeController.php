@@ -121,7 +121,7 @@ class IncomeController extends Controller {
             $enroll = new Enroll;
             $enroll->name = $request->input('comment') . ' ';
             $enroll->income_account = $incomeCategory;
-            $enroll->course_id = $classCategory == 'MEALFEE' ? 20000 : $course_id;
+            $enroll->course_id = $classCategory == 'MEALFEE' ? null : $course_id;
             $enroll->student_id = $student_id;
             $enroll->paid = Input::get('amount');
             $enroll->operator = Auth::id();

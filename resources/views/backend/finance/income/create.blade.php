@@ -10,7 +10,7 @@
             </div>
             <div class="box-content">
                 <form role="form" method="POST" action="{{ url('/income?student_id='.$student->id) }}">
-
+                    <input class="hidden" type="hidden" name="classCategory" value="{{$classCategory}}">
                     {!! csrf_field() !!}
                     <div class="row">
                     <div class="form-group col-md-3">
@@ -36,21 +36,35 @@
                             </select>
                         </div>
                         
+                        @if($classCategory!='MEALFEE')
                         <div class="form-group{{ $errors->has('course_id') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">缴费课程 ： </label>
                             <select class="form-control" name="course_id" >
-                                <option value="-1"> </option>
+                               
                                 @foreach($courses as $course)
+                                @if($classCategory==='TG')
                                 <option value="{{$course->id}}">{{$course->name}}</option>
+                                 @endif
+                                 @if($classCategory==='TCK')
+                                  <option value="{{$course->id}}">{{$course->course_name.'--- '.$course->class_name}}</option>
+                                 @endif
                                 @endforeach
+                              
+                             
                             </select>
                         </div>
+                     @endif
+
                         <div class="form-group{{ $errors->has('amount') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">金额 ： </label>
                             <input type="number" class="form-control" name="amount" value="{{ old('amount') }}">   
                         </div>
-                       
-
+                        @if($classCategory==='TCK') 
+                        <div class="form-group{{ $errors->has('how_many_left') ? ' has-error' : '' }} col-md-3">
+                            <label class="control-label">课时 ： </label>
+                            <input type="number" class="form-control" name="how_many_left" value="{{ old('how_many_left') }}">   
+                        </div>
+                        @endif
                         <!--div class="form-group{{ $errors->has('payment_method') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">支付方式 ： </label>
                             <select class="form-control" name="payment_method" >

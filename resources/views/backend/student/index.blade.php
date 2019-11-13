@@ -55,39 +55,38 @@
                             <td class="hidden-sm hidden-xs">{{ $model->school}}</td>
 
                             <td class="center">
-                                <a class="btn btn-info" href="{{ URL::to('student/' . $model->id . '/edit') }}">
-                                    编辑
-                                </a>
-                                <a class="btn btn-primary" href="{{ URL::to('student/'. $model->id) }}">
-                                    详细信息
-                                </a>
-                                <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
-                                    交费
-                                </a>
-
-                                <a class="btn btn-primary" href="{{ URL::to('refund/'. $model->id) }}">
-                                    退费
-                                </a>
-                                <a class="btn btn-primary" href="{{ route('registerCodeList',['student_id'=>$model->id]) }}">
-                                    注册码管理
-                                </a>
-                                @if ($model-> balance > 0)
-                                <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
-                                    扣费
-                                </a>
-                                <a class="btn btn-primary" href="{{ URL::to('getCourseList/'. $model->id) }}">
-                                    报名
-                                </a>
-
-                                @endif
-                                @if ($model-> balance == 0)
                                 <form action="{{ route('student.destroy',$model->id)}}" method="post">
+                                    <a class="btn btn-info" href="{{ URL::to('student/' . $model->id . '/edit') }}">
+                                        编辑
+                                    </a>
+                                    <a class="btn btn-primary" href="{{ URL::to('student/'. $model->id) }}">
+                                        详细信息
+                                    </a>
+                                    <a class="btn btn-primary" href="{{ route('showCourseCategory',['student_id'=>$model->id]) }}">
+                                        交费
+                                    </a>
+
+                                    <a class="btn btn-primary" href="{{ URL::to('refund/'. $model->id) }}">
+                                        退费
+                                    </a>
+                                    <a class="btn btn-primary" href="{{ route('registerCodeList',['student_id'=>$model->id]) }}">
+                                        注册码管理
+                                    </a>
+                                    @if ($model-> balance > 0)
+                                    <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
+                                        扣费
+                                    </a>
+                                    <a class="btn btn-primary" href="{{ URL::to('getCourseList/'. $model->id) }}">
+                                        报名
+                                    </a>
+
+                                    @endif
+                                    @if ($model-> balance == 0)
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger" type="submit">注销</button>
+                                    @endif
                                 </form>
-                                @endif
-
                             </td>
 
                         </tr>
