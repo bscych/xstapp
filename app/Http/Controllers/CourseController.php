@@ -24,7 +24,7 @@ class CourseController extends Controller {
     public function index() {
         $courses = DB::table('courses')
                 ->join('constants', 'courses.course_category_id', '=', 'constants.id')
-              //  ->join('users', 'courses.teacher_id', '=', 'users.id')
+                //  ->join('users', 'courses.teacher_id', '=', 'users.id')
                 ->join('class_rooms', 'courses.classroom_id', '=', 'class_rooms.id')
                 ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constants.name as courseCategoryName', 'class_rooms.name as classroom')
                 ->where('courses.deleted_at', null)
@@ -40,7 +40,7 @@ class CourseController extends Controller {
     public function create() {
         $teachers = DB::table('users')
                 ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
-                ->where('model_has_roles.role_id',2)
+                ->where('model_has_roles.role_id', 2)
                 ->select('users.name', 'users.id')
                 ->get();
         return View::make('backend.course.create')->with('courseCategories', Constant::where('parent_id', 2)->orderBy('created_at', 'desc')->get())->with('teachers', $teachers)->with('classrooms', ClassRoom::all());
@@ -94,7 +94,7 @@ class CourseController extends Controller {
 
             $claz = new \App\Model\Classmodel;
             $claz->course_id = $course->id;
-            $claz->name = $course->name.'一班';
+            $claz->name = $course->name . '一班';
             $claz->teacher_id = $course->teacher_id;
             $claz->classroom_id = $course->classroom_id;
             $claz->start_date = $course->start_date;
@@ -148,8 +148,14 @@ class CourseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        //$model = Course::find($id);
-        //return view('course.edit',['model'=>$model,'courseCategories'=>CourseCategory::all()]);
+        $model = Course::find($id);
+        $teachers = DB::table('users')
+                ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+                ->where('model_has_roles.role_id', 2)
+                ->select('users.name', 'users.id')
+                ->get();
+
+        return view('backend.course.edit', ['model' => $model, 'courseCategories' =>Constant::where('parent_id', 2)->orderBy('created_at', 'desc')->get(),'teachers'=>$teachers]);
     }
 
     /**
@@ -160,7 +166,21 @@ class CourseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-       
+          $model = Course::find($id);
+          $model->name = $request->input('name');
+          $model->course_category_id = $request->input('course_category_id');
+          $model->duration = $request->input('duration');
+          $model->unit = $request->input('unit');
+          $model->unit_price = $request->input('unit_price');
+          $model->snack_fee = $request->input('snack_fee');
+          $model->teacher_id = $request->input('teacher_id');
+          $model->start_date = $request->input('start_date');
+          $model->end_date = $request->input('end_date');
+          $model->has_lunch = $request->input('has_lunch');
+          $model->has_dinner = $request->input('has_dinner');
+          $model->in_count = $request->input('in_count');
+          $model->save();
+          return $this->index();
     }
 
     /**
@@ -173,7 +193,7 @@ class CourseController extends Controller {
 
         $course = Course::find($id);
         //delete the course
-       $course->delete();
+        $course->delete();
         //delete related classmodel
         DB::table('classmodels')
                 ->where('course_id', $course->id)
@@ -202,8 +222,8 @@ class CourseController extends Controller {
     }
 
     public function getClassList($param) {
-      //  $classes = DB::table('');
-     //   return View::make('');
+        //  $classes = DB::table('');
+        //   return View::make('');
     }
 
     public function getScheduleList($course_id) {

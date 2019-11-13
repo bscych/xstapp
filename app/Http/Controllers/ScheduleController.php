@@ -38,7 +38,7 @@ class ScheduleController extends Controller {
 //            }
              $isTG = false;
             $now = \Illuminate\Support\Carbon::now();
-            $startFrom  = \Illuminate\Support\Carbon::create(2018, 9,16);
+            $startFrom  = \Illuminate\Support\Carbon::create(2019, 11,1);
             $i=0;
             while($startFrom->lessThanOrEqualTo($now)){
                 $date[$i] = $startFrom->toDateString();
@@ -189,9 +189,26 @@ class ScheduleController extends Controller {
         $field = $request->input('field');
         $value = $request->input('value') == 'true' ? 1 : 0;
 
-        DB::table('schedule_student')
+        if($field=='attended'){
+            $course_student =  DB::table('schedule_student')->join('schedules','schedules.id','schedule_student.schedule_id')->join('course_student','course_student.classmodel_id','schedules.classmodel_id')->where('schedule_student.id', $schedule_student_id)->select('course_student.id','course_student.how_many_left')->get()->first();
+            $how_many_left = $course_student->how_many_left==null?0:$course_student->how_many_left;
+            if($value>0){
+                //如果值為1 則剩餘次數上-1
+                $how_many_left--;
+            }else{
+                //如果值為0 則剩餘次數上+1
+                $how_many_left++;
+            }
+             DB::table('course_student')
+                ->where('id', $course_student->id)
+                ->update(['how_many_left' => $how_many_left]);
+        }
+             DB::table('schedule_student')
                 ->where('id', $schedule_student_id)
                 ->update([$field => $value]);
+        
+        
+       
     }
 
     /**

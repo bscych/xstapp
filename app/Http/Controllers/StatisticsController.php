@@ -120,8 +120,9 @@ class StatisticsController extends Controller {
         $totalEnroll = DB::table('enrolls')->whereYear('enrolls.created_at', $year)->whereMonth('enrolls.created_at', $month)->orderBy('enrolls.created_at', 'desc')->get()->sum('paid');
         $totalRemain = DB::table('students')->where('balance', '>', 0)->get()->sum('balance');
 
+        $mealsByMonth = DB::table('schedule_student')->join('schedules','schedule_student.schedule_id','schedules.id')->whereYear('schedules.date', $year)->whereMonth('schedules.date', $month)->select('schedule_student.dinner','schedule_student.lunch');
         return View::make('backend.finance.statistics.detail')
-                        ->with('totalSpends', $spends)->with('incomes', $incomesColls)->with('spends', $colls)->with('parameters', $year . '/' . $month)->with('totalIncomes', $totalIncome)->with('totalEnroll', $totalEnroll)->with('totalRemain', $totalRemain);
+                        ->with('totalSpends', $spends)->with('incomes', $incomesColls)->with('spends', $colls)->with('parameters', $year . '/' . $month)->with('totalIncomes', $totalIncome)->with('totalEnroll', $totalEnroll)->with('totalRemain', $totalRemain)->with('lunch',$mealsByMonth->sum('lunch'))->with('dinner',$mealsByMonth->sum('dinner'));
     }
 
     public function getDetailByCategory($year, $month, $table_name, $category_id) {
@@ -194,7 +195,7 @@ class StatisticsController extends Controller {
         $students = DB::table('course_student')
                 ->join('students', 'students.id', 'course_student.student_id')
                 ->where('course_student.classmodel_id', $class_id)
-                ->select('students.id', 'students.name')
+                ->select('students.id', 'students.name','course_student.how_many_left')
                 ->get();
         $student_schedules = DB::table('schedule_student')
                 ->join('schedules', 'schedules.id', 'schedule_student.schedule_id')

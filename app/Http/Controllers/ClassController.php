@@ -22,27 +22,6 @@ class ClassController extends Controller {
      */
     public function index(Request $request) {
 
-//        foreach (Course::all() as $course) {
-//            $class = \App\Model\Classmodel::where('course_id', $course->id)->where('deleted_at',null)->first();
-//
-//            if ($class == null) {
-//                    $claz = new \App\Model\Classmodel;
-//                    $claz->course_id = $course->id;
-//                    // $claz->name = $request->input('name');
-//                    $claz->teacher_id = $course->teacher_id;
-//                    $claz->classroom_id = $course->classroom_id;
-//                    $claz->start_date = $course->start_date;
-//                    $claz->end_date = $course->end_date;
-//                    $claz->which_day_1 = $course->which_day_1;
-//                    $claz->block1_start_time = $course->block1_start_time;
-//                    $claz->block1_end_time = $course->block1_end_time;
-//                    $claz->which_day_2 = $course->which_day_2;
-//                    $claz->block2_start_time = $course->block2_start_time;
-//                    $claz->block2_end_time = $course->block2_end_time;
-//                    $claz->save();
-//            }
-//        }
-        //$course_students = collect();
         if ($request->input('course_id') != null) {
             $classes = DB::table('classmodels')
                     ->join('courses', 'classmodels.course_id', 'courses.id')
@@ -113,7 +92,7 @@ class ClassController extends Controller {
             $course = Course::find($request->input('course_id'));
             $claz = new \App\Model\Classmodel;
             $claz->course_id = $course->id;
-            $claz->name = $request->input('name');
+            $claz->name =$course->name. $request->input('name');
             $claz->teacher_id = $request->input('teacher_id');
             $claz->classroom_id = $request->input('classroom_id');
             $claz->start_date = $course->start_date;

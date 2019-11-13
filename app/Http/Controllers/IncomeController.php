@@ -38,14 +38,45 @@ class IncomeController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create(Request $request) {
         $student_id = Input::get('student_id');
+        $category = Input::get('category');
+        $student = Student::find($student_id);
+        $paymentMethods = Constant::where('parent_id', 1)->get();
+//       托管类的不显示班级
+        if ($category == 'TG') {
+            $courses = DB::table('courses')->where('courses.deleted_at', null)->where('courses.course_category_id', 12)->select('courses.name', 'courses.id')->orderBy('courses.created_at', 'desc')->get();
+            return View::make('backend.finance.income.create')
+                            ->with('student', $student)
+                            ->with('paymentMethods', $paymentMethods)
+                            ->with('courses', $courses)
+                            ->with('incomesCategories', Constant::where('name', '学费')->get())
+                            ->with('classCategory', 'TG');
+        }
+        //特长课要显示具体班级
+        if ($category == 'TCK') {
+            $courses = DB::table('classmodels')->join('courses', 'courses.id', '=', 'classmodels.course_id')->where([['courses.deleted_at', '=', null], ['courses.course_category_id', '<>', 12], ['classmodels.deleted_at', '=', null]])->select('courses.name as course_name', 'classmodels.name as class_name', 'classmodels.id')->orderBy('courses.created_at', 'desc')->get();
+            return View::make('backend.finance.income.create')
+                            ->with('student', $student)
+                            ->with('paymentMethods', $paymentMethods)
+                            ->with('courses', $courses)
+                            ->with('incomesCategories', Constant::where('name', '学费')->get())
+                            ->with('classCategory', 'TCK');
+        }
+        //餐费不需要关联课程
+        if ($category == 'MEALFEE') {
+            return View::make('backend.finance.income.create')
+                            ->with('student', $student)
+                            ->with('paymentMethods', $paymentMethods)
+                            ->with('courses', null)
+                            ->with('incomesCategories', Constant::where('name', '餐费')->get())
+                            ->with('classCategory', 'MEALFEE');
+        }
+    }
 
-        return View::make('backend.finance.income.create')
-                        ->with('student', Student::find($student_id))
-                        ->with('paymentMethods', Constant::where('parent_id', 1)->get())
-                        ->with('courses', DB::table('courses')->where('courses.deleted_at',null)->orderBy('courses.created_at', 'desc')->get())
-                        ->with('incomesCategories', Constant::where('parent_id', 4)->get());
+    public function showCourseCategory() {
+        $student_id = Input::get('student_id');
+        return View::make('backend.finance.income.show_course_category')->with('student_id', $student_id);
     }
 
     /**
@@ -58,7 +89,9 @@ class IncomeController extends Controller {
         $student_id = Input::get('student_id');
         $course_id = Input::get('course_id');
         $student = Student::find($student_id);
+        $classCategory = Input::get('classCategory');
         $incomeCategory = Input::get('incomeCategory');
+        $how_many_left = Input::get('how_many_left');
         $rules = array(
             'amount' => 'required',
         );
@@ -68,6 +101,7 @@ class IncomeController extends Controller {
             return Redirect::to('income/create?student_id=' . $student_id)
                             ->withErrors($validator);
         } else {
+//            预存到学生个人账户
             $income = new Income;
             $income->amount = Input::get('amount');
             $income->payment_method = Input::get('payment_method');
@@ -83,35 +117,52 @@ class IncomeController extends Controller {
             $student->balance = $student->balance + $income->amount;
             $student->save();
             //非预存操作，需要保存扣费记录
-            if ($incomeCategory != 31) {
-                $enroll = new Enroll;
-                $enroll->name = $request->input('comment') . ' ';
-                $enroll->income_account = $incomeCategory;
-                $enroll->course_id = $course_id;
-                $enroll->student_id = $student_id;
-                $enroll->paid = Input::get('amount');
-                $enroll->operator = Auth::id();
-                $enroll->save();
 
-                $student->balance = $student->balance - $enroll->paid;
-                $student->save();
+            $enroll = new Enroll;
+            $enroll->name = $request->input('comment') . ' ';
+            $enroll->income_account = $incomeCategory;
+            $enroll->course_id = $classCategory == 'MEALFEE' ? 20000 : $course_id;
+            $enroll->student_id = $student_id;
+            $enroll->paid = Input::get('amount');
+            $enroll->operator = Auth::id();
+            $enroll->save();
 
-                //预存和交学杂费不需要保存课程学生关系数据
-                if ($incomeCategory == 28) {
-                    $coure_students = DB::table('course_student')
-                                    ->where([
-                                        ['course_id', '=', $course_id],
-                                        ['student_id', '=', $student_id],
-                                    ])->get();
-                    //是否报名，如果已报名则不需要再次将数据插入关系表
-                    if ($coure_students->count() == 0) {
-                        DB::table('course_student')->insert(
-                                ['course_id' => $course_id, 'student_id' => $student_id]
-                        );
-                    }
+            $student->balance = $student->balance - $enroll->paid;
+            $student->save();
+
+            //托管交费
+            if ($classCategory == 'TG') {
+                $coure_students = DB::table('course_student')
+                                ->where([
+                                    ['course_id', '=', $course_id],
+                                    ['student_id', '=', $student_id],
+                                ])->get();
+                if ($coure_students->isEmpty()) {
+                    DB::table('course_student')->insert(
+                            ['course_id' => $course_id, 'student_id' => $student_id]
+                    );
                 }
             }
-            Session::flash('message', 'Successfully created nerd!');
+            //特长课交费
+            if ($classCategory == 'TCK') {
+                $classModel = \App\Model\Classmodel::find($course_id);
+                
+                $old_how_many_left = DB::table('course_student')->where([['classmodel_id', $course_id], ['course_id',$classModel->course_id],['deleted_at',null],['student_id',$student_id]])->get()->first();
+                if($old_how_many_left==null){
+                     DB::table('course_student')->insert(['classmodel_id'=> $course_id, 'course_id'=>$classModel->course_id,'deleted_at'=>null,'student_id'=>$student_id,'how_many_left'=>$how_many_left]);
+                }else{
+                     DB::table('course_student')->where(['classmodel_id'=> $course_id, 'course_id'=>$classModel->course_id,'deleted_at'=>null,'student_id'=>$student_id])->update(['how_many_left'=>$old_how_many_left->how_many_left+$how_many_left]);
+                }
+               
+            }
+
+            //交餐費           
+            if ($classCategory == 'MEALFEE') {
+                
+            }
+
+
+            Session::flash('message', 'Successfully created !');
             return Redirect::to('student');
         }
     }
