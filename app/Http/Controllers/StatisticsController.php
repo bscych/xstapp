@@ -185,10 +185,22 @@ class StatisticsController extends Controller {
             $data = $this->getScheduleByMonthClass($month, $class_id);
             return View::make('backend.schedule.scheduleMonthList')->with('dates', $data->pull('dates'))->with('schedule_students', $data->pull('schedule_students'))->with('class_id', $class_id)->with('month', $month);
         } else {
-            //if the class belongs to a non 托管 course, then call getScheduleByWholePeriod function
-            $data = $this->getScheduleByWholePeriod($class_id);
-            return View::make('backend.schedule.nonTGScheduleList')->with('students', $data['students'])->with('student_schedules', $data['student_schedules'])->with('course', $data['course']);
+             //if the class belongs to a non 托管 course, then call getScheduleByWholePeriod function
+             $data = $this->getScheduleByMonthClass($month, $class_id);
+            return View::make('backend.schedule.tck.scheduleMonthList')->with('dates', $data->pull('dates'))->with('schedule_students', $data->pull('schedule_students'))->with('class_id', $class_id)->with('month', $month);
         }
+    }
+    
+    public function getTCKStudentStatus(Request $request) {
+          $month = $request->input('month');
+        $class_id = $request->input('class_id');
+        $courseCategory = DB::table('classmodels')
+                        ->join('courses', 'classmodels.course_id', 'courses.id')
+                        ->where('classmodels.id', $class_id)
+                        ->select('courses.course_category_id')
+                        ->first()->course_category_id;
+             $data = $this->getScheduleByWholePeriod($class_id);
+            return View::make('backend.schedule..tck.scheduleList')->with('students', $data['students'])->with('student_schedules', $data['student_schedules'])->with('course', $data['course']);
     }
 
     function getScheduleByWholePeriod($class_id) {
@@ -249,8 +261,11 @@ class StatisticsController extends Controller {
             if($lastMonth-10>=0){
                 $lastMonth = '0'.$lastMonth;
             }
+            
             return View::make('backend.schedule.wechatStudentScheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee)->with('lastMonth',$lastMonth)->with('student_id',$student_id);
-        } else {
+        
+            
+            } else {
             $students = DB::table('schedule_student')
                             ->join('students', 'students.id', 'schedule_student.student_id')
                             ->select('students.id', 'students.name')
@@ -260,7 +275,9 @@ class StatisticsController extends Controller {
                     ->join('schedules', 'schedules.id', 'schedule_student.schedule_id')
                     ->where([['schedules.classmodel_id', '=', $class_id], ['schedules.date', 'like', $dateString . '%']])
                     ->get();
+            if($course->course_category_id===12)
             return View::make('backend.schedule.scheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee);
+            else  return View::make('backend.schedule.tck.scheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month);
         }
     }
 

@@ -80,7 +80,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/getScheduleStatistics', 'StatisticsController@getScheduleStatistics')->name('getScheduleStatistics');
     Route::get('/getScheduleByMonthClass_detail', 'StatisticsController@getScheduleByMonthClass_detail')->name('get_schedule_detail_by_month');
-
+    Route::get('/getTCKStudentStatus', 'StatisticsController@getTCKStudentStatus')->name('getTCKStudentStatus');
+    
     Route::resource('/class', 'ClassController');
     Route::post('/divide', 'ClassController@divide');
     Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass');
@@ -88,6 +89,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/schedule', 'ScheduleController');
     Route::resource('/classroom', 'ClassRoomController');
     Route::resource('/user', 'UserController');
+    Route::get('/getMyWorkingSheet','UserController@getMyWorkingSheet')->name('getMyWorkingSheet');
+    
     Route::resource('/enroll', 'EnrollController');
 
     Route::resource('/holiday', 'HolidayController');

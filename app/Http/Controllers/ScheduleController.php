@@ -32,19 +32,22 @@ class ScheduleController extends Controller {
                 $date[$i] = date('Y-m-d', strtotime('+' . $i - $week . ' days', $time));
             }
         } else {
-            //其他特长课类，只返回当前天
-//            if ($week == $class->which_day_1 || $week == $class->which_day_2) {
-//                $date = [date('Y-m-d', $time)];
-//            }
-             $isTG = false;
-            $now = \Illuminate\Support\Carbon::now();
-            $startFrom  = \Illuminate\Support\Carbon::create(2019, 11,1);
-            $i=0;
-            while($startFrom->lessThanOrEqualTo($now)){
-                $date[$i] = $startFrom->toDateString();
-                $startFrom->addDay();
-                $i++;
+//            其他特长课类，只返回当前天
+            if ($week == $class->which_day_1 || $week == $class->which_day_2) {
+                $date = [date('Y-m-d', $time)];
             }
+            $isTG = false;
+            /*
+             * for 
+             */
+//            $now = \Illuminate\Support\Carbon::now();
+//            $startFrom  = \Illuminate\Support\Carbon::create(2019, 11,1);
+//            $i=0;
+//            while($startFrom->lessThanOrEqualTo($now)){
+//                $date[$i] = $startFrom->toDateString();
+//                $startFrom->addDay();
+//                $i++;
+//            }
             
         }
         $holidays = \App\Model\Holiday::where('type', 0)->get();
@@ -97,6 +100,8 @@ class ScheduleController extends Controller {
                 return View::make('backend.schedule.wechatDetail')->with('student', $attendance)->with('date', $date)->with('class_id', $class_id)->with('menu', $menu)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
             } else {
                 return View::make('backend.schedule.detail')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
+            //电脑版的特长课可以修改
+                // return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
             }
         }
     }
@@ -190,7 +195,9 @@ class ScheduleController extends Controller {
         $value = $request->input('value') == 'true' ? 1 : 0;
 
         if($field=='attended'){
-            $course_student =  DB::table('schedule_student')->join('schedules','schedules.id','schedule_student.schedule_id')->join('course_student','course_student.classmodel_id','schedules.classmodel_id')->where('schedule_student.id', $schedule_student_id)->select('course_student.id','course_student.how_many_left')->get()->first();
+            $student_id = DB::table('schedule_student')->where('id',$schedule_student_id)->get()->first()->student_id;
+            $course_student =  DB::table('course_student')->join('schedules','schedules.classmodel_id','course_student.classmodel_id')->join('schedule_student','schedule_student.schedule_id','schedules.id')->where([['schedule_student.id', $schedule_student_id],['course_student.student_id','=',$student_id]])->select('course_student.id','course_student.how_many_left')->get()->first();
+           
             $how_many_left = $course_student->how_many_left==null?0:$course_student->how_many_left;
             if($value>0){
                 //如果值為1 則剩餘次數上-1

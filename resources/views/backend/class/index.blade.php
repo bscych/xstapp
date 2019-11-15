@@ -53,7 +53,15 @@
                         <td >{{ $model->course_name.$model->name }}</td>
 
                         <td class="hidden-sm hidden-xs">{{ $model->teacher_name }}</td>
-                        <td class="hidden-sm hidden-xs">{{ $students->where('classmodel_id',$model->id)->count()}}</td>
+                        <td class="hidden-sm hidden-xs">
+                             @if($students->where('classmodel_id',$model->id)->count()>0)
+                            <a class="" href="{{ route('getTCKStudentStatus',['month'=>date('m'),'class_id'=>$model->id])}}">
+                               {{ $students->where('classmodel_id',$model->id)->count()}}
+                            </a>
+                             @else
+                             {{ $students->where('classmodel_id',$model->id)->count()}}
+                            @endif
+                            </td>
                         <td> 
                             @if($students->where('classmodel_id',$model->id)->count()>0)
                             <a class="btn btn-primary" href="{{ route('getScheduleStatistics',['month'=>date('m'),'class_id'=>$model->id])}}">
