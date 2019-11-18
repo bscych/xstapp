@@ -30,7 +30,7 @@
                                 {{$student->how_many_left}}
                             </td>
                             <td class="text-center">
-                              @if( ($course->duration) - ($student_schedules->where('student_id','=',$student->id)->sum('attended')) <= 3 )
+                              @if( $student->how_many_left<= 3 )
                              <span class="label label-danger">催费</span>
                               @else
                             <span class="label label-success">正常</span>
