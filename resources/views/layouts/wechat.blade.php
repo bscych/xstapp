@@ -97,9 +97,10 @@
                                 <li><a class="ajax-link" href="{{ url('/holiday') }}"><i class="glyphicon glyphicon-align-justify"></i><span> 特殊日期管理</span></a></li>
                                 @endhasanyrole
 
-                                @hasanyrole('admin|teacher|supervisor')
+                                @hasanyrole('admin|teacher|supervisor|superAdmin')
                                 <li><a class="ajax-link" href="{{ url('/class') }}"><i class="glyphicon glyphicon-edit"></i><span> 班级管理</span></a></li>
                                 <li><a class="ajax-link" href="{{ route('code.index') }}"><i class="glyphicon glyphicon-edit"></i><span> 查询注册码</span></a></li>
+                                <li><a class="ajax-link" href="{{ route('getMyWorkingSheet') }}"><i class="glyphicon glyphicon-edit"></i><span> 我的特长课时统计</span></a></li>
                                 @endhasanyrole
 
                                 @hasanyrole('admin|superAdmin|supervisor')
@@ -112,7 +113,6 @@
                                 <li><a class="ajax-link" href="{{ route('showParentRegisterForm') }}"><i class="glyphicon glyphicon-edit"></i><span>添加孩子</span></a></li>
                                 <li><a class="ajax-link" href="{{ route('wechat.home') }}"><i class="glyphicon glyphicon-edit"></i><span>订餐</span></a></li>
                                 @endhasrole
-
                             </ul>
 
                         </div>

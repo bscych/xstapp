@@ -52,6 +52,17 @@ class ClassController extends Controller {
         
        
     }
+    
+    /*
+     * get 特长课 list by user id, year, month
+     */
+    public function getTCKListByTeacherId(Request $request) {
+         $claz = DB::table('classmodels')->join('courses', 'classmodels.course_id', 'courses.id')->join('schedules','schedules.classmodel_id','classmodels.id')
+                 ->where([['courses.deleted_at', null], ['classmodels.deleted_at', null], ['courses.course_category_id', '<>', 12],['classmodels.teacher_id',$request->input('teacher_id')]])
+                 ->whereYear('schedules.date',$request->input('year'))->whereMonth('schedules.date',$request->input('month'))
+                 ->select('classmodels.name', 'classmodels.id')->distinct()->get();
+          return View::make('backend.user.my_class_list')->with('classes', $claz);
+    }
 
     /**
      * Show the form for creating a new resource.

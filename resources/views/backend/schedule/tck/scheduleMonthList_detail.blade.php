@@ -15,7 +15,7 @@
                     <thead>
 
                         <tr>
-                            <th rowspan="2"class="text-center"><small>日期</small></th>
+                            <th class="text-center"><small>日期</small></th>
                             @foreach($students as $student)
                             <th class="text-center"><small>{{$student->name}}</small></th>
                             @endforeach
@@ -35,9 +35,9 @@
                             </td>
                            
                             @else
+                           
                             <td class="text-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
+                          
                             @endif
 
                             @endforeach

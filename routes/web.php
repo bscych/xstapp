@@ -85,7 +85,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/class', 'ClassController');
     Route::post('/divide', 'ClassController@divide');
     Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass');
-
+    Route::get('/user/getTCKListByTeacherId','ClassController@getTCKListByTeacherId')->name('getTCKListByTeacherId');
+    
+    
     Route::resource('/schedule', 'ScheduleController');
     Route::resource('/classroom', 'ClassRoomController');
     Route::resource('/user', 'UserController');
