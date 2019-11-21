@@ -28,6 +28,7 @@ class SpendController extends Controller {
         $spends = DB::table('spends')
                         ->join('users', 'spends.operator', '=', 'users.id')
                         ->join('constants as nameOfAccount', 'nameOfAccount.id', '=', 'spends.name_of_account')
+                        ->where('spends.created_at','>', \Illuminate\Support\Carbon::now()->subMonth())
                         // ->join('constant_values as paymentMethod','paymentMethod.id','=','spends.payment_method')
                         ->select('spends.id', 'spends.name', 'nameOfAccount.name as name_of_account', 'spends.which_day', 'spends.amount', 'spends.payment_method', 'users.name as operator', 'spends.created_at', 'spends.comment')
                         ->orderBy('spends.which_day', 'desc')->paginate(10);
@@ -144,6 +145,8 @@ class SpendController extends Controller {
         $refund->operator = Auth::id();
         $refund->save();
         
+        DB::table('course_student')->where([['course_id',$course_id],['student_id',$student_id]])->update(['deleted_at'=> \Illuminate\Support\Carbon::now(),'classmodel_id'=>null]);
+      
         if($category_id==34){//返现
             $spend = new Spend;
             $spend->name =  $refund->name;
@@ -167,7 +170,8 @@ class SpendController extends Controller {
     public function refund( $student_id) {
         $student = Student::find($student_id);
         $course_students = DB::table('course_student')
-                ->where([['student_id',$student_id],['deleted_at',null]])
+               // ->where([['student_id',$student_id],['deleted_at',null]])
+                 ->where([['student_id',$student_id]])
                 ->get();
         return View::make('backend.finance.refund.create')
                 ->with('student',$student)

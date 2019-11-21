@@ -26,6 +26,7 @@ class IncomeController extends Controller {
         $incomes = DB::table('incomes')
                 ->join('users', 'users.id', '=', 'incomes.operator')
                 ->join('students', 'students.id', '=', 'incomes.paid_by')
+                ->where('incomes.created_at','>', \Illuminate\Support\Carbon::now()->subMonth())
                 ->select('incomes.id', 'incomes.name', 'students.name as paid_by', 'incomes.amount', 'incomes.payment_method', 'incomes.created_at', 'incomes.comment', 'users.name as operator')
                 ->orderBy('incomes.created_at', 'desc')
                 ->paginate(10);
