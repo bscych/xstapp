@@ -136,16 +136,9 @@ class UserController extends Controller {
         $login_user = Auth::user();
         $year = \Illuminate\Support\Carbon::now()->year;
         $month = \Illuminate\Support\Carbon::now()->month;
-
-        $login_user_roles = DB::table('users')
-                        ->leftJoin('model_has_roles', 'model_has_roles.model_id', 'users.id')
-                        ->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')
-                        ->where('users.id', Auth::user()->id)
-                        ->select('roles.name as role')
-                        ->get()->toArray();
         $datas = collect();
 
-        if ($login_user->id === 1) {
+        if ($login_user->hasanyrole('admin|superAdmin')) {
             $teachers = DB::table('users')
                     ->leftJoin('model_has_roles', 'model_has_roles.model_id', 'users.id')
                     ->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')
