@@ -78,7 +78,7 @@
                                 <li><a class="ajax-link" href="{{ url('/student') }}"><i class="glyphicon glyphicon-list-alt"></i><span> 学生管理</span></a>
                                 <li><a class="ajax-link" href="{{ url('/menuItem') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜品管理</span></a></li>
                                 <li><a class="ajax-link" href="{{ url('/menu') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜单管理</span></a></li>
-                                <li><a class="ajax-link" href="{{ url('/classroom') }}"><i class="glyphicon glyphicon-eye-open"></i><span>教室管理</span></a></li>
+                                <!--li><a class="ajax-link" href="{{ url('/classroom') }}"><i class="glyphicon glyphicon-eye-open"></i><span>教室管理</span></a></li-->
 
                                 <li><a class="ajax-link" href="{{ url('/user') }}"><i class="glyphicon glyphicon-font"></i><span>用户管理</span></a>
                                 </li>

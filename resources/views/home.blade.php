@@ -5,6 +5,7 @@
 <div class="row">
     <div class="box col-md-12">
         <div class="box-inner">
+            @hasanyrole('admin|superAdmin|cook')
             <div class="box-header well" data-original-title="">
                 <h2><i class="glyphicon glyphicon-book"></i> {{date('Y-m-d',time())}}用餐报表</h2>
             </div>
@@ -30,6 +31,7 @@
                     </tbody>
                 </table>
             </div>
+            @endhasanyrole
         </div>
     </div>
     <!--/span-->
