@@ -10,31 +10,29 @@
             </div>
             <div class="box-content">
                 <form role="form" method="GET" action="{{route('student.index') }}">
-
                     @csrf
                     <div class="row">
-                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} col-md-2">
+                        <div class="form-group inline {{ $errors->has('name') ? ' has-error' : '' }} col-md-2">
                             <label class="control-label">姓名 ： </label>
                             <input type="text" class="form-control" name="name" value="{{ old('name') }}">   
-
+                            
                         </div>
+                        <div class="form-group col-md-12">
+                            <button type="submit" class=" btn btn-primary inline">
+                                查询
+                            </button>
+                         <a class="btn btn-primary" href="{{ URL::to('/student/create') }}">新增学生</a>     
+                    </div>
                     </div>
 
-                    <div class="form-group col-md-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-btn fa-user"></i>查询
-                        </button>
-                    </div>
+                    
                 </form>
-
-                <div class="row">
-                    <a class="btn btn-primary" href="{{ URL::to('/student/create') }}">新增学生</a>      
-                </div>
+                
             </div>
 
 
             <div class="box-content">
-                <table class="table table-striped table-bordered bootstrap-datatable responsive">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th class="hidden-sm hidden-xs">学号</th>
