@@ -25,8 +25,8 @@ class CourseController extends Controller {
         $courses = DB::table('courses')
                 ->join('constants', 'courses.course_category_id', '=', 'constants.id')
                 //  ->join('users', 'courses.teacher_id', '=', 'users.id')
-                ->join('class_rooms', 'courses.classroom_id', '=', 'class_rooms.id')
-                ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constants.name as courseCategoryName', 'class_rooms.name as classroom')
+               // ->join('class_rooms', 'courses.classroom_id', '=', 'class_rooms.id')
+                ->select('courses.id', 'courses.name', 'courses.unit_price', 'courses.duration', 'constants.name as courseCategoryName')
                 ->where('courses.deleted_at', null)
                 ->get();
         return View::make('backend.course.index')->with('courses', $courses);
@@ -55,7 +55,6 @@ class CourseController extends Controller {
     public function store(Request $request) {
         $rules = array(
             'name' => 'required',
-            'unit_price' => 'required|numeric',
             'startDate' => 'required',
             'endDate' => 'required',
         );
@@ -72,61 +71,18 @@ class CourseController extends Controller {
             $course->unit = Input::get('unit');
             $course->course_category_id = Input::get('courseCategory_id');
             $course->duration = Input::get('duration');
-            $course->unit_price = Input::get('unit_price');
-            $course->teacher_id = Input::get('teacher_id');
-            $course->classroom_id = Input::get('classroom_id');
+            //$course->unit_price = Input::get('unit_price');
+            //$course->teacher_id = Input::get('teacher_id');
+            //$course->classroom_id = Input::get('classroom_id');
             $course->start_date = Input::get('startDate');
             $course->end_date = Input::get('endDate');
-            $frequence = Input::get('frequence');
+            $course->has_lunch = $request->input('has_lunch');
+            $course->has_dinner = $request->input('has_dinner');
+            $course->in_count = $request->input('in_count');
 
-            if ($course->course_category_id != 16 && $course->course_category_id != 17) {
-                $course->which_day_1 = Input::get('whichDay1');
-                $course->block1_start_time = Input::get('start1');
-                $course->block1_end_time = Input::get('end1');
-
-                if ($frequence == 2) {
-                    $course->which_day_2 = Input::get('whichDay2');
-                    $course->block2_start_time = Input::get('start2');
-                    $course->block2_end_time = Input::get('end2');
-                }
-            }
             $course->save();
 
-            $claz = new \App\Model\Classmodel;
-            $claz->course_id = $course->id;
-            $claz->name = $course->name . '一班';
-            $claz->teacher_id = $course->teacher_id;
-            $claz->classroom_id = $course->classroom_id;
-            $claz->start_date = $course->start_date;
-            $claz->end_date = $course->end_date;
-            $claz->which_day_1 = $course->which_day_1;
-            $claz->block1_start_time = $course->block1_start_time;
-            $claz->block1_end_time = $course->block1_end_time;
-            $claz->which_day_2 = $course->which_day_2;
-            $claz->block2_start_time = $course->block2_start_time;
-            $claz->block2_end_time = $course->block2_end_time;
-            $claz->save();
-
-            $dates = collect([]);
-            //to create schedule
-            if ($course->course_category_id == 16) {
-                //means it is a 托管类,will happen every working day
-                // get start date and the end date
-                $startdate = date_create($course->start_date);
-                $enddate = date_create($course->start_date);
-                date_add($enddate, date_interval_create_from_date_string("365 days"));
-
-
-                while ($startdate < $enddate) {
-                    $ss = date('w', strtotime($startdate->format('Y-m-d H:i:s')));
-                    if (($ss != 6) && ($ss != 0)) {
-                        $dates->push($startdate);
-                    }
-                    date_add($startdate, date_interval_create_from_date_string("1 day"));
-                }
-            }
-
-            Session::flash('message', 'Successfully created nerd!');
+            Session::flash('message', 'Successfully created!');
             return Redirect::to('course');
         }
     }
@@ -155,7 +111,7 @@ class CourseController extends Controller {
                 ->select('users.name', 'users.id')
                 ->get();
 
-        return view('backend.course.edit', ['model' => $model, 'courseCategories' =>Constant::where('parent_id', 2)->orderBy('created_at', 'desc')->get(),'teachers'=>$teachers]);
+        return view('backend.course.edit', ['model' => $model, 'courseCategories' => Constant::where('parent_id', 2)->orderBy('created_at', 'desc')->get(), 'teachers' => $teachers]);
     }
 
     /**
@@ -166,21 +122,21 @@ class CourseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-          $model = Course::find($id);
-          $model->name = $request->input('name');
-          $model->course_category_id = $request->input('course_category_id');
-          $model->duration = $request->input('duration');
-          $model->unit = $request->input('unit');
-          $model->unit_price = $request->input('unit_price');
-          $model->snack_fee = $request->input('snack_fee');
-          $model->teacher_id = $request->input('teacher_id');
-          $model->start_date = $request->input('start_date');
-          $model->end_date = $request->input('end_date');
-          $model->has_lunch = $request->input('has_lunch');
-          $model->has_dinner = $request->input('has_dinner');
-          $model->in_count = $request->input('in_count');
-          $model->save();
-          return $this->index();
+        $model = Course::find($id);
+        $model->name = $request->input('name');
+        $model->course_category_id = $request->input('course_category_id');
+        $model->duration = $request->input('duration');
+        $model->unit = $request->input('unit');
+        $model->unit_price = $request->input('unit_price');
+        $model->snack_fee = $request->input('snack_fee');
+//        $model->teacher_id = $request->input('teacher_id');
+        $model->start_date = $request->input('start_date');
+        $model->end_date = $request->input('end_date');
+        $model->has_lunch = $request->input('has_lunch');
+        $model->has_dinner = $request->input('has_dinner');
+        $model->in_count = $request->input('in_count');
+        $model->save();
+        return $this->index();
     }
 
     /**
@@ -213,9 +169,8 @@ class CourseController extends Controller {
 
         $classes = DB::table('classmodels')
                 ->join('courses', 'classmodels.course_id', 'courses.id')
-                ->join('class_rooms', 'classmodels.classroom_id', 'class_rooms.id')
                 ->join('users', 'classmodels.teacher_id', 'users.id')
-                ->select('classmodels.id', 'classmodels.name', 'class_rooms.name as classroom_name', 'courses.name as course_name', 'users.name as teacher_name')
+                ->select('classmodels.id', 'classmodels.name', 'courses.name as course_name', 'users.name as teacher_name')
                 ->where('course_id', $course_id)
                 ->get();
         return View::make('backend.course.studentList')->with('students', $students)->with('course_id', $course_id)->with('classes', $classes);

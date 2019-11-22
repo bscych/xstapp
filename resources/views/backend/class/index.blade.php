@@ -62,12 +62,20 @@
                              {{ $students->where('classmodel_id',$model->id)->count()}}
                             @endif
                             </td>
-                        <td> 
+                            <td> <form method="POST" action="{{route('class.destroy',['id'=>$model->id])}}">
+                                  
                             @if($students->where('classmodel_id',$model->id)->count()>0)
-                            <a class="btn btn-primary" href="{{ route('getScheduleStatistics',['month'=>date('m'),'class_id'=>$model->id])}}">
+                            <a class="btn btn-primary btn-sm" href="{{ route('getScheduleStatistics',['month'=>date('m'),'class_id'=>$model->id])}}">
                                考勤报表
                             </a>
                             @endif
+                            @hasanyrole('admin|superAdmin')
+                            <a class="btn btn-primary btn-sm" href="{{route('class.edit',[$model->id])}}">编辑</a>
+                            @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm" type="submit">注销</button>
+                            @endhasanyrole
+                            </form>
                         </td>
                     </tr>
                     @endforeach

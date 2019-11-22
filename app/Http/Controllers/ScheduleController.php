@@ -33,8 +33,10 @@ class ScheduleController extends Controller {
             }
         } else {
 //            其他特长课类，只返回当前天
-            if ($week == $class->which_day_1 || $week == $class->which_day_2) {
-                $date = [date('Y-m-d', $time)];
+            foreach(json_decode($class->which_day_1) as $day){
+                if(now()->dayOfWeek===$day){
+                    $date = \Illuminate\Support\Arr::prepend($date, now()->format('Y-m-d'));
+                }
             }
             $isTG = false;
             /*
@@ -101,7 +103,7 @@ class ScheduleController extends Controller {
             } else {
                 return View::make('backend.schedule.detail')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
             //电脑版的特长课可以修改
-                // return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
+//                 return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
             }
         }
     }
@@ -235,7 +237,7 @@ class ScheduleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        //
+      
     }
 
     /**

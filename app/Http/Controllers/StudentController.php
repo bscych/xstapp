@@ -29,9 +29,10 @@ class StudentController extends Controller {
     function getActiveCourseList($studentId) {
         $claz = DB::table('course_student')
                 ->join('courses', 'course_student.course_id', 'courses.id')
-                ->where([['courses.id', '<>', 20003], ['courses.course_category_id', 12], ['course_student.student_id', '=', $studentId], ['course_student.deleted_at', '=', null], ['courses.deleted_at', '=', null], ['course_student.classmodel_id', '<>', null], ['courses.start_date', '<=', \Illuminate\Support\Carbon::now()]])
+                ->join('classmodels','course_student.classmodel_id','classmodels.id')
+                ->where([['course_student.student_id', '=', $studentId], ['course_student.deleted_at', '=', null], ['courses.deleted_at', '=', null], ['course_student.classmodel_id', '<>', null],['classmodels.deleted_at','=',null]])
                 //the last condition is to find the course started earlier than today 
-                ->select('course_student.classmodel_id', 'courses.id', 'courses.name', 'courses.start_date', 'courses.course_category_id')
+                ->select('course_student.classmodel_id', 'courses.id', 'courses.name', 'courses.start_date', 'courses.course_category_id','course_student.how_many_left')
                 ->get();
         return $claz;
     }

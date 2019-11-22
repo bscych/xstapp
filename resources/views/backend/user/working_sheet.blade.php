@@ -27,7 +27,7 @@
                       
                     </tbody>
                 </table>
-                <p><a href="">本月明细</a></p>
+                
             </div>      
        
     </div>

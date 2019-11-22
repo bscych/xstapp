@@ -22,9 +22,9 @@
                             <th class="hidden-sm hidden-xs">编号</th>
                             <th>课程名称</th>
                             <th class="hidden-sm hidden-xs">课程类别</th>
-                          
+
                             <th class="hidden-sm hidden-xs">课程总时长</th>
-                           
+
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -34,42 +34,21 @@
                             <td class="hidden-sm hidden-xs">{{$model->id}} </td>
                             <td>{{ $model->name }}</td>
                             <td class="hidden-sm hidden-xs"> {{ $model->courseCategoryName }}</td>
-                          
+
                             <td class="hidden-sm hidden-xs">{{ $model->duration }}</td>
-                           
+
 
                             <td class="center">
-                               
-                                <!--a class="btn btn-danger" href="{{ URL::to('course/' . $model->id) }}">
-                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                    删除
-                                </a-->
-                               
-                                <form role="form" method="GET" action="{{ url('/class')}}">
-                                    
-                                     <a class="btn btn-primary" href="{{route('course.edit',['id'=>$model->id]) }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                    编辑
-                                </a>
-                                    @csrf
-                                     <a class="btn btn-primary" href="{{ URL::to('getStudentList/' . $model->id ) }}">
-                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                    学生列表
-                                    </a>
-                                    
-                                    <input type="text" class="form-control hidden" name="course_id" value="{{ $model->id}}">   
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-btn fa-user"></i>班级管理
-                                    </button>
-                                    </div>
-                                </form>
-                                 @hasanyrole('admin|superAdmin')
                                 <form action="{{ route('course.destroy',$model->id)}}" method="post">
+                                    <a class="btn btn-primary" href="{{route('course.edit',['id'=>$model->id]) }}"> 编辑</a>
+                                    <a class="btn btn-primary" href="{{ URL::to('getStudentList/' . $model->id ) }}">学生列表 </a>
+                                    <a class="btn btn-primary" href="{{ route('class.index', ['course_id'=>$model->id])}}"> 班级管理</a>
+                                    @hasanyrole('admin|superAdmin')
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger" type="submit">结课</button>
+                                    @endhasanyrole
                                 </form>
-                                @endhasanyrole
                             </td>
 
                         </tr>

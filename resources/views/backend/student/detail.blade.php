@@ -190,7 +190,7 @@
                                     <th>课程ID</th>
                                     <th>课程名称</th>
 
-                                    <th>开始时间</th>
+                                    <th>特长课剩余次数</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -198,7 +198,7 @@
                                 <tr>
                                     <td>{{ $model->id}}</td>
                                     <td>{{ $model->name}}</td>
-                                    <td>{{ $model->start_date}}</td>
+                                    <td>{{$model->course_category_id===12?'托管不累计课时数': $model->how_many_left}}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

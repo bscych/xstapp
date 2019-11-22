@@ -59,18 +59,7 @@
                                     </div>
 
                                 </div>
-
-                                <div class="row">
-
-                                    <div class="form-group  col-md-4">
-                                        <label class="control-label">授课老师 ： </label>
-                                        <select class="form-control" name="teacher_id" >
-                                            @foreach($teachers as $teacher)
-                                            <option value="{{$teacher->id}}" {{$model->teacher_id==$teacher->id?'selected':''}}>{{$teacher->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+                             
                                 <div class="row">
                                     <div class="form-group  col-md-3">
                                         <label class="control-label">开始日期 ： </label>
