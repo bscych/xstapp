@@ -43,7 +43,7 @@
                                 @if($students->where('classmodel_id',$model->id)->count()>0)
                                 <input type="text" class="form-control hidden" name="class_id" value="{{$model->id}}">  
                                 <button type="submit" class="btn btn-primary">
-                                  考勤管理
+                                    考勤管理
                                 </button>
                                 @endif
                             </form>
@@ -54,27 +54,29 @@
 
                         <td class="hidden-sm hidden-xs">{{ $model->teacher_name }}</td>
                         <td class="hidden-sm hidden-xs">
-                             @if($students->where('classmodel_id',$model->id)->count()>0)
-                            <a class="" href="{{ route('getTCKStudentStatus',['month'=>date('m'),'class_id'=>$model->id])}}">
-                               {{ $students->where('classmodel_id',$model->id)->count()}}
-                            </a>
-                             @else
-                             {{ $students->where('classmodel_id',$model->id)->count()}}
-                            @endif
-                            </td>
-                            <td> <form method="POST" action="{{route('class.destroy',['id'=>$model->id])}}">
-                                  
                             @if($students->where('classmodel_id',$model->id)->count()>0)
-                            <a class="btn btn-primary btn-sm" href="{{ route('getScheduleStatistics',['month'=>date('m'),'class_id'=>$model->id])}}">
-                               考勤报表
+                            <a class="" href="{{ route('getTCKStudentStatus',['month'=>date('m'),'class_id'=>$model->id])}}">
+                                {{ $students->where('classmodel_id',$model->id)->count()}}
                             </a>
+                            @else
+                            {{ $students->where('classmodel_id',$model->id)->count()}}
                             @endif
-                            @hasanyrole('admin|superAdmin')
-                            <a class="btn btn-primary btn-sm" href="{{route('class.edit',[$model->id])}}">编辑</a>
-                            @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" type="submit">注销</button>
-                            @endhasanyrole
+                        </td>
+                        <td> <form method="POST" action="{{route('class.destroy',['id'=>$model->id])}}">
+
+                                @if($students->where('classmodel_id',$model->id)->count()>0)
+                                <a class="btn btn-primary btn-sm" href="{{ route('getScheduleStatistics',['month'=>date('m'),'class_id'=>$model->id])}}">
+                                    考勤报表
+                                </a>
+                                @endif
+                                @hasanyrole('admin|superAdmin|supervisor')
+                                <a class="btn btn-primary btn-sm" href="{{route('class.edit',[$model->id])}}">编辑</a>
+                                @endhasanyrole
+                                @hasanyrole('admin|superAdmin')
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm" type="submit">注销</button>
+                                @endhasanyrole
                             </form>
                         </td>
                     </tr>

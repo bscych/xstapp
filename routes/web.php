@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
     
     
     Route::resource('/schedule', 'ScheduleController');
+    Route::get('/reCheckIn','ScheduleController@reCheckIn')->name('reCheckIn');
     Route::resource('/classroom', 'ClassRoomController');
     Route::resource('/user', 'UserController');
     Route::get('/getMyWorkingSheet','UserController@getMyWorkingSheet')->name('getMyWorkingSheet');

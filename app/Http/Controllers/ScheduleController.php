@@ -60,18 +60,14 @@ class ScheduleController extends Controller {
             return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('isTG',$isTG);
         }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+    
+    /*
+     * to get schedule id in 2 cases:
+     * 1. to get existing schedule id
+     * 2. to create a new schedule and fetch the id
      */
-    public function create(Request $request) {
-        $class_id = $request->input('class_id');
-        $student_id = $request->input('student_id');
-        $date = $request->input('date');
-        // get the schedule 
-        $schedules = DB::table('schedules')->where([
+    function getScheduleIdByClassIdAndDate($class_id,$date) {
+         $schedules = DB::table('schedules')->where([
                     ['classmodel_id', '=', $class_id],
                     ['date', '=', $date],
                 ])->get();
@@ -87,10 +83,39 @@ class ScheduleController extends Controller {
             //为每天都吃饭的学生报餐
             $this->autoBookMeal($schedule_id, $class_id);
         }
-        $attendance = $this->getAttendanceData($schedule_id, $student_id);
+        return $schedule_id;
+    }
+    /*
+     * 打卡日期已经过了，超级管理员和管理员可以补打卡
+     */
+    public function reCheckIn(Request $request) {
+        if(auth()->user()->hasanyrole('admin|superAdmin')){
+        $class_id = $request->input('class_id');
+        $date = $request->input('date');
+        $schedule_id = $this->getScheduleIdByClassIdAndDate($class_id, $date);
+        $attendance = $this->getAttendanceData($schedule_id, null);
+        return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
+        }else{
+            return '404';
+        }
+        }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request) {
+        $class_id = $request->input('class_id');
+        $student_id = $request->input('student_id');
+        $date = $request->input('date');
+        // get the schedule 
+       $schedule_id = $this->getScheduleIdByClassIdAndDate($class_id, $date);
+       $attendance = $this->getAttendanceData($schedule_id, $student_id);
 
         if ($this->canEditByDateTime($date)) {
             if ($request->input('AGENT') == 'WECHAT') {
+                //parents would like to see the menu when they book meal for their kids
                 $menu = App::call('App\Http\Controllers\MenuController@getMenuByDate', [$date]);
                 return View::make('backend.schedule.wechatCreate')->with('student', $attendance)->with('date', $date)->with('class_id', $class_id)->with('menu', $menu)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
             } else {
@@ -98,6 +123,7 @@ class ScheduleController extends Controller {
             }
         } else {
             if ($request->input('AGENT') == 'WECHAT') {
+                //parents would like to see the menu when they book meal for their kids
                 $menu = App::call('App\Http\Controllers\MenuController@getMenuByDate', [$date]);
                 return View::make('backend.schedule.wechatDetail')->with('student', $attendance)->with('date', $date)->with('class_id', $class_id)->with('menu', $menu)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
             } else {
@@ -121,11 +147,10 @@ class ScheduleController extends Controller {
             }
             return true;
         }
-
         //比今天晚的餐，只能查看，不能编辑
         return false;
     }
-
+  
     function createNewSchedule($class_id, $date) {
         // create a new schedule and fetch the ID
         $schedule = new \App\Model\Schedule;
