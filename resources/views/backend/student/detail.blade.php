@@ -148,7 +148,7 @@
                                 <tr>
                                     <td>-{{ $model->paid}}</td>
                                     <td>{{ $model->income_account}}</td>
-                                    <td>{{ $model->course_name}}</td>
+                                    <td>{{ $model->enrolls_name}}</td>
                                     <td>{{ $model->created_at}}</td>
                                 </tr>
                                 @endforeach

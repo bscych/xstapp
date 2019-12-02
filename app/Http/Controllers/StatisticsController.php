@@ -124,7 +124,7 @@ class StatisticsController extends Controller {
 
         $mealsByMonth = DB::table('schedule_student')->join('schedules','schedule_student.schedule_id','schedules.id')->whereYear('schedules.date', $year)->whereMonth('schedules.date', $month)->select('schedule_student.dinner','schedule_student.lunch');
         return View::make('backend.finance.statistics.detail')
-                        ->with('totalSpends', $spends)->with('incomes', $incomesColls)->with('spends', $colls)->with('parameters', $year . '/' . $month)->with('totalIncomes', $totalIncome)->with('totalEnroll', $totalEnroll)->with('totalRemain', $totalRemain)->with('lunch',$mealsByMonth->sum('lunch'))->with('dinner',$mealsByMonth->sum('dinner'));
+                        ->with('totalSpends', $spends)->with('incomes', $incomesColls)->with('spends', $colls)->with('parameters', $year . '/' . $month)->with('totalIncomes', $totalIncome)->with('totalEnroll', $totalEnroll)->with('totalRemain', $totalRemain)->with('lunch',$mealsByMonth->sum('lunch'))->with('dinner',$mealsByMonth->sum('dinner'))->with('purchase', $this->getPurchase($year, $month));
     }
 
     public function getDetailByCategory($year, $month, $table_name, $category_id) {
@@ -260,7 +260,7 @@ class StatisticsController extends Controller {
                     ->where([['schedule_student.student_id', '=', $student_id], ['schedules.classmodel_id', '=', $class_id], ['schedules.date', 'like', $dateString . '%']])
                     ->get();
             $lastMonth = \Illuminate\Support\Carbon::now()->subMonth()->month;
-            if($lastMonth-10>=0){
+            if($lastMonth-10<=0){
                 $lastMonth = '0'.$lastMonth;
             }
             
@@ -283,7 +283,8 @@ class StatisticsController extends Controller {
         }
     }
 
-    public static function getMealStatistics() {
+    public function getPurchase($year,$month) {
+        return \App\Model\Spend::where([['operator',5],['finance_year',$year],['finance_month',$month]])->get();
         
     }
 

@@ -107,11 +107,10 @@ class StudentController extends Controller {
                 ->orderBy('created_at', 'desc')
                 ->get();
         $enroll = DB::table('enrolls')
-                ->join('courses', 'courses.id', 'enrolls.course_id')
                 ->join('constants', 'constants.id', 'enrolls.income_account')
-                ->select('enrolls.paid', 'constants.name as income_account', 'courses.name as course_name', 'enrolls.created_at')
+                ->select('enrolls.paid', 'constants.name as income_account', 'enrolls.name as enrolls_name', 'enrolls.created_at')
                 ->where('student_id', '=', $id)
-                ->orderBy('created_at', 'desc')
+                ->orderBy('enrolls.created_at', 'desc')
                 ->get();
         $refunds = DB::table('refunds')
                 ->join('constants', 'constants.id', 'refunds.name_of_account')

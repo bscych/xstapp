@@ -11,9 +11,9 @@
              <div class="box-content">
                  <h2><i class=""></i>选择课程类别</h2>
                  <p>
-                    <a class="btn btn-primary btn-lg" href="{{ route('income.create',['student_id'=>$student_id,'category'=>'TG']) }}">托管</a>
-                    <a class="btn btn-primary btn-lg" href="{{ route('income.create',['student_id'=>$student_id,'category'=>'TCK']) }}">特长课</a> 
-                    <a class="btn btn-primary btn-lg" href="{{ route('income.create',['student_id'=>$student_id,'category'=>'MEALFEE']) }}">餐费</a> 
+                     @foreach($incomesCategories as $category)
+                    <a class="btn btn-primary btn-lg" href="{{ route('income.create',['student_id'=>$student_id,'category'=>$category->name]) }}">{{$category->name}}</a>
+                    @endforeach
                 </p>
             
             </div>

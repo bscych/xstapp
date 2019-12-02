@@ -19,6 +19,7 @@
                     </thead>
                     <tbody>
                         @foreach($courses as $course)
+                        @if($course->course_category_id==12)
                         <tr>
                             <td>{{$course->name}} </td>
 
@@ -30,10 +31,8 @@
                                     <i class="fa fa-btn fa-user"></i>订餐记录
                                 </a>
                             </td>
-
-
-
                         </tr>
+                        @endif
                         @endforeach
                     </tbody>
                 </table>

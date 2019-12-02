@@ -10,7 +10,7 @@
             </div>
             <div class="box-content">
                 <form role="form" method="POST" action="{{ url('/income?student_id='.$student->id) }}">
-                    <input class="hidden" type="hidden" name="classCategory" value="{{$classCategory}}">
+                  
                     {!! csrf_field() !!}
                     <div class="row">
                     <div class="form-group col-md-3">
@@ -22,35 +22,27 @@
                         <label class="control-label">{{ $student->parents_info}} </label-->
                     </div>
                     </div>
-                    <!--div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                        <label class="control-label">名称 ： </label>
-                        <input type="text" class="form-control" name="name" value="{{ old('name') }}">   
-                    </div -->
+                  
                     <div class="row">
                          <div class="form-group{{ $errors->has('category_id') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">会计科目 ： </label>
-                            <select class="form-control" name="incomeCategory" >
-                                @foreach($incomesCategories as $category)
-                                <option value="{{$category->id}}">{{$category->name}}</option>
-                                @endforeach
-                            </select>
+                            <label class="form-control">{{$incomesCategory->name}}</label>
+                            <input type="hidden"name="incomeCategory" value="{{$incomesCategory->id}}"/>
                         </div>
                         
-                        @if($classCategory!='MEALFEE')
+                        @if($incomesCategory->name!='餐费' && $incomesCategory->name!='预存' && $incomesCategory->name!='杂费'  && $incomesCategory->name!='车费')
                         <div class="form-group{{ $errors->has('course_id') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">缴费课程 ： </label>
                             <select class="form-control" name="course_id" >
                                
                                 @foreach($courses as $course)
-                                @if($classCategory==='TG')
+                                @if($incomesCategory->name==='托管课')
                                 <option value="{{$course->id}}">{{$course->name}}</option>
                                  @endif
-                                 @if($classCategory==='TCK')
+                                 @if($incomesCategory->name==='特长课')
                                   <option value="{{$course->id}}">{{$course->course_name.'--- '.$course->class_name}}</option>
                                  @endif
                                 @endforeach
-                              
-                             
                             </select>
                         </div>
                      @endif
@@ -59,7 +51,7 @@
                             <label class="control-label">金额 ： </label>
                             <input type="number" class="form-control" name="amount" value="{{ old('amount') }}">   
                         </div>
-                        @if($classCategory==='TCK') 
+                        @if($incomesCategory->name==='特长课') 
                         <div class="form-group{{ $errors->has('how_many_left') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">课时 ： </label>
                             <input type="number" class="form-control" name="how_many_left" value="{{ old('how_many_left') }}">   

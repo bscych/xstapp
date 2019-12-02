@@ -57,8 +57,57 @@
             </div>
         </div>
     </div>
-        
+    
+ <div class="box col-md-6">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2><i class="glyphicon glyphicon-th"></i>用餐详细</h2>
+                <div class="box-icon">
+                    <a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+                    <a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                    <a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="row">
+                 
+                    <div class="col-md-3"><h6><a href="#">午餐：{{$lunch}}</a>
+                       
+                        </h6></div>
+                      <div class="col-md-3"><h6><a href="#">晚餐：{{$dinner}}</a>
+                      
+                        </h6></div>
+              
+                 <div class="col-md-12"><h6><a href="">  </a>
+                        <a href="#">总计：{{$lunch+$dinner}}</a>
+                        </h6></div>
+                </div>
+
+            </div>
+        </div>
+    </div>    
        
+    <div class="box col-md-6">
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2><i class="glyphicon glyphicon-th"></i>单独采购总计</h2>
+                <div class="box-icon">
+                    <a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+                    <a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
+                    <a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="row">
+                 
+                 <div class="col-md-12"><h6><a href="">  </a>
+                        <a href="#">总计：{{$purchase->sum('amount')}}</a>
+                        </h6></div>
+                </div>
+
+            </div>
+        </div>
+    </div>    
     
 </div>
 
