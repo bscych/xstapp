@@ -103,12 +103,21 @@ class IncomeController extends Controller {
             return Redirect::to('income/create?student_id=' . $student_id)
                             ->withErrors($validator);
         } else {
-//            预存到学生个人账户
+
+
+            //预存到学生个人账户
             $this->saveToAccount($student, $incomeCategory);
             //非预存操作，需要保存扣费记录
             if ($incomeCategory->name != '预存') {
-                $this->enroll($student,$incomeCategory);
-                $this->afterPay($incomeCategory);
+//                校验学生账户余额是否够扣，不够扣，返回缴费页面，并提示余额不足，如果够扣，扣费报课
+                $balance = $this->enroll($student, $incomeCategory);
+                if ($balance >= 0) {
+                    $this->afterPay($incomeCategory);
+                } else {
+                    $validator->errors()->add('balance', '余额不足，请再充值' . (0 - $balance));
+                    // Session::flash('message', '余额不足，请再充值'.(0-$balance));
+                    return Redirect::route('income.create', ['student_id' => $student_id, 'category' => $incomeCategory->name])->withErrors($validator);
+                }
             }
             Session::flash('message', 'Successfully created !');
             return Redirect::to('student');
@@ -120,20 +129,22 @@ class IncomeController extends Controller {
      */
 
     function saveToAccount($student, $incomeCategory) {
-        $income = new Income;
-        $income->amount = Input::get('amount');
-        $income->payment_method = Input::get('payment_method');
-        $income->name_of_account = Input::get('incomeCategory');
-        $income->paid_by = $student->id;
-        $income->comment = Input::get('comment');
-        $income->name = date("Y-m-d", time()) . $student->name . '，交费课程：' . $incomeCategory->name . '，交费金额：' . $income->amount;
-        $income->finance_year = Input::get('finance_year');
-        $income->finance_month = Input::get('finance_month');
-        $income->operator = Auth::id();
-        $income->save();
+        if (Constant::where('name', Input::get('payment_method'))->get()->first()->id != 43) {
+            $income = new Income;
+            $income->amount = Input::get('amount');
+            $income->payment_method = Input::get('payment_method');
+            $income->name_of_account = Input::get('incomeCategory');
+            $income->paid_by = $student->id;
+            $income->comment = Input::get('comment');
+            $income->name = date("Y-m-d", time()) . $student->name . '，交费课程：' . $incomeCategory->name . '，交费金额：' . $income->amount;
+            $income->finance_year = Input::get('finance_year');
+            $income->finance_month = Input::get('finance_month');
+            $income->operator = Auth::id();
+            $income->save();
 
-        $student->balance = $student->balance + $income->amount;
-        $student->save();
+            $student->balance = $student->balance + $income->amount;
+            $student->save();
+        }
     }
 
     /*
@@ -153,20 +164,24 @@ class IncomeController extends Controller {
             $course = \App\Model\Classmodel::find(Input::get('course_id'));
             $course_id = $course->course_id;
             $course_name = $course->name;
-        } else {
+        } 
+        if ($incomeCategory->name != '特长课' && $incomeCategory->name != '托管课') {
             $course_id = null;
             $course_name = $incomeCategory->name;
         }
         $enroll = new Enroll;
-        $enroll->name = '('.'扣费原因：' . $course_name . '，扣费金额：' . Input::get('amount') . ') '.Input::get('comment') ;
+        $enroll->name = '(' . '扣费原因：' . $course_name . '，扣费金额：' . Input::get('amount') . ') ' . Input::get('comment');
         $enroll->income_account = $incomeCategory->id;
         $enroll->course_id = $course_id;
         $enroll->student_id = $student->id;
         $enroll->paid = Input::get('amount');
         $enroll->operator = Auth::id();
-        $enroll->save();
-        $student->balance = $student->balance - $enroll->paid;
-        $student->save();
+        if ($student->balance - $enroll->paid >= 0) {
+            $enroll->save();
+            $student->balance = $student->balance - $enroll->paid;
+            $student->save();
+        }
+        return $student->balance - $enroll->paid;
     }
 
     /*

@@ -20,8 +20,8 @@
                             <button type="submit" class=" btn btn-primary inline">
                                 查询
                             </button>
-                         <a class="btn btn-primary" href="{{ URL::to('/student/create') }}">新增学生</a>     
-                    </div>
+                            <a class="btn btn-primary" href="{{ URL::to('/student/create') }}">新增学生</a>     
+                        </div>
                     </div>
                 </form>
             </div>
@@ -64,15 +64,6 @@
                                     <a class="btn btn-primary" href="{{ route('registerCodeList',['student_id'=>$model->id]) }}">
                                         注册码管理
                                     </a>
-                                    @if ($model-> balance > 0)
-                                    <a class="btn btn-primary" href="{{ URL::to('income/create?student_id='. $model->id) }}">
-                                        扣费
-                                    </a>
-                                    <a class="btn btn-primary" href="{{ URL::to('getCourseList/'. $model->id) }}">
-                                        报名
-                                    </a>
-
-                                    @endif
                                     @if ($model-> balance == 0)
                                     @csrf
                                     @method('DELETE')
