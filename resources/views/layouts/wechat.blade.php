@@ -87,6 +87,7 @@
                                 <li class="accordion">
                                     <a href="#"><i class="glyphicon glyphicon-plus"></i><span> 财务管理</span></a>
                                     <ul class="nav nav-pills nav-stacked">
+                                        <li><a href="{{ route('bill.index') }}">账单管理</a></li>
                                         <li><a href="{{ url('/spend') }}">支出管理</a></li>
                                         <li><a href="{{ url('/income') }}">收入管理</a></li>
                                         @role('superAdmin')

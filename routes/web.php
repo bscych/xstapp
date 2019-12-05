@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/newRegisterCode/{student_id}','StudentController@createStudentRegisterCode')->name('newRegisterCode');
     Route::resource('/income', 'IncomeController');
     Route::get('/showCourseCategory','IncomeController@showCourseCategory')->name('showCourseCategory');
+  
     Route::resource('/statistics', 'StatisticsController');
     Route::get('/monthList', 'StatisticsController@getMonthList');
     Route::get('/detail/{year}/{month}', 'StatisticsController@detail');
@@ -101,7 +102,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/menu', 'MenuController');
     Route::resource('/code', 'RegisterCodeController');
     Route::resource('/role', 'RoleController');
-
+    Route::resource('/bill', 'BillController');
+    Route::get('/batchBill/{year}/{month}','BillController@createBillBatch')->name('batchBillByYearMonth');
+    route::get('/closeBill/{id}','BillController@confirmToClose')->name('closeBill');
     Route::get('/scheduleList/{course_id}', 'CourseController@getScheduleList');
     Route::get('/scheduleByMonth/{course_id}/{month}', 'CourseController@getScheduleByMonth');
     Route::get('/scheduleByMonthIndDay/{course_id}/{month}', 'CourseController@getScheduleByMonthInday');

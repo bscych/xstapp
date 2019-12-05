@@ -104,7 +104,6 @@ class IncomeController extends Controller {
                             ->withErrors($validator);
         } else {
 
-
             //预存到学生个人账户
             $this->saveToAccount($student, $incomeCategory);
             //非预存操作，需要保存扣费记录
@@ -116,14 +115,15 @@ class IncomeController extends Controller {
                 } else {
                     $validator->errors()->add('balance', '余额不足，请再充值' . (0 - $balance));
                     // Session::flash('message', '余额不足，请再充值'.(0-$balance));
-                    return Redirect::route('income.create', ['student_id' => $student_id, 'category' => $incomeCategory->name])->withErrors($validator);
+                    return Redirect::route('income.create', ['student_id' => $student->id, 'category' => $incomeCategory->name])->withErrors($validator);
                 }
             }
+      
             Session::flash('message', 'Successfully created !');
             return Redirect::to('student');
         }
     }
-
+    
     /*
      * 预存到学生账户
      */
@@ -176,12 +176,13 @@ class IncomeController extends Controller {
         $enroll->student_id = $student->id;
         $enroll->paid = Input::get('amount');
         $enroll->operator = Auth::id();
-        if ($student->balance - $enroll->paid >= 0) {
+        $isEnough = $student->balance - $enroll->paid;
+        if ($isEnough>= 0) {
             $enroll->save();
             $student->balance = $student->balance - $enroll->paid;
             $student->save();
         }
-        return $student->balance - $enroll->paid;
+        return $isEnough;
     }
 
     /*
@@ -251,6 +252,13 @@ class IncomeController extends Controller {
      */
     public function destroy($id) {
         //
+    }
+    
+    /*
+     * 
+     */
+    public function getARsByMonth() {
+        return view('backend.finance.ar.index');
     }
 
 }
