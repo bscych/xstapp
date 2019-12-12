@@ -132,7 +132,7 @@ class StatisticsController extends Controller {
             $spends = DB::table('spends')
                     ->join('constants', 'constants.id', 'spends.name_of_account')
                     ->select('spends.id', 'spends.name', 'constants.name as name_of_account', 'spends.amount', 'spends.which_day')
-                    ->where('name_of_account', $category_id)
+                    ->where('spends.name_of_account', (int)$category_id)
                     ->where('spends.finance_year', $year)
                     ->where('spends.finance_month', $month)
                     ->orderBy('spends.which_day', 'desc')
