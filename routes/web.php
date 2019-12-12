@@ -42,6 +42,9 @@ Route::get('/contact', function () {
 Route::get('/how/to/find/myKids', function () {
     return view('frontend.helpers.howto');
 })->name('howto');
+Route::get('/useTlog', function () {
+    return view('frontend.helpers.howto2');
+})->name('how_to_log');
 
 //微信路由
 Route::any('/wechat', 'WeChatController@serve');
