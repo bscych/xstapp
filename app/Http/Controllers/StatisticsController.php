@@ -87,8 +87,8 @@ class StatisticsController extends Controller {
     }
 
     public function getMonthList() {
-        $income = DB::table('incomes')->where('finance_year','>=',2019)->where('finance_month','>=',11)->get()->sum('amount');
-        $spend = DB::table('spends')->where('finance_year','>=',2019)->where('finance_month','>=',11)->get()->sum('amount');
+        $income = DB::table('incomes')->where('finance_year', '>=', 2019)->where('finance_month', '>=', 11)->get()->sum('amount');
+        $spend = DB::table('spends')->where('finance_year', '>=', 2019)->where('finance_month', '>=', 11)->get()->sum('amount');
         return View::make('backend.finance.statistics.monthList')
                         ->with('totalIncome', $income)
                         ->with('totalSpend', $spend);
@@ -122,22 +122,22 @@ class StatisticsController extends Controller {
         $totalEnroll = DB::table('enrolls')->whereYear('enrolls.created_at', $year)->whereMonth('enrolls.created_at', $month)->orderBy('enrolls.created_at', 'desc')->get()->sum('paid');
         $totalRemain = DB::table('students')->where('balance', '>', 0)->get()->sum('balance');
 
-        $mealsByMonth = DB::table('schedule_student')->join('schedules','schedule_student.schedule_id','schedules.id')->whereYear('schedules.date', $year)->whereMonth('schedules.date', $month)->select('schedule_student.dinner','schedule_student.lunch');
+        $mealsByMonth = DB::table('schedule_student')->join('schedules', 'schedule_student.schedule_id', 'schedules.id')->whereYear('schedules.date', $year)->whereMonth('schedules.date', $month)->select('schedule_student.dinner', 'schedule_student.lunch');
         return View::make('backend.finance.statistics.detail')
-                        ->with('totalSpends', $spends)->with('incomes', $incomesColls)->with('spends', $colls)->with('parameters', $year . '/' . $month)->with('totalIncomes', $totalIncome)->with('totalEnroll', $totalEnroll)->with('totalRemain', $totalRemain)->with('lunch',$mealsByMonth->sum('lunch'))->with('dinner',$mealsByMonth->sum('dinner'))->with('purchase', $this->getPurchase($year, $month));
+                        ->with('totalSpends', $spends)->with('incomes', $incomesColls)->with('spends', $colls)->with('parameters', $year . '/' . $month)->with('totalIncomes', $totalIncome)->with('totalEnroll', $totalEnroll)->with('totalRemain', $totalRemain)->with('lunch', $mealsByMonth->sum('lunch'))->with('dinner', $mealsByMonth->sum('dinner'))->with('purchase', $this->getPurchase($year, $month));
     }
-    
+
     public function getPurchaseDetail($year, $month) {
-         $spends = DB::table('spends')
-                    ->join('constants', 'constants.id', 'spends.name_of_account')
-                    ->select('spends.id', 'spends.name', 'constants.name as name_of_account', 'spends.amount', 'spends.which_day')
+        $spends = DB::table('spends')
+                ->join('constants', 'constants.id', 'spends.name_of_account')
+                ->select('spends.id', 'spends.name', 'constants.name as name_of_account', 'spends.amount', 'spends.which_day')
 //                    ->where('spends.name_of_account', (int)$category_id)
-                    ->where('spends.finance_year', $year)
-                    ->where('spends.finance_month', $month)
-                 ->where('spends.operator',5)
-                    ->orderBy('spends.which_day', 'desc')
-                    ->get();
-            return View::make('backend.finance.statistics.details_year_month_category')->with('spends', $spends);
+                ->where('spends.finance_year', $year)
+                ->where('spends.finance_month', $month)
+                ->where('spends.operator', 5)
+                ->orderBy('spends.which_day', 'desc')
+                ->get();
+        return View::make('backend.finance.statistics.details_year_month_category')->with('spends', $spends);
     }
 
     public function getDetailByCategory($year, $month, $table_name, $category_id) {
@@ -145,7 +145,7 @@ class StatisticsController extends Controller {
             $spends = DB::table('spends')
                     ->join('constants', 'constants.id', 'spends.name_of_account')
                     ->select('spends.id', 'spends.name', 'constants.name as name_of_account', 'spends.amount', 'spends.which_day')
-                    ->where('spends.name_of_account', (int)$category_id)
+                    ->where('spends.name_of_account', (int) $category_id)
                     ->where('spends.finance_year', $year)
                     ->where('spends.finance_month', $month)
                     ->orderBy('spends.which_day', 'desc')
@@ -198,29 +198,29 @@ class StatisticsController extends Controller {
             $data = $this->getScheduleByMonthClass($month, $class_id);
             return View::make('backend.schedule.scheduleMonthList')->with('dates', $data->pull('dates'))->with('schedule_students', $data->pull('schedule_students'))->with('class_id', $class_id)->with('month', $month);
         } else {
-             //if the class belongs to a non 托管 course, then call getScheduleByWholePeriod function
-             $data = $this->getScheduleByMonthClass($month, $class_id);
+            //if the class belongs to a non 托管 course, then call getScheduleByWholePeriod function
+            $data = $this->getScheduleByMonthClass($month, $class_id);
             return View::make('backend.schedule.tck.scheduleMonthList')->with('dates', $data->pull('dates'))->with('schedule_students', $data->pull('schedule_students'))->with('class_id', $class_id)->with('month', $month);
         }
     }
-    
+
     public function getTCKStudentStatus(Request $request) {
-          $month = $request->input('month');
+        $month = $request->input('month');
         $class_id = $request->input('class_id');
         $courseCategory = DB::table('classmodels')
                         ->join('courses', 'classmodels.course_id', 'courses.id')
                         ->where('classmodels.id', $class_id)
                         ->select('courses.course_category_id')
                         ->first()->course_category_id;
-             $data = $this->getScheduleByWholePeriod($class_id);
-            return View::make('backend.schedule..tck.scheduleList')->with('students', $data['students'])->with('student_schedules', $data['student_schedules'])->with('course', $data['course']);
+        $data = $this->getScheduleByWholePeriod($class_id);
+        return View::make('backend.schedule..tck.scheduleList')->with('students', $data['students'])->with('student_schedules', $data['student_schedules'])->with('course', $data['course']);
     }
 
     function getScheduleByWholePeriod($class_id) {
         $students = DB::table('course_student')
                 ->join('students', 'students.id', 'course_student.student_id')
                 ->where('course_student.classmodel_id', $class_id)
-                ->select('students.id', 'students.name','course_student.how_many_left')
+                ->select('students.id', 'students.name', 'course_student.how_many_left')
                 ->get();
         $student_schedules = DB::table('schedule_student')
                 ->join('schedules', 'schedules.id', 'schedule_student.schedule_id')
@@ -239,24 +239,28 @@ class StatisticsController extends Controller {
     public function getScheduleByMonthClass_detail(Request $request) {
         $class_id = $request->input('class_id');
         $month = $request->input('month');
-        if(count(str_split($month))<2){
-            $month = '0'.$month;
+        if (count(str_split($month)) < 2) {
+            $month = '0' . $month;
         }
         $student_id = $request->input('student_id');
-        $dateString = date('Y') . '-' . $month . '-';
-        if ($month == 0) {
-            $dateString = (date('Y') - 1) . '-12';
+        if (now()->month === 1&&$month==='12') { 
+            $dateString = now()->subYear()->year . '-' . $month . '-';            
+        } else {
+           $dateString = now()->year . '-' . $month . '-';
         }
+//        if ($month == '0') {
+//            $dateString = (date('Y') - 1) . '-12';
+//        }
         $dates = DB::table('schedules')
                         ->select('schedules.date', 'schedules.id')
-                        ->where([['classmodel_id', '=', $class_id], ['date', 'like', $dateString . '%']])->orderBy('date')->get();
+                        ->where([['schedules.classmodel_id', $class_id], ['date', 'like', $dateString . '%']])->orderBy('date')->get();
         $schedules = collect();
         foreach ($dates as $schedule) {
             $schedules->push($schedule->id);
         }
         $course = Course::find(Classmodel::find($class_id)->course_id);
         $snack_fee = $course->snack_fee;
-      //  $snack_fee = Course::find(Classmodel::find($class_id)->course_id)->snack_fee;
+        //  $snack_fee = Course::find(Classmodel::find($class_id)->course_id)->snack_fee;
         $students = null;
         $schedule_students = null;
         if ($student_id != null and $request->input('AGENT') == 'WECHAT') {
@@ -271,14 +275,12 @@ class StatisticsController extends Controller {
                     ->where([['schedule_student.student_id', '=', $student_id], ['schedules.classmodel_id', '=', $class_id], ['schedules.date', 'like', $dateString . '%']])
                     ->get();
             $lastMonth = \Illuminate\Support\Carbon::now()->subMonth()->month;
-            if($lastMonth-10<=0){
-                $lastMonth = '0'.$lastMonth;
+            if ($lastMonth - 10 <= 0) {
+                $lastMonth = '0' . $lastMonth;
             }
-            
-            return View::make('backend.schedule.wechatStudentScheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee)->with('lastMonth',$lastMonth)->with('student_id',$student_id);
-        
-            
-            } else {
+
+            return View::make('backend.schedule.wechatStudentScheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee)->with('lastMonth', $lastMonth)->with('student_id', $student_id);
+        } else {
             $students = DB::table('schedule_student')
                             ->join('students', 'students.id', 'schedule_student.student_id')
                             ->select('students.id', 'students.name')
@@ -288,15 +290,15 @@ class StatisticsController extends Controller {
                     ->join('schedules', 'schedules.id', 'schedule_student.schedule_id')
                     ->where([['schedules.classmodel_id', '=', $class_id], ['schedules.date', 'like', $dateString . '%']])
                     ->get();
-            if($course->course_category_id===12)
-            return View::make('backend.schedule.scheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee);
-            else  return View::make('backend.schedule.tck.scheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month);
+            if ($course->course_category_id === 12)
+                return View::make('backend.schedule.scheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month)->with('snack_fee', $snack_fee);
+            else
+                return View::make('backend.schedule.tck.scheduleMonthList_detail')->with('dates', $dates)->with('students', $students)->with('schedule_students', $schedule_students)->with('class_id', $class_id)->with('month', $month);
         }
     }
 
-    public function getPurchase($year,$month) {
-        return \App\Model\Spend::where([['operator',5],['finance_year',$year],['finance_month',$month]])->get();
-        
+    public function getPurchase($year, $month) {
+        return \App\Model\Spend::where([['operator', 5], ['finance_year', $year], ['finance_month', $month]])->get();
     }
 
 }
