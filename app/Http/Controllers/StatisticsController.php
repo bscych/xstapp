@@ -126,6 +126,19 @@ class StatisticsController extends Controller {
         return View::make('backend.finance.statistics.detail')
                         ->with('totalSpends', $spends)->with('incomes', $incomesColls)->with('spends', $colls)->with('parameters', $year . '/' . $month)->with('totalIncomes', $totalIncome)->with('totalEnroll', $totalEnroll)->with('totalRemain', $totalRemain)->with('lunch',$mealsByMonth->sum('lunch'))->with('dinner',$mealsByMonth->sum('dinner'))->with('purchase', $this->getPurchase($year, $month));
     }
+    
+    public function getPurchaseDetail($year, $month) {
+         $spends = DB::table('spends')
+                    ->join('constants', 'constants.id', 'spends.name_of_account')
+                    ->select('spends.id', 'spends.name', 'constants.name as name_of_account', 'spends.amount', 'spends.which_day')
+//                    ->where('spends.name_of_account', (int)$category_id)
+                    ->where('spends.finance_year', $year)
+                    ->where('spends.finance_month', $month)
+                 ->where('spends.operator',5)
+                    ->orderBy('spends.which_day', 'desc')
+                    ->get();
+            return View::make('backend.finance.statistics.details_year_month_category')->with('spends', $spends);
+    }
 
     public function getDetailByCategory($year, $month, $table_name, $category_id) {
         if ($table_name == 'spends') {
@@ -137,7 +150,6 @@ class StatisticsController extends Controller {
                     ->where('spends.finance_month', $month)
                     ->orderBy('spends.which_day', 'desc')
                     ->get();
-
             return View::make('backend.finance.statistics.details_year_month_category')->with('spends', $spends);
         }
         if ($table_name == 'incomes') {
@@ -149,7 +161,6 @@ class StatisticsController extends Controller {
                     ->where('incomes.finance_month', $month)
                     ->orderBy('incomes.created_at', 'desc')
                     ->get();
-
             return View::make('backend.finance.statistics.details_year_month_category')->with('spends', $incomes);
         }
     }

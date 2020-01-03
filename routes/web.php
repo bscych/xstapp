@@ -81,7 +81,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/monthList', 'StatisticsController@getMonthList');
     Route::get('/detail/{year}/{month}', 'StatisticsController@detail');
     Route::get('/detail/{year}/{month}/{table_name}/{category_id}', 'StatisticsController@getDetailByCategory');
-
+    Route::get('/purchase_detail/{year}/{month}','StatisticsController@getPurchaseDetail')->name('get_purchase_detail');
+    
     Route::get('/getScheduleStatistics', 'StatisticsController@getScheduleStatistics')->name('getScheduleStatistics');
     Route::get('/getScheduleByMonthClass_detail', 'StatisticsController@getScheduleByMonthClass_detail')->name('get_schedule_detail_by_month');
     Route::get('/getTCKStudentStatus', 'StatisticsController@getTCKStudentStatus')->name('getTCKStudentStatus');

@@ -16,7 +16,7 @@ class BillController extends Controller {
     public function index() {
         $bills = DB::table('bills')->join('students', 'bills.student_id', 'students.id')->join('classmodels', 'classmodels.id', 'bills.class_id')->where('bills.state','<>','closed')
                         ->select('bills.id', 'students.name as student_name', 'bills.comment', 'bills.income_category', 'bills.total', 'bills.state', 'classmodels.name as class_id')->get();
-        $hasGeneratedLastMonthBill = $this->hasCreatedBills(now()->subMonth()->month===1?now()->subYear()->year: now()->year, now()->subMonth()->month);
+        $hasGeneratedLastMonthBill = $this->hasCreatedBills(now()->month===1?now()->subYear()->year: now()->year, now()->subMonth()->month);
         return view('backend.finance.bill.index')->with('bills', $bills)->with('has_created_bill_for_lastMonth', $hasGeneratedLastMonthBill);
     }
 
