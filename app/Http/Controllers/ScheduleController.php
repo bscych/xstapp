@@ -54,10 +54,11 @@ class ScheduleController extends Controller {
         }
         $holidays = \App\Model\Holiday::where('type', 0)->get();
         $workingdays = \App\Model\Holiday::where('type', 1)->get();
+        $course_end_date = $class->end_date;
         if ($agent == 'WECHAT') {
-            return View::make('backend.schedule.wechatIndex')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('student_id', $student_id)->with('isTG',$isTG);
+            return View::make('backend.schedule.wechatIndex')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('course_end_date',$course_end_date)->with('student_id', $student_id)->with('isTG',$isTG);
         } else {
-            return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('isTG',$isTG);
+            return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('course_end_date',$course_end_date)->with('isTG',$isTG);
         }
     }
     

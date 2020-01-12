@@ -18,12 +18,12 @@
                     @foreach($calendar as $date)
                     <form role="form" method="GET" action="{{ url('/schedule/create')}}">
                         @csrf
-                        <input type="text" class="form-control hidden" name="class_id" value="{{$class_id}}">
-                        <input type="text" class="form-control hidden" name="date" value="{{$date}}">  
+                        <input type="hidden" name="class_id" value="{{$class_id}}">
+                        <input type="hidden" name="date" value="{{$date}}">  
                         <div class="col-md-3">
                             <h5 class="">周{{date_format(date_create($date),'w')==0?'日':date_format(date_create($date),'w')}}</h5>
 
-                            @if($holidays->where('which_day',$date)->count()==1 or date_format(date_create($date),'w')==0 or date_format(date_create($date),'w')==6)
+                            @if($holidays->where('which_day',$date)->count()==1 or date_format(date_create($date),'w')==0 or date_format(date_create($date),'w')==6 or $course_end_date===$date)
 
                             @if($workingdays->where('which_day',$date)->count()==1 or !$isTG)
                             <button type="submit" class="btn btn-primary">

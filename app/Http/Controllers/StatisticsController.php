@@ -248,9 +248,9 @@ class StatisticsController extends Controller {
         } else {
            $dateString = now()->year . '-' . $month . '-';
         }
-//        if ($month == '0') {
-//            $dateString = (date('Y') - 1) . '-12';
-//        }
+        if ($month == '0') {
+            $dateString = (date('Y') - 1) . '-12';
+        }
         $dates = DB::table('schedules')
                         ->select('schedules.date', 'schedules.id')
                         ->where([['schedules.classmodel_id', $class_id], ['date', 'like', $dateString . '%']])->orderBy('date')->get();
