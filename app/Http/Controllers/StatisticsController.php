@@ -95,6 +95,7 @@ class StatisticsController extends Controller {
     }
 
     public function detail($year, $month) {
+       
         $spends = DB::table('spends')
                 ->join('constants', 'constants.id', 'spends.name_of_account')
                 ->select('constants.name as name_of_account', 'spends.amount', 'spends.which_day')->where('spends.finance_year', $year)->where('spends.finance_month', $month)->orderBy('spends.which_day', 'desc')
