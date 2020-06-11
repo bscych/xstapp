@@ -87,8 +87,8 @@ class StatisticsController extends Controller {
     }
 
     public function getMonthList() {
-        $income = DB::table('incomes')->where('finance_year', '>=', 2019)->where('finance_month', '>=', 11)->get()->sum('amount');
-        $spend = DB::table('spends')->where('finance_year', '>=', 2019)->where('finance_month', '>=', 11)->get()->sum('amount');
+        $income = DB::table('incomes')->where('finance_year', '>=', 2020)->get()->sum('amount') + DB::table('incomes')->where('finance_year', '=', 2019)->where('finance_month','>=',11)->get()->sum('amount');
+        $spend = DB::table('spends')->where('finance_year', '>=', 2020)->get()->sum('amount')+ DB::table('spends')->where('finance_year', '=', 2019)->where('finance_month','>=',11)->get()->sum('amount');
         return View::make('backend.finance.statistics.monthList')
                         ->with('totalIncome', $income)
                         ->with('totalSpend', $spend);

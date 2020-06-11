@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
 use App\Model\Constant;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Arr;
 
 class ScheduleController extends Controller {
 
@@ -20,48 +21,93 @@ class ScheduleController extends Controller {
         $student_id = $request->input('student_id');
         $agent = $request->input('AGENT');
         $class = \App\Model\Classmodel::find($class_id);
-        $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
+//        $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
         //托管类
-        $isTG = true;//添加托管标签
-        $date = [];
-        $time = time();
-        $week = date('w', $time);
-        if ($constant->name == '托管') {
-            //获取当前周几
-            for ($i = 0; $i < 7; $i++) {
-                $date[$i] = date('Y-m-d', strtotime('+' . $i - $week . ' days', $time));
-            }
-        } else {
-//            其他特长课类，只返回当前天
-            foreach(json_decode($class->which_day_1) as $day){
-                if(now()->dayOfWeek===$day){
-                    $date = \Illuminate\Support\Arr::prepend($date, now()->format('Y-m-d'));
-                }
-            }
-            $isTG = false;
-            /*
-             * for 
-             */
-//            $now = \Illuminate\Support\Carbon::now();
-//            $startFrom  = \Illuminate\Support\Carbon::create(2019, 11,1);
-//            $i=0;
-//            while($startFrom->lessThanOrEqualTo($now)){
-//                $date[$i] = $startFrom->toDateString();
-//                $startFrom->addDay();
-//                $i++;
+//        $isTG = true;//添加托管标签
+//        $date = [];
+//        $time = time();
+//        $week = date('w', $time);
+//        if ($constant->name == '托管') {
+//            //获取当前周几
+//            for ($i = 0; $i < 7; $i++) {
+//                $date[$i] = date('Y-m-d', strtotime('+' . $i - $week . ' days', $time));
 //            }
-            
-        }
-        $holidays = \App\Model\Holiday::where('type', 0)->get();
-        $workingdays = \App\Model\Holiday::where('type', 1)->get();
-        $course_end_date = $class->end_date;
+//        } else {
+////            其他特长课类，只返回当前天
+//            foreach(json_decode($class->which_day_1) as $day){
+//                if(now()->dayOfWeek===$day){
+//                    $date = \Illuminate\Support\Arr::prepend($date, now()->format('Y-m-d'));
+//                }
+//            }
+//            $isTG = false;            
+//        }
+//        $holidays = \App\Model\Holiday::where('type', 0)->get();
+//        $workingdays = \App\Model\Holiday::where('type', 1)->get();
         if ($agent == 'WECHAT') {
-            return View::make('backend.schedule.wechatIndex')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('course_end_date',$course_end_date)->with('student_id', $student_id)->with('isTG',$isTG);
+             return View::make('backend.schedule.wechatIndex')->with('calendar', $this->getScheduleDates($class))->with('class_id', $class_id)->with('student_id', $student_id);
+//            return View::make('backend.schedule.wechatIndex')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('class',$class)->with('student_id', $student_id)->with('isTG',$isTG);
         } else {
-            return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('course_end_date',$course_end_date)->with('isTG',$isTG);
+//            return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('class',$class)->with('isTG',$isTG);
+              return View::make('backend.schedule.index')->with('calendar', $this->getScheduleDates($class))->with('class_id', $class_id);   
         }
     }
     
+    function getScheduleDates($class) {
+        $data = collect();
+        $DATE_STRING_KEY = 'date';
+        $SUBMITTABLE_STRING_KEY = 'submittable';
+        $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
+        if ($constant->name != '托管') {
+            foreach (json_decode($class->which_day_1) as $day) {
+                if (now()->dayOfWeek === $day) {
+                    $dateArray = Arr::add(Arr::add([], $DATE_STRING_KEY, now()->format('Y-m-d')), $SUBMITTABLE_STRING_KEY, $this->canDisplay(now()->format('Y-m-d'), $class));
+                    $data->push($dateArray);
+                }
+            }
+        } else {
+            for ($i = 0; $i < 7; $i++) {
+                $date = now()->addDays($i - (now()->dayOfWeek))->format('Y-m-d');
+                $dateArray = Arr::add(Arr::add([], $DATE_STRING_KEY, $date), $SUBMITTABLE_STRING_KEY, $this->canDisplay($date, $class));
+                $data->push($dateArray);
+            }
+//            for($j=0;$j<7;$j++){
+//                $d = now()->addDays($j)->format('Y-m-d');
+//                 $dateArray = Arr::add(Arr::add([], $DATE_STRING_KEY, $d), $SUBMITTABLE_STRING_KEY, $this->canDisplay($d, $class));
+//                $data->push($dateArray);
+//            }
+        }
+
+        return $data;
+    }
+
+    /*
+     * 是否显示订餐考勤按钮，
+     */
+    function canDisplay($theDate, $class) {
+        $date = \Illuminate\Support\Carbon::make($theDate);
+        $holidays = \App\Model\Holiday::where('type', 0)->get();
+        $workingdays = \App\Model\Holiday::where('type', 1)->get();
+        $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
+        //周6，周日，国家法定假日，课程的开始的第一天，课程结束的最后一天
+        $classStart_date = \Illuminate\Support\Carbon::make($class->start_date)->format('Y-m-d');
+        $ClassClosed_date = \Illuminate\Support\Carbon::make($class->end_date)->format('Y-m-d');
+//        非托管的课程只显示当天，并且节假日都能打卡
+        if ($constant->name != '托管') {
+            return true;
+        } else {
+//        托管类的周日周六，国家法定节假日都不能打卡订餐
+            if ($date->dayOfWeek === 6 or $date->dayOfWeek === 0 or $holidays->where('which_day', $theDate)->count() === 1 or $ClassClosed_date <= $date or $classStart_date >= $date) {
+                if ($workingdays->where('which_day', $theDate)->count() === 0) {
+                    return false;
+                }else{
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }
+    }
+
     /*
      * to get schedule id in 2 cases:
      * 1. to get existing schedule id
@@ -90,16 +136,16 @@ class ScheduleController extends Controller {
      * 打卡日期已经过了，超级管理员和管理员可以补打卡
      */
     public function reCheckIn(Request $request) {
-        if(auth()->user()->hasanyrole('admin|superAdmin')){
-        $class_id = $request->input('class_id');
-        $date = $request->input('date');
-        $schedule_id = $this->getScheduleIdByClassIdAndDate($class_id, $date);
-        $attendance = $this->getAttendanceData($schedule_id, null);
-        return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
-        }else{
+        if (auth()->user()->hasanyrole('admin|superAdmin')) {
+            $class_id = $request->input('class_id');
+            $date = $request->input('date');
+            $schedule_id = $this->getScheduleIdByClassIdAndDate($class_id, $date);
+            $attendance = $this->getAttendanceData($schedule_id, null);
+            return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
+        } else {
             return '404';
         }
-        }
+    }
 
     /**
      * Show the form for creating a new resource.

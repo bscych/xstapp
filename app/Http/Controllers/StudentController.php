@@ -23,7 +23,7 @@ class StudentController extends Controller {
     public function index(Request $request) {
 
         $name = $request->input('name');
-        return View::make('backend.student.index')->with('students', Student::where('name', 'like', $name . '%')->paginate(15));
+        return View::make('backend.student.index')->with('students', Student::where('name', 'like', $name . '%')->orderByDesc('created_at')->paginate(15));
     }
 
     function getActiveCourseList($studentId) {

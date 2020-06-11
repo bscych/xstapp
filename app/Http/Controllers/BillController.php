@@ -141,7 +141,9 @@ class BillController extends Controller {
     function sortMealData($year, $month) {
 //        get schedules for the year and the month, get all schedule_student
         $datas = DB::table('schedule_student')->join('schedules', 'schedules.id', 'schedule_student.schedule_id')->join('classmodels', 'classmodels.id', 'schedules.classmodel_id')->join('courses', 'classmodels.course_id', 'courses.id')
-                        ->where('schedules.date', 'like', $year . '-' . $month . '%')
+                        ->whereYear('schedules.date',$year)
+                        ->whereMonth('schedules.date',$month)
+//                ->where('schedules.date', 'like', $year . '-' . $month . '%')
                         ->select('courses.snack_fee', 'schedule_student.student_id', 'schedules.classmodel_id', 'schedule_student.lunch', 'schedule_student.dinner', 'schedule_student.attended')->get();
 //        calculate lunch fee and dinner fee for each student
         $sortedData = [];
@@ -183,7 +185,6 @@ class BillController extends Controller {
     }
 
     function generateMealBills($year, $month) {
-
         $bills = collect();
         foreach ($this->sortMealData($year, $month) as $key => $value) {
             $this->formMealBill($key, $value, $year, $month);

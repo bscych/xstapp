@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\User;
-use Illuminate\Support\Arr;
+
 
 class UserController extends Controller {
 
@@ -29,11 +29,9 @@ class UserController extends Controller {
 //      }
 
         $users = DB::table('users')
-                        ->leftJoin('model_has_roles', 'model_has_roles.model_id', 'users.id')
-                        ->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')
-                        ->select('users.id', 'users.name', 'roles.name as role')
+                        ->select('users.id', 'users.name', 'users.email')
                         ->orderBy('users.created_at', 'desc')->paginate(10);
-        return View::make('backend.user.index')->with('users', $users);
+        return View::make('user.index')->with('users', $users);
     }
 
     /**

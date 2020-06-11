@@ -130,7 +130,7 @@ class SpendController extends Controller {
         $payment_method = $request->input('payment_method');
         $finance_year = $request->input('finance_year');
         $finance_month = $request->input('finance_month');
-        $comment = $request->input('comment');
+        $comment = $request->input('comment')===null?' ':$request->input('comment');
         
         $refund = new Refund;
         $refund->name = date("Y-m-d", time()) . Student::find($student_id)->name . "退费" . $amount;
