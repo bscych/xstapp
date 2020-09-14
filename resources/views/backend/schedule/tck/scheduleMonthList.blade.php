@@ -9,12 +9,9 @@
         <div class="box-content">
             <table class="table table-striped table-bordered">
                 <thead>
-
                     <tr>
                         <th class="text-center"><small>日期</small></th>
                         <th class="text-center"><small>出勤人数</small></th>
-
-
                     </tr>
                 </thead>
                 @php
@@ -46,9 +43,7 @@
             <p><a href="{{route('get_schedule_detail_by_month',['month'=>$month,'class_id'=>$class_id ])}}">本月明细</a>
                 @hasanyrole('admin|superAdmin')
                 <a href="#" class="btn btn-primary btn-sm btn-setting">补签到</a>
-               
                 @endhasanyrole
-
             </p>
         </div>      
 

@@ -6,7 +6,7 @@
     <div class="box col-md-12">
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
-                <h2><i class="glyphicon glyphicon-book"></i> 支出管理</h2>
+                <h2> 支出管理</h2>
             </div>
             <div class="box-content">
                 <p>

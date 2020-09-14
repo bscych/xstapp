@@ -62,6 +62,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/returnFee', 'SpendController@returnFee');
 
     Route::resource('/student', 'StudentController');
+    Route::resource('/visitor', 'VisitorController');
+    Route::post('/addContactHistory', 'VisitorController@addContactHistory')->name('visitor.addContactHistory');
+    Route::get('/convertToStudent', 'VisitorController@convertToStudent')->name('visitor.convertToStudent');
     Route::get('/getMykids', 'StudentController@getKids')->name('getMyKids');
     Route::get('/getKidsCourse/{student_id}', 'StudentController@getActiveCourses');
 
@@ -91,7 +94,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/divide', 'ClassController@divide');
     Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass');
     Route::get('/user/getTCKListByTeacherId','ClassController@getTCKListByTeacherId')->name('getTCKListByTeacherId');
-    
+    Route::get('/printList/{id}','ClassController@toPrintList')->name('class.printList');
+    Route::get('/printHomework','ClassController@printHomework')->name('class.print');
+    Route::get('/printHomeworkBatch','ClassController@printHomeworkBatch')->name('class.print_batch');
     
     Route::resource('/schedule', 'ScheduleController');
     Route::get('/reCheckIn','ScheduleController@reCheckIn')->name('reCheckIn');
@@ -101,6 +106,9 @@ Route::middleware(['auth'])->group(function () {
     
     Route::resource('/enroll', 'EnrollController');
 
+//    作业管理
+    Route::resource('/homework', 'HomeworkController');
+    
     Route::resource('/holiday', 'HolidayController');
     Route::resource('/menuItem', 'MenuItemController');
     Route::resource('/menu', 'MenuController');

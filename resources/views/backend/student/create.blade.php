@@ -70,6 +70,7 @@
                                 <option value="普罗旺斯小学">普罗旺斯小学</option>
                                 <option value="普罗旺斯一期幼儿园">普罗旺斯一期幼儿园</option>
                                 <option value="普罗旺斯二期幼儿园">普罗旺斯二期幼儿园</option>
+                                <option value="橡树学校">橡树学校</option>
                             </select>
                         </div>
 

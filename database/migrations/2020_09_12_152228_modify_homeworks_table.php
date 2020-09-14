@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ModifyCoursesTable extends Migration
+class ModifyHomeworksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class ModifyCoursesTable extends Migration
      */
     public function up()
     {
-        Schema::table('courses', function (Blueprint $table) {
-//            $table->integer('classroom_id')->nullable(true)->change();
-//            $table->double('unit_price',8,2)->nullable(true)->change();
-//            $table->integer('teacher_id')->nullable(true)->chnage();
+        Schema::table('homeworks', function (Blueprint $table) {
+           $table->string('other',512)->comment('其他作业，托管附加')->nullable();
         });
     }
 
@@ -27,7 +25,7 @@ class ModifyCoursesTable extends Migration
      */
     public function down()
     {
-        Schema::table('courses', function (Blueprint $table) {
+        Schema::table('homeworks', function (Blueprint $table) {
             //
         });
     }

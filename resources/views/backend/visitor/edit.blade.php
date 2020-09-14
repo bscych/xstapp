@@ -21,7 +21,7 @@
                         <div class="form-group{{ $errors->has('gender') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">性别 ： </label>
                             <select class="form-control" name="gender" >
-                                <option value="男" >男</option>
+                                <option value="男"  >男</option>
                                 <option value="女">女</option>
                             </select>
                         </div>
@@ -66,11 +66,11 @@
                         <div class="form-group{{ $errors->has('school') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">就读学校 ： </label>
                             <select class="form-control" name="school" >
-                                <option value="普罗旺斯小学" {{$student->school==="普罗旺斯小学"?'selected':''}}>普罗旺斯小学</option>
-                                                           
-                                <option value="普罗旺斯一期幼儿园" {{$student->school==="普罗旺斯一期幼儿园"?'selected':''}}>普罗旺斯一期幼儿园</option>
-                                <option value="普罗旺斯二期幼儿园" {{$student->school==="普罗旺斯二期幼儿园"?'selected':''}}>普罗旺斯二期幼儿园</option> 
-                                <option value="橡树学校" {{$student->school==="橡树学校"?'selected':''}}>橡树学校</option>
+                                <option value="高新园区中心小学">高新园区中心小学</option>
+                                <option value="普罗旺斯小学">普罗旺斯小学</option>
+                                <option value="普罗旺斯一期幼儿园">普罗旺斯一期幼儿园</option>
+                                <option value="普罗旺斯二期幼儿园">普罗旺斯二期幼儿园</option> 
+                                <option value="橡树学校">橡树学校</option>
 
                                 
                             </select>
@@ -79,13 +79,14 @@
 
                         <div class="form-group col-md-3">
                             <label class="control-label">年级 ： </label>
-                            <select class="form-control" name="grade" >                                
-                                <option value="1" {{$student->grade==="1"?'selected':''}}>1年级</option>
-                                <option value="2" {{$student->grade==="2"?'selected':''}}>2年级</option>
-                                <option value="3" {{$student->grade==="3"?'selected':''}}>3年级</option>
-                                <option value="4" {{$student->grade==="4"?'selected':''}}>4年级</option>
-                                <option value="5" {{$student->grade==="5"?'selected':''}}>5年级</option>
-                                <option value="6" {{$student->grade==="6"?'selected':''}}>6年级</option>
+                            <select class="form-control" name="grade" >
+                                <option value="0">幼儿园</option>
+                                <option value="1">1年级</option>
+                                <option value="2">2年级</option>
+                                <option value="3">3年级</option>
+                                <option value="4">4年级</option>
+                                <option value="5">5年级</option>
+                                <option value="6">6年级</option>
                                 
                             </select>
 

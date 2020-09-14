@@ -21,7 +21,6 @@
                         <tr>
                             <th>姓名</th>
                             <th>日期:{{$date}}</th>
-
                         </tr>
                     </thead>
                     <tbody>

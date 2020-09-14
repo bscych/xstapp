@@ -7,7 +7,6 @@
         <div class="box-inner">
             <div class="box-header well" data-original-title="">
                 <h2><i class="glyphicon glyphicon-th"></i>本周考勤</h2>
-
             </div>
             <div class="box-content">
                 <div class="row">
@@ -17,32 +16,25 @@
                         <input type="hidden" name="class_id" value="{{$class_id}}">
                         <input type="hidden" name="student_id" value="{{$student_id}}">
                         <input type="hidden" name="AGENT" value="WECHAT">
-                        <input type="hidden" name="date" value="{{$date}}">  
+                        <input type="hidden" name="date" value="{{data_get($date,'date')}}">  
                         <div class="col-md-3">
-                            <h5 class="">周{{date_format(date_create($date),'w')==0?'日':date_format(date_create($date),'w')}}</h5>
-                            @if($holidays->where('which_day',$date)->count()==1 or date_format(date_create($date),'w')==0 or date_format(date_create($date),'w')==6 or $course_end_date===$date)
+                            <h5 class="">周{{ \Illuminate\Support\Carbon::make(data_get($date,'date'))->dayOfWeek===0?'日':\Illuminate\Support\Carbon::make(data_get($date,'date'))->dayOfWeek}}</h5>
 
-                            @if($workingdays->where('which_day',$date)->count()==1)
+                            @if(data_get($date,'submittable'))
                             <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
+                                {{data_get($date,'date')}}
                             </button>
                             @else
                             <a class="btn btn-primary disabled">
-                                <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
+                                {{data_get($date,'date')}}
                             </a>
                             @endif
-
-                            @else
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-btn fa-user"></i>{{date_format(date_create($date),'Y-m-d')}}
-                            </button>
-                            @endif
+                        </div>  
                     </form>
-                </div>
-                @endforeach
-            </div>         
+                    @endforeach
+                </div>         
+            </div>
         </div>
     </div>
-</div>
 </div>
 @endsection

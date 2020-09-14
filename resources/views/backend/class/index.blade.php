@@ -71,6 +71,7 @@
                                 @endif
                                 @hasanyrole('admin|superAdmin|supervisor')
                                 <a class="btn btn-primary btn-sm" href="{{route('class.edit',[$model->id])}}">编辑</a>
+                                <a class="btn btn-primary btn-sm" href="{{route('class.printList',[$model->id])}}">打印作业</a>
                                 @endhasanyrole
                                 @hasanyrole('admin|superAdmin')
                                 @csrf

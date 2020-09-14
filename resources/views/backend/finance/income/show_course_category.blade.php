@@ -12,8 +12,11 @@
                  <h2><i class=""></i>选择课程类别</h2>
                  <p>
                      @foreach($incomesCategories as $category)
-                    <a class="btn btn-primary btn-lg" href="{{ route('income.create',['student_id'=>$student_id,'category'=>$category->name]) }}">{{$category->name}}</a>
+                    <a class="btn btn-primary btn-lg" href="{{ route('income.create',['student_id'=>$student_id,'category'=>$category->name]) }}">{{$category->label_name}}</a>
                     @endforeach
+                </p>
+                <p>
+                    
                 </p>
             
             </div>

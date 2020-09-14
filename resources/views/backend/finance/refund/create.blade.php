@@ -66,7 +66,7 @@
                          <div id="datetimepicker" class="input-append date form-group{{ $errors->has('finance_year') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">财务年份 ： </label>
                             <select class="form-control" name="finance_year"> 
-                               @for($i=2018;$i<=date_format(date_create(),"Y");$i++)
+                               @for($i=now()->year;$i>=2018;$i--)
                                 <option value="{{$i}}">{{$i}}年</option>
                                 @endfor
                             </select>

@@ -21,7 +21,7 @@ class ClassController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-      
+
         if ($request->input('course_id') != null) {
             $classes = DB::table('classmodels')
                     ->join('courses', 'classmodels.course_id', 'courses.id')
@@ -126,7 +126,7 @@ class ClassController extends Controller {
             $claz->which_day_1 = $weekdays->toJson();
             $claz->save();
             Session::flash('message', 'Successfully created!');
-            return Redirect::route('class.index',['course_id'=>$claz->course_id]);
+            return Redirect::route('class.index', ['course_id' => $claz->course_id]);
         }
     }
 
@@ -174,7 +174,7 @@ class ClassController extends Controller {
 
         // process the login
         if ($validator->fails()) {
-            return Redirect::to('class/edit/'.$id)->withErrors($validator);
+            return Redirect::to('class/edit/' . $id)->withErrors($validator);
         } else {
             $class = \App\Model\Classmodel::find($id);
             $class->name = $request->input('name');
@@ -187,7 +187,7 @@ class ClassController extends Controller {
             }
             $class->which_day_1 = $weekdays->toJson();
             $class->save();
-            return Redirect::route('class.index',['course_id'=>$class->course_id]);
+            return Redirect::route('class.index', ['course_id' => $class->course_id]);
         }
     }
 
@@ -250,6 +250,40 @@ class ClassController extends Controller {
                 ->update(['classmodel_id' => null]);
 
         return Redirect::to('getStudentList/' . $course_id);
+    }
+
+    public function toPrintList($id) {
+        $students = $this->getStudentsByClassId($id);
+        $homeworks = $this->getTodayHomework();
+        return view('backend.class.print_list', ['students' => $students, 'homeworks' => $homeworks, 'classmodel_id' => $id]);
+    }
+
+    public function printHomework(Request $request) {
+        $student_id = $request->input('student_id');
+        $class_id = $request->input('class_id');      
+        $students = $this->getStudentsByClassId($class_id);
+        if ($student_id != null) {//print a single student's homework
+            $student = $students->where('id',$student_id)->first();
+            $students = collect();
+            $students->push($student);
+        }
+        $attend_students = $students->where('attended','1')->all();
+        $homeworks = $this->getTodayHomework();
+        return view('backend.class.student_homework', ['students' => $attend_students, 'homeworks' => $homeworks]);
+    }   
+    
+    private function getStudentsByClassId($class_id) {
+        $students = DB::table('schedule_student')
+                        ->join('students', 'schedule_student.student_id', 'students.id')
+                        ->join('schedules','schedules.id','schedule_student.schedule_id')
+                        ->where([['schedules.classmodel_id', $class_id],['schedules.date',now()->format('Y-m-d')]])
+                        ->select('students.id', 'students.name', 'students.school', 'students.grade', 'students.class_room','schedule_student.attended','schedule_student.lunch','schedule_student.dinner')->get();
+        return $students;
+    }
+
+    private function getTodayHomework() {
+        $today = now()->format('Y-m-d');
+        return \App\Model\Homework::where('date', $today)->get();
     }
 
 }

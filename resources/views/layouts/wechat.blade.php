@@ -11,7 +11,7 @@
         <title>{{ config('app.name') }}</title>
 
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <!--<link href="{{ asset('css/app.css') }}" rel="stylesheet">-->
 
         <link href="{{asset('css/bootstrap-cerulean.min.css')}}" rel="stylesheet">
 
@@ -76,6 +76,7 @@
                                 <li><a class="ajax-link" href="{{ url('/constant') }}"><i class="glyphicon glyphicon-plus"></i><span> 数据字典</span></a>
                                 </li>
                                 <li><a class="ajax-link" href="{{ url('/student') }}"><i class="glyphicon glyphicon-list-alt"></i><span> 学生管理</span></a>
+                                <li><a class="ajax-link" href="{{ route('visitor.index') }}"><i class="glyphicon glyphicon-list-alt"></i><span> 到访管理</span></a>
                                 <li><a class="ajax-link" href="{{ url('/menuItem') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜品管理</span></a></li>
                                 <li><a class="ajax-link" href="{{ url('/menu') }}"><i class="glyphicon glyphicon-eye-open"></i><span>菜单管理</span></a></li>
                                 <!--li><a class="ajax-link" href="{{ url('/classroom') }}"><i class="glyphicon glyphicon-eye-open"></i><span>教室管理</span></a></li-->
@@ -102,6 +103,7 @@
                                 <li><a class="ajax-link" href="{{ url('/class') }}"><i class="glyphicon glyphicon-edit"></i><span> 班级管理</span></a></li>
                                 <li><a class="ajax-link" href="{{ route('code.index') }}"><i class="glyphicon glyphicon-edit"></i><span> 查询注册码</span></a></li>
                                 <li><a class="ajax-link" href="{{ route('getMyWorkingSheet') }}"><i class="glyphicon glyphicon-edit"></i><span> 我的特长课时统计</span></a></li>
+                                <li><a class="ajax-link" href="{{ route('homework.index') }}"><span> 作业管理</span></a></li>
                                 @endhasanyrole
 
                                 @hasanyrole('admin|superAdmin|supervisor')
@@ -129,10 +131,9 @@
             <hr>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <p class="col-md-9 col-sm-9 col-xs-12 copyright">&copy; <a href="#" target="_blank">普瑞教育</a>{{date('Y')}}</p>
-
-                    <p class="col-md-3 col-sm-3 col-xs-12 powered-by">Powered by: <a
-                            href="#">普瑞教育</a></p>
+                    <p class="text-center">&copy; <a href="#" target="_blank">普瑞教育</a>{{date('Y')}}</p>
+                    <p class="text-center"><a href="http://beian.miit.gov.cn/"><img src="http://www.beian.gov.cn/img/new/gongan.png">辽ICP备18013286号</a></p>
+                    <p class="text-center">主办单位: <a href="#">普瑞教育</a></p>
                 </div>
 
             </footer>

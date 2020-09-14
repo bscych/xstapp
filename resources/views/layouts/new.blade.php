@@ -62,7 +62,7 @@
       @yield('header')
 
         <!-- Page Content -->
-        <div class="container ">
+        <div class="container">
             @yield('content')
          
         </div>
@@ -70,9 +70,11 @@
 
         <!-- Footer -->
         <footer class="py-5 bg-dark">
-            <div class="container">
-                <p class="m-0 text-center text-white">Copyright &copy; 普瑞教育 {{date('Y')}}</p>
-            </div>
+             <div class="container">
+                    <p class="text-center white"><a href="#" target="_blank">&copy;普瑞教育{{date('Y')}}</a></p>
+                    <p class="text-center"><a href="http://beian.miit.gov.cn/"><img src="http://www.beian.gov.cn/img/new/gongan.png">辽ICP备18013286号</a></p>
+                    <p class="text-center"><a href="#">主办单位:普瑞教育</a></p>
+                </div>
             <!-- /.container -->
         </footer>
 
