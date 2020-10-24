@@ -35,5 +35,13 @@ class HomeController extends Controller {
         
         return View::make('home')->with('courses', $courses)->with('schedule_students',$schedule_students);
     }
+    
+    public function clean() {
+        $Schedules = \App\Model\Schedule::where('date','<','2020-6-1')->select('id')->get();
+        DB::table('schedule_student')->whereIn('schedule_id',$Schedules->toArray())->delete();
+        DB::table('schedules')->whereIn('id',$Schedules->toArray())->delete();
+        redirect()->to('home');
+        
+    }
 
 }

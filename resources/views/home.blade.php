@@ -37,6 +37,7 @@
     </div>
     <!--/span-->
    @endhasanyrole
+   <a href="{{route('home.cleanup')}}" class="btn btn-sm btn-outline-info">清除历史数据</a>
 </div><!--/row-->
 
 

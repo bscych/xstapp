@@ -52,7 +52,7 @@ Route::any('/wechat', 'WeChatController@serve');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
+Route::get('/cleanup', 'HomeController@clean')->name('home.cleanup');
 Route::middleware(['auth'])->group(function () {
 
     Route::resource('/constant', 'ConstantController');
