@@ -11,23 +11,33 @@
     </head>
     <body>
         <div class="container-fluid">
-            <div style="height: 15cm">
+           
             @foreach($students as $student)   
+           <img src="{{asset('/img/logo20.png')}}" height="50px" class="float-left"> <h2 class="text-center"> {{$student->name}}{{now()->format('Y-m-d')}}的分享</h2>
             <table class="table table-bordered d-print-table">
                 <thead>
-                    <tr>
-                        <th class="align-middle text-center" width="20%">{{$student->name}}</th>                             
-                        <td class="align-middle text-center" width="20%">{{$student->lunch==='1'?' 午餐 ':' '}}  {{$student->dinner==='1'?' 晚餐 ':' '}}</td>
-                        <td class="align-middle text-center" width="20%">{{$student->grade.'年'.$student->class_room.'班'}}</td>
-                        <td class="align-middle text-center" width="20%">{{$student->school}}</td>
-                        <td class="align-middle text-center" width="20%">{{now()->format('Y-m-d')}}</td>      
+                    <tr>                
+                        <td class="align-middle text-center" width="33.3%">用餐：{{$student->lunch==='1'?' 午餐 ':' '}}  {{$student->dinner==='1'?' 晚餐 ':' '}}</td>
+                        <td class="align-middle text-center" width="33.3%">{{$student->school}}</td>
+                        <td class="align-middle text-center" width="33.3%">{{$student->grade.'年'.$student->class_room.'班'}}</td>          
                     </tr>
                 </thead>                             
                 <tbody>                    
-                    <!--tr>                           
+                    <tr>                           
                         <td class="align-middle text-center" width="20%">家长嘱托</td>  
-                        <td colspan="4"> </td>
-                    </tr-->  
+                        @php $notes_from_parent = collect($notes->where('student_id',$student->id)->all()); 
+                        $note = '';    
+                        if($notes_from_parent->count()===1){
+                            $note = $notes_from_parent->first()->note;
+                        }
+                        if($notes_from_parent->count()>1){                      
+                        foreach($notes_from_parent as $not){
+                            $note = $note.$not->note.'。';
+                            }
+                        }
+                        @endphp
+                        <td colspan="4">{{$note}}</td>
+                    </tr>  
                     <!-- 每日总结-->
                     <tr>
                         <td width='20%' class="align-middle text-center">每日总结 </td>
@@ -36,12 +46,12 @@
                 </tbody>
             </table>
             <!-- -->
-            <table class="table table-bordered">  
+            <table class="table table-bordered border-dark">  
                 <thead>                             
                 <th width='35%' colspan="2" class="align-middle text-center">作业是否完成&作业内容</th>
-                <th width='35%' class="align-middle text-center">出现的错误</th>
-                <th width='20%' class="align-middle text-center">错误原因</th>
-                <th width='10%' class="align-middle text-center">如何纠正</th>
+                <th width='65%' class="align-middle text-center">备注</th>
+                <!--th width='20%' class="align-middle text-center">错误原因</th>
+                <th width='10%' class="align-middle text-center">如何纠正</th-->
                 </thead>                           
                 <tbody>
                     @php $homework = $homeworks->where('date',now()->format('Y-m-d'))
@@ -55,10 +65,10 @@
                         @if($loop->index===0)
                         <th rowspan="{{$loop->count}}" width='5%' class="align-middle text-center">语<br>文<br></th>
                         @endif                            
-                        <td scope="row" width='30%'><input type="checkbox"> {{$loop->index+1 . ' '.$chinese_task}}</td>
-                        <td width='35%'> </td>
-                        <td width='20%'> </td>
-                        <td width='10%'> </td>
+                        <td scope="row" width='30%'><input type="checkbox"> {{$loop->index+1 . '. '.$chinese_task}}</td>
+                        <td width='65%'> </td>
+                        <!--td width='20%'> </td>
+                        <td width='10%'> </td-->
                     </tr>
                     @endforeach  
                     <!-- 数学作业-->
@@ -67,10 +77,10 @@
                         @if($loop->index===0)
                         <th rowspan="{{$loop->count}}" width='5%' class="align-middle text-center">数<br>学<br></th>     
                         @endif
-                        <td scope="row" width='30%'><input type="checkbox"> {{$loop->index+1 . ' '.$math_task}}</td>
-                        <td width='35%'> </td>
-                        <td width='20%'> </td>
-                        <td width='10%'> </td>
+                        <td scope="row" width='30%'><input type="checkbox"> {{$loop->index+1 . '. '.$math_task}}</td>
+                        <td width='65%'> </td>
+                        <!--td width='20%'> </td>
+                        <td width='10%'> </td-->
                     </tr>
                     @endforeach  
                     <!-- 英语作业-->
@@ -79,10 +89,10 @@
                         @if($loop->index===0)
                         <th rowspan="{{$loop->count}}" width='5%' class="align-middle text-center">英<br>语<br></th>                          
                         @endif        
-                        <td scope="row" width='30%'><input type="checkbox"> {{$loop->index+1 . ' '.$english_task}}</td>
-                        <td width='35%'> </td>
-                        <td width='20%'> </td>
-                        <td width='10%'> </td>
+                        <td scope="row" width='30%'><input type="checkbox"> {{$loop->index+1 . '. '.$english_task}}</td>
+                        <td width='65%'> </td>
+                        <!--td width='20%'> </td>
+                        <td width='10%'> </td-->
                     </tr>
                     @endforeach 
                     <!-- 托管附加作业-->  
@@ -91,17 +101,17 @@
                         @if($loop->index===0)
                         <th rowspan="{{$loop->count}}" width='5%' class="align-middle text-center">托<br>管<br>付<br>加</th>                          
                         @endif        
-                        <td scope="row" width='30%'><input type="checkbox"> {{$loop->index+1 . ' '.$other_task}}</td>
-                        <td width='35%'> </td>
-                        <td width='20%'> </td>
-                        <td width='10%'> </td>
+                        <td scope="row" width='30%'><input type="checkbox"> {{$loop->index+1 . '. '.$other_task}}</td>
+                       <td width='65%'> </td>
+                        <!--td width='20%'> </td>
+                        <td width='10%'> </td-->
                     </tr>
                     @endforeach  
                 </tbody>
             </table>
 
             @endforeach
-            </div>
+
         </div>
 
 

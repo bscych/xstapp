@@ -50,7 +50,7 @@
         <img class="img-fluid rounded" src="{{asset('img/helpers/classlist.PNG')}}" alt="">
 
         <hr>
-           <p class="lead">6.1.2. 当老师选择考勤管理时，系统会显示今天的日历，如果今天不上课，则不会出现今天的日历，考勤只能在当天进行，不能提前一天或者延后一天</p>
+           <p class="lead">6.1.2. 当老师选择考勤管理时，系统会显示，今天的日历，如果今天不上课，则不会出现今天的日历，考勤只能在当天进行，不能提前一天或者延后一天</p>
         <!-- Preview Image -->
         <img class="img-fluid rounded" src="{{asset('img/helpers/classOfToday.PNG')}}" alt="">
         <hr>

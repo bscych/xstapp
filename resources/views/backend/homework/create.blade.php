@@ -1,7 +1,5 @@
 @extends('layouts.wechat')
-
 @section('content')
-
 <div class="row">
     <div class="box col-md-12">
         <div class="box-inner">
@@ -20,7 +18,7 @@
                                 <div class="row">
 
                                     <div class="form-group{{ $errors->has('school_name') ? ' has-error' : '' }}  col-md-4">
-                                        <label class="control-label"> 学校</label>
+                                        <label class="control-label">学校<small class="text-danger">（创建后不可修改）</small></label>
                                         <select class="form-control" name="school_name">
                                             @foreach($schools as $school)
                                             <option value="{{$school->name}}">{{$school->name}}</option>                                          
@@ -29,7 +27,7 @@
                                     </div>
 
                                     <div class="form-group{{ $errors->has('grade') ? ' has-error' : '' }}  col-md-4">
-                                        <label class="control-label"> 年级</label>
+                                        <label class="control-label">年级<small class="text-danger">（创建后不可修改）</small></label>
                                         <select class="form-control" name="grade">
                                             @for ($i = 0; $i < 9; $i++)
                                             <option value="{{$i+1}}">{{$i+1}}</option> 
@@ -38,7 +36,7 @@
 
                                     </div>
                                     <div  class="form-group{{ $errors->has('class') ? ' has-error' : '' }}  col-md-4">
-                                        <label class="control-label"> 班级</label>
+                                        <label class="control-label">班级<small class="text-danger">（创建后不可修改）</small></label>
                                         <select class="form-control" name="class">
                                             @for ($i = 0; $i < 9; $i++)
                                             <option value="{{$i+1}}">{{$i+1}}</option> 
@@ -64,15 +62,15 @@
 
                                     <div class="form-group{{ $errors->has('math') ? ' has-error' : '' }} col-md-6">
                                         <label class="control-label">数学作业 1 ： </label>
-                                        <input type="text" class="form-control" name="m_1" value="{{ old('name') }}">  
+                                        <input type="text" class="form-control" name="m_1" value="{{ old('math') }}">  
                                         <label class="control-label">数学作业 2 ： </label>
-                                        <input type="text" class="form-control" name="n_2" value="{{ old('name') }}">
+                                        <input type="text" class="form-control" name="m_2" value="{{ old('math') }}">
                                         <label class="control-label">数学作业 3 ： </label>
-                                        <input type="text" class="form-control" name="m_3" value="{{ old('name') }}">
+                                        <input type="text" class="form-control" name="m_3" value="{{ old('math') }}">
                                         <label class="control-label">数学作业 4 ： </label>
-                                        <input type="text" class="form-control" name="m_4" value="{{ old('name') }}">
+                                        <input type="text" class="form-control" name="m_4" value="{{ old('math') }}">
                                         <label class="control-label">数学作业 5 ： </label>
-                                        <input type="text" class="form-control" name="m_5" value="{{ old('name') }}">
+                                        <input type="text" class="form-control" name="m_5" value="{{ old('math') }}">
                                     </div>
 
                                 </div>

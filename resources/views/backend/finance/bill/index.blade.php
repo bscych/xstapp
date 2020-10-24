@@ -10,11 +10,13 @@
             </div>
             <div class="box-content">
                 <p>
-                    <a class="btn btn-primary" href="{{ route('bill.create') }}">创建账单</a> 
-                    @if($has_created_bill_for_lastMonth)
+                 <!--   <a class="btn btn-primary" href="{{ route('bill.create') }}">创建账单</a> -->
+                <h5>{{$bills->count()===0?'账单已对完':''}}</h5>  
+		 
+		 @if($has_created_bill_for_lastMonth)
                    
                     @else
-                     <a class="btn btn-primary" href="{{ route('batchBillByYearMonth',['year'=>now()->subMonth()->month===1?now()->subYear()->year:now()->year,'month'=>now()->subMonth()->month]) }}">批量生成{{now()->subMonth()->month}}月账单</a>  
+                     <a class="btn btn-primary" href="{{ route('batchBillByYearMonth',['year'=>now()->month===1?now()->subYear()->year:now()->year,'month'=>now()->subMonth()->month]) }}">批量生成{{now()->subMonth()->month}}月账单</a>  
                     @endif
                 </p>
             </div>

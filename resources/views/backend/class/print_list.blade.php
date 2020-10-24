@@ -22,7 +22,7 @@
                 <tbody>
                     @foreach($students as $student)
                     <tr>
-                        <td class="text-center">{{$student->name.$student->id}}</td>                           
+                        <td class="text-center">{{$student->name}}</td>                           
                         <td class="text-center">
                             {{$student->school}}
                         </td>

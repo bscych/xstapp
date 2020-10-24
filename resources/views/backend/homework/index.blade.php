@@ -54,7 +54,7 @@
                                 </td>
 
                             <td class="center">
-                            
+                                <a href="{{route('homework.edit',[$model->id])}}" class="btn btn-primary btn-sm">修改</a>
                             </td>
 
                         </tr>

@@ -56,7 +56,7 @@
                                 </div>
                                  <div class="row">
                                     <div class="form-group  col-md-12" >
-                                        <label class="control-label">每周上课频率：</label>
+                                        <label class="control-label">每周上课频率（每天托管不需要选择哪天，如果选择哪天了，只是当天能打卡，订餐）：</label>
                                         @for($i=0;$i<7;$i++)
                                         <label class="checkbox-inline"><input type="checkbox" name="{{$i}}">周{{$i===0?'日':$i}}</label>
                                         @endfor

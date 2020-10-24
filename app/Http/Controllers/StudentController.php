@@ -53,7 +53,9 @@ class StudentController extends Controller {
 
     public function getActiveCourses($student_id) {
 
-        return View::make('backend.student.wechatCourseList')->with('courses', $this->getActiveCourseList($student_id))->with('student', Student::find($student_id));
+        $note = \App\Model\Parentnote::where('student_id',$student_id)->where('parent_id', auth()->user()->id)->where('date',now()->format('Y-m-d'))->first();
+        
+        return View::make('backend.student.wechatCourseList')->with('courses', $this->getActiveCourseList($student_id))->with('student', Student::find($student_id))->with('note',$note);
     }
 
     /**

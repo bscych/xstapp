@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Course;
 use App\Model\ClassRoom;
-
 class ClassController extends Controller {
 
     /**
@@ -269,7 +268,14 @@ class ClassController extends Controller {
         }
         $attend_students = $students->where('attended','1')->all();
         $homeworks = $this->getTodayHomework();
-        return view('backend.class.student_homework', ['students' => $attend_students, 'homeworks' => $homeworks]);
+        $notes = \App\Model\Parentnote::where('date',now()->format('Y-m-d'))->get();
+        $printable_students = collect();
+        foreach($attend_students as $std){
+            if($homeworks->where('school_name',$std->school)->where('grade',$std->grade)->where('class',$std->class_room)->first()!=null){
+                $printable_students->push($std);
+            }
+        }
+        return view('backend.class.student_homework', ['students' => $printable_students, 'homeworks' => $homeworks,'notes'=>$notes]);
     }   
     
     private function getStudentsByClassId($class_id) {

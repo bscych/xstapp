@@ -21,37 +21,16 @@ class ScheduleController extends Controller {
         $student_id = $request->input('student_id');
         $agent = $request->input('AGENT');
         $class = \App\Model\Classmodel::find($class_id);
-//        $constant = Constant::find(\App\Model\Course::find($class->course_id)->course_category_id);
-        //托管类
-//        $isTG = true;//添加托管标签
-//        $date = [];
-//        $time = time();
-//        $week = date('w', $time);
-//        if ($constant->name == '托管') {
-//            //获取当前周几
-//            for ($i = 0; $i < 7; $i++) {
-//                $date[$i] = date('Y-m-d', strtotime('+' . $i - $week . ' days', $time));
-//            }
-//        } else {
-////            其他特长课类，只返回当前天
-//            foreach(json_decode($class->which_day_1) as $day){
-//                if(now()->dayOfWeek===$day){
-//                    $date = \Illuminate\Support\Arr::prepend($date, now()->format('Y-m-d'));
-//                }
-//            }
-//            $isTG = false;            
-//        }
-//        $holidays = \App\Model\Holiday::where('type', 0)->get();
-//        $workingdays = \App\Model\Holiday::where('type', 1)->get();
+
         if ($agent == 'WECHAT') {
-             return View::make('backend.schedule.wechatIndex')->with('calendar', $this->getScheduleDates($class))->with('class_id', $class_id)->with('student_id', $student_id);
+            return View::make('backend.schedule.wechatIndex')->with('calendar', $this->getScheduleDates($class))->with('class_id', $class_id)->with('student_id', $student_id);
 //            return View::make('backend.schedule.wechatIndex')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('class',$class)->with('student_id', $student_id)->with('isTG',$isTG);
         } else {
 //            return View::make('backend.schedule.index')->with('calendar', $date)->with('class_id', $class_id)->with('holidays', $holidays)->with('workingdays', $workingdays)->with('class',$class)->with('isTG',$isTG);
-              return View::make('backend.schedule.index')->with('calendar', $this->getScheduleDates($class))->with('class_id', $class_id);   
+            return View::make('backend.schedule.index')->with('calendar', $this->getScheduleDates($class))->with('class_id', $class_id);
         }
     }
-    
+
     function getScheduleDates($class) {
         $data = collect();
         $DATE_STRING_KEY = 'date';
@@ -70,11 +49,6 @@ class ScheduleController extends Controller {
                 $dateArray = Arr::add(Arr::add([], $DATE_STRING_KEY, $date), $SUBMITTABLE_STRING_KEY, $this->canDisplay($date, $class));
                 $data->push($dateArray);
             }
-//            for($j=0;$j<7;$j++){
-//                $d = now()->addDays($j)->format('Y-m-d');
-//                 $dateArray = Arr::add(Arr::add([], $DATE_STRING_KEY, $d), $SUBMITTABLE_STRING_KEY, $this->canDisplay($d, $class));
-//                $data->push($dateArray);
-//            }
         }
 
         return $data;
@@ -83,6 +57,7 @@ class ScheduleController extends Controller {
     /*
      * 是否显示订餐考勤按钮，
      */
+
     function canDisplay($theDate, $class) {
         $date = \Illuminate\Support\Carbon::make($theDate);
         $holidays = \App\Model\Holiday::where('type', 0)->get();
@@ -99,11 +74,19 @@ class ScheduleController extends Controller {
             if ($date->dayOfWeek === 6 or $date->dayOfWeek === 0 or $holidays->where('which_day', $theDate)->count() === 1 or $ClassClosed_date <= $date or $classStart_date >= $date) {
                 if ($workingdays->where('which_day', $theDate)->count() === 0) {
                     return false;
-                }else{
-                    return true;
+                } else {
+                return true;
                 }
             } else {
-                return true;
+                //                    如果选择特定的哪一天托管，那么检查which_day_1是否为空
+                    $whichDays = collect(json_decode($class->which_day_1));
+                    if ($whichDays->isEmpty()) {
+                        //            如果每周正常托管，class的上课频率一周内每天都没勾选，就返回true
+                        return true;
+                    } else {
+//              which_day_1不为空则说明，特定某天托管，只允许订当天的餐
+                        return $whichDays->contains($date->dayOfWeek);
+                    }
             }
         }
     }
@@ -113,8 +96,9 @@ class ScheduleController extends Controller {
      * 1. to get existing schedule id
      * 2. to create a new schedule and fetch the id
      */
-    function getScheduleIdByClassIdAndDate($class_id,$date) {
-         $schedules = DB::table('schedules')->where([
+
+    function getScheduleIdByClassIdAndDate($class_id, $date) {
+        $schedules = DB::table('schedules')->where([
                     ['classmodel_id', '=', $class_id],
                     ['date', '=', $date],
                 ])->get();
@@ -132,9 +116,11 @@ class ScheduleController extends Controller {
         }
         return $schedule_id;
     }
+
     /*
      * 打卡日期已经过了，超级管理员和管理员可以补打卡
      */
+
     public function reCheckIn(Request $request) {
         if (auth()->user()->hasanyrole('admin|superAdmin')) {
             $class_id = $request->input('class_id');
@@ -157,8 +143,8 @@ class ScheduleController extends Controller {
         $student_id = $request->input('student_id');
         $date = $request->input('date');
         // get the schedule 
-       $schedule_id = $this->getScheduleIdByClassIdAndDate($class_id, $date);
-       $attendance = $this->getAttendanceData($schedule_id, $student_id);
+        $schedule_id = $this->getScheduleIdByClassIdAndDate($class_id, $date);
+        $attendance = $this->getAttendanceData($schedule_id, $student_id);
 
         if ($this->canEditByDateTime($date)) {
             if ($request->input('AGENT') == 'WECHAT') {
@@ -175,7 +161,7 @@ class ScheduleController extends Controller {
                 return View::make('backend.schedule.wechatDetail')->with('student', $attendance)->with('date', $date)->with('class_id', $class_id)->with('menu', $menu)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
             } else {
                 return View::make('backend.schedule.detail')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
-            //电脑版的特长课可以修改
+                //电脑版的特长课可以修改
 //                 return View::make('backend.schedule.create')->with('students', $attendance)->with('date', $date)->with('class_id', $class_id)->with('meal_flags', $this->getMealFlags($class_id))->with('exception', $this->getDinnerExceptions());
             }
         }
@@ -197,7 +183,7 @@ class ScheduleController extends Controller {
         //比今天晚的餐，只能查看，不能编辑
         return false;
     }
-  
+
     function createNewSchedule($class_id, $date) {
         // create a new schedule and fetch the ID
         $schedule = new \App\Model\Schedule;
@@ -268,28 +254,25 @@ class ScheduleController extends Controller {
         $field = $request->input('field');
         $value = $request->input('value') == 'true' ? 1 : 0;
 
-        if($field=='attended'){
-            $student_id = DB::table('schedule_student')->where('id',$schedule_student_id)->get()->first()->student_id;
-            $course_student =  DB::table('course_student')->join('schedules','schedules.classmodel_id','course_student.classmodel_id')->join('schedule_student','schedule_student.schedule_id','schedules.id')->where([['schedule_student.id', $schedule_student_id],['course_student.student_id','=',$student_id]])->select('course_student.id','course_student.how_many_left')->get()->first();
-           
-            $how_many_left = $course_student->how_many_left==null?0:$course_student->how_many_left;
-            if($value>0){
+        if ($field == 'attended') {
+            $student_id = DB::table('schedule_student')->where('id', $schedule_student_id)->get()->first()->student_id;
+            $course_student = DB::table('course_student')->join('schedules', 'schedules.classmodel_id', 'course_student.classmodel_id')->join('schedule_student', 'schedule_student.schedule_id', 'schedules.id')->where([['schedule_student.id', $schedule_student_id], ['course_student.student_id', '=', $student_id]])->select('course_student.id', 'course_student.how_many_left')->get()->first();
+
+            $how_many_left = $course_student->how_many_left == null ? 0 : $course_student->how_many_left;
+            if ($value > 0) {
                 //如果值為1 則剩餘次數上-1
                 $how_many_left--;
-            }else{
+            } else {
                 //如果值為0 則剩餘次數上+1
                 $how_many_left++;
             }
-             DB::table('course_student')
-                ->where('id', $course_student->id)
-                ->update(['how_many_left' => $how_many_left]);
+            DB::table('course_student')
+                    ->where('id', $course_student->id)
+                    ->update(['how_many_left' => $how_many_left]);
         }
-             DB::table('schedule_student')
+        DB::table('schedule_student')
                 ->where('id', $schedule_student_id)
                 ->update([$field => $value]);
-        
-        
-       
     }
 
     /**
@@ -309,7 +292,7 @@ class ScheduleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-      
+        
     }
 
     /**

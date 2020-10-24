@@ -39,6 +39,33 @@
 
             </div>
         </div>
+        <br>
+        <!--div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2><i class="glyphicon glyphicon-book"></i> {{'今天的留言'}} </h2>
+            </div>
+
+            <div class="box-content">
+                <div><small>留言是让父母给托管班老师的留言、需要注意的问题，比如今天要在几点前吃完饭，几点来接，几点上什么课，附加的家庭作业等等....请在当天3点前（周三12点前）留言,最多200字</small></div>
+                <p> 
+                    @php $dayWeek = now()->dayOfWeek;  $endTimeOnWed = now()->setTime(12, 0); $endTime = now()->setTime(15, 0); $clsStr = 'btn btn-primary btn-setting';
+                     if($dayWeek===3){
+                        if(now()->greaterThan($endTimeOnWed)){
+                         $clsStr = 'btn btn-primary btn-setting disabled';
+                        }
+                     }else{
+                        if(now()->greaterThan($endTime)){
+                        $clsStr = 'btn btn-primary btn-setting disabled';
+                        }
+                     }
+                    @endphp                  
+                    <a href="#" class="{{$clsStr}}" onclick="">留言</a>
+                    
+                </p>
+                <p>当前留言：{{$note===null?'':$note->note}}</p>
+               
+            </div>
+        </div-->
     </div>
     <!--/span-->
 
@@ -46,3 +73,55 @@
 
 
 @endsection
+
+
+<div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: hidden;">
+    <div class="modal-dialog">
+        @if($note!=null)
+             <form role="form" method="POST" action="{{ route('parentnote.update',[$note->id]) }}">
+            @method('PUT')
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h3>留言</h3>
+                </div>
+                <div class="modal-body">                
+                    <input type="hidden" value="{{$student->id}}" name="student_id">
+                    <textarea class="autogrow form-control" name="note">{{$note->note}} </textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">取消</a>                  
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-btn fa-user"></i>保存
+                    </button>
+                </div>
+            </div>
+        </form>
+        @else
+         <form role="form" method="POST" action="{{ route('parentnote.store') }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h3>留言</h3>
+                </div>
+                <div class="modal-body">                
+                    <input type="hidden" value="{{$student->id}}" name="student_id">
+                    <textarea class="autogrow form-control" name="note"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">取消</a>                  
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-btn fa-user"></i>保存
+                    </button>
+                </div>
+            </div>
+        </form>
+        @endif
+        
+     
+    </div>
+</div>

@@ -14,11 +14,12 @@ class CreateParentnotesTable extends Migration
     public function up()
     {
         Schema::create('parentnotes', function (Blueprint $table) {           
+             $table->increments('id');
             $table->unsignedInteger('parent_id')->comment('父母ID');
             $table->unsignedInteger('student_id')->comment('留言给谁，学生ID');
             $table->date('date')->comment('父母留言日期');
             $table->string('note')->comment('父母留言')->nullable();
-            $table->primary(['parent_id', 'student_id','date']);
+            $table->index(['parent_id', 'student_id','date']);
             $table->timestamps();
         });
     }

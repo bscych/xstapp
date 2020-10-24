@@ -29,9 +29,11 @@ class UserController extends Controller {
 //      }
 
         $users = DB::table('users')
-                        ->select('users.id', 'users.name', 'users.email')
+                        ->leftJoin('model_has_roles', 'model_has_roles.model_id', 'users.id')
+                        ->leftJoin('roles', 'roles.id', 'model_has_roles.role_id')
+                        ->select('users.id', 'users.name', 'roles.name as role')
                         ->orderBy('users.created_at', 'desc')->paginate(10);
-        return View::make('user.index')->with('users', $users);
+        return View::make('backend.user.index')->with('users', $users);
     }
 
     /**

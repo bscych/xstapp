@@ -97,7 +97,9 @@ class HomeworkController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        //
+       
+        $homework = Homework::find($id);
+        return view('backend.homework.edit',['homework'=>$homework]);
     }
 
     /**

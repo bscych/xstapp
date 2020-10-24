@@ -21,8 +21,8 @@
                         <div class="form-group{{ $errors->has('gender') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">性别 ： </label>
                             <select class="form-control" name="gender" >
-                                <option value="男" >男</option>
-                                <option value="女">女</option>
+                                <option value="男" {{$student->gender==='男'?'selected':''}} >男</option>
+                                <option value="女" {{$student->gender==='女'?'selected':''}}>女</option>
                             </select>
                         </div>
 

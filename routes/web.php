@@ -65,9 +65,13 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/visitor', 'VisitorController');
     Route::post('/addContactHistory', 'VisitorController@addContactHistory')->name('visitor.addContactHistory');
     Route::get('/convertToStudent', 'VisitorController@convertToStudent')->name('visitor.convertToStudent');
+//    孩子列表
     Route::get('/getMykids', 'StudentController@getKids')->name('getMyKids');
-    Route::get('/getKidsCourse/{student_id}', 'StudentController@getActiveCourses');
-
+//    孩子的课程列表
+    Route::get('/getKidsCourse/{student_id}', 'StudentController@getActiveCourses')->name('student.getkidscourse');
+//父母留言控制器路由
+    Route::resource('parentnote','ParentnoteController');
+    
     Route::get('/studentJson', 'StudentController@indexJson');
     Route::resource('/coursePlan', 'CoursePlanController');
     Route::resource('/course', 'CourseController');
@@ -94,8 +98,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/divide', 'ClassController@divide');
     Route::get('/quitClass/{course_id}/{student_id}', 'ClassController@quitClass');
     Route::get('/user/getTCKListByTeacherId','ClassController@getTCKListByTeacherId')->name('getTCKListByTeacherId');
+//    打印列表
     Route::get('/printList/{id}','ClassController@toPrintList')->name('class.printList');
+//    打印一个同学的作业
     Route::get('/printHomework','ClassController@printHomework')->name('class.print');
+//打印整个班级的作业    
     Route::get('/printHomeworkBatch','ClassController@printHomeworkBatch')->name('class.print_batch');
     
     Route::resource('/schedule', 'ScheduleController');
@@ -115,6 +122,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/code', 'RegisterCodeController');
     Route::resource('/role', 'RoleController');
     Route::resource('/bill', 'BillController');
+//    请假管理
+    Route::resource('/leave', 'LeaveController');
+//    员工管理  
+    Route::resource('/staff','StaffController');
+//    薪资管理  
+    Route::resource('/salary','SalaryController');
     Route::get('/batchBill/{year}/{month}','BillController@createBillBatch')->name('batchBillByYearMonth');
     route::get('/closeBill/{id}','BillController@confirmToClose')->name('closeBill');
     Route::get('/scheduleList/{course_id}', 'CourseController@getScheduleList');
