@@ -199,6 +199,8 @@ class IncomeController extends Controller {
             if ($coure_students->isEmpty()) {
                 DB::table('course_student')->insert(['course_id' => $course_id, 'student_id' => $student_id]
                 );
+            }else{
+                DB::table('course_student')->where([['course_id', '=', $course_id], ['student_id', '=', $student_id],])->update(['deleted_at' => null]);
             }
         }
         //特长课交费
