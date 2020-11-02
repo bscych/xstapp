@@ -239,7 +239,7 @@ class StatisticsController extends Controller {
 
     public function getScheduleByMonthClass_detail(Request $request) {
         $class_id = $request->input('class_id');
-        $month = $request->input('month');
+        $month = (int)$request->input('month');
         if (count(str_split($month)) < 2) {
             $month = '0' . $month;
         }

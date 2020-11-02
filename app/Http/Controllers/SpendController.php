@@ -58,7 +58,7 @@ class SpendController extends Controller {
         $rules = array(
             'name' => 'required',
             'name_of_account' => 'required',
-            'amount' => 'required',
+            'amount' => 'required|numeric',
            // 'payment_method' => 'required',
             'finance_year' => 'required',
             'finance_month' => 'required'
@@ -74,7 +74,7 @@ class SpendController extends Controller {
             $spend = new Spend;
             $spend->name = Input::get('name');
             $spend->name_of_account = Input::get('name_of_account');
-            $spend->amount = Input::get('amount');
+            $spend->amount = (double) Input::get('amount');
             $spend->payment_method = Input::get('payment_method')==null?'微信':Input::get('payment_method');
             $spend->which_day = Input::get('which_day')==null?date("Y-m-d", time()):Input::get('which_day');
             $spend->finance_year = Input::get('finance_year');

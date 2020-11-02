@@ -30,7 +30,7 @@
                         </div>
                         <div class="form-group{{ $errors->has('amount') ? ' has-error' : '' }} col-md-3">
                             <label class="control-label">金额 ： </label>
-                            <input type="number" class="form-control" name="amount" value="{{ old('amount') }}">   
+                            <input type="text" class="form-control" name="amount" value="{{ old('amount') }}">   
 
                         </div>
 
