@@ -110,7 +110,40 @@ class HomeworkController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        //
+        $homework = Homework::find($id);
+        $chinese = collect();
+        $math = collect();
+        $english = collect();
+        $other = collect();
+        for ($i = 1; $i < 6; $i++) {
+//            提取语文作业
+            $chinese_task = $request->input('c_' . $i);
+            if (strlen(trim($chinese_task, ' ')) > 0) {
+                $chinese->push($chinese_task);
+            }
+//extract 数学作业
+            $math_task = $request->input('m_' . $i);
+            if (strlen(trim($math_task)) > 0) {
+                $math->push($math_task);
+            }
+//            extract 英语作业
+            $english_task = $request->input('e_' . $i);
+            if (strlen(trim($english_task)) > 0) {
+                $english->push($english_task);
+            }
+//extract 其他作业
+            $other_task = $request->input('o_' . $i);
+            if (strlen(trim($other_task)) > 0) {
+                $other->push($other_task);
+            }
+        }
+        $homework->chinese = $chinese->toJson(JSON_UNESCAPED_UNICODE);
+        $homework->math = $math->toJson(JSON_UNESCAPED_UNICODE);
+        $homework->english = $english->toJson(JSON_UNESCAPED_UNICODE);
+        $homework->other = $other->toJson(JSON_UNESCAPED_UNICODE);
+        $homework->save();
+        
+        return $this->index();
     }
 
     /**

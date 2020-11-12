@@ -11,7 +11,7 @@
             <div class="box-content">
 
 
-                <form role="form" method="POST" action="{{route('homework.update',['id'=>null,'school'=>$homework->school_name,'grade'=>$homework->grade,'class'=>$homework->class]) }}">
+                <form role="form" method="POST" action="{{route('homework.update',['id'=>$homework->id]) }}">
                     @method('PUT')
                     @csrf
                     <div id="myTabContent" class="tab-content">
@@ -106,6 +106,7 @@
 
                                 <div class="row panel-body">
                                     <div class="form-group{{ $errors->has('english') ? ' has-error' : '' }} col-md-6">
+                                        @if($englishTasks->count()===0)
                                         <label class="control-label">英语作业 1 ： </label>
                                         <input type="text" class="form-control" name="e_1" value="{{ old('name') }}">  
                                         <label class="control-label">英语作业 2 ： </label>
@@ -116,6 +117,18 @@
                                         <input type="text" class="form-control" name="e_4" value="{{ old('name') }}">
                                         <label class="control-label">英语作业 5 ： </label>
                                         <input type="text" class="form-control" name="e_5" value="{{ old('name') }}">
+                                        @else
+                                             @foreach($englishTasks as $e_task)
+                                               <label class="control-label">英语作业 {{$loop->index + 1}} ：</label>
+                                                <input type="text" class="form-control" name="e_{{$loop->index+1}}" value="{{$e_task}}">  
+                                             @endforeach
+                                            @if($englishTasks->count()<5) 
+                                                 @for($k=$englishTasks->count()+1;$k<=5;$k++)
+                                                    <label class="control-label">英语作业 {{$k}} ： </label>
+                                                    <input type="text" class="form-control" name="{{'e_'.$k}}" value="">  
+                                                @endfor
+                                            @endif
+                                        @endif
                                     </div>
 
                                     <div class="form-group{{ $errors->has('other') ? ' has-error' : '' }} col-md-6">
